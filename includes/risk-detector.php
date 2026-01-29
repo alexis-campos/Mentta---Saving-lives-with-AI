@@ -19,28 +19,37 @@ function detectRiskLevel($text) {
         'suicidarme', 'voy a matarme', 'me voy a matar', 'quiero matarme',
         'terminar con mi vida', 'acabar con mi vida', 'quitarme la vida',
         'voy a terminar con todo', 'esta es mi despedida', 'carta de despedida',
-        'ya tomé la decisión', 'voy a cortarme las venas', 'me voy a tirar'
+        'ya tomé la decisión', 'voy a cortarme las venas', 'me voy a tirar',
+        'no quiero seguir viviendo', 'ya no quiero vivir', 'no quiero seguir aquí',
+        'me quiero ir para siempre', 'desaparecer del mundo'
     ];
     
-    // NIVEL ALTO - Ideación suicida
+    // NIVEL ALTO - Ideación suicida / autolesión
     $highPatterns = [
         'quiero morir', 'prefiero morir', 'no quiero vivir', 'no vale la pena vivir',
         'mejor muerto', 'ojalá no existiera', 'no hay salida', 'no hay esperanza',
         'todo sería mejor sin mí', 'soy una carga', 'a nadie le importo',
-        'me corto', 'hacerme daño', 'quiero hacerme daño'
+        'me corto', 'hacerme daño', 'quiero hacerme daño', 'lastimarme',
+        'desaparecer', 'no existir', 'dejar de existir'
     ];
     
-    // NIVEL MEDIO - Desesperanza
+    // NIVEL MEDIO - Desesperanza / estrés severo
     $mediumPatterns = [
         'no puedo más', 'ya no puedo', 'estoy cansado de todo', 'me rendí',
         'todo está perdido', 'para qué seguir', 'nada importa', 'nadie me entiende',
-        'estoy completamente solo', 'me siento vacío', 'atrapado sin salida'
+        'estoy completamente solo', 'me siento vacío', 'atrapado sin salida',
+        'muy estresado', 'estresado con', 'estrés me mata', 'ansiedad me consume',
+        'no aguanto más', 'estoy harto', 'no lo soporto', 'me derrumbo',
+        'crisis de ansiedad', 'ataque de pánico', 'no puedo respirar'
     ];
     
-    // NIVEL BAJO - Señales tempranas
+    // NIVEL BAJO - Señales tempranas / tristeza
     $lowPatterns = [
         'me siento muy mal', 'no estoy bien', 'necesito ayuda', 'no sé qué hacer',
-        'soy un fracaso', 'no valgo nada', 'soy inútil'
+        'soy un fracaso', 'no valgo nada', 'soy inútil',
+        'me siento triste', 'estoy triste', 'me siento solo', 'estoy solo',
+        'me siento mal', 'día difícil', 'momento difícil', 'pasándola mal',
+        'no me siento bien', 'algo anda mal', 'no estoy de ánimo'
     ];
     
     foreach ($criticalPatterns as $p) {

@@ -14,9 +14,10 @@ require_once __DIR__ . '/functions.php';
  * @param string $message - Mensaje del usuario
  * @param int $patient_id - ID del paciente
  * @param array $currentSentiment - Análisis de sentimiento actual
+ * @param string $riskLevel - Nivel de riesgo detectado (none, low, medium, high, critical)
  * @return array ['success' => bool, 'response' => string, 'error' => string|null]
  */
-function sendToAI($message, $patient_id, $currentSentiment = []) {
+function sendToAI($message, $patient_id, $currentSentiment = [], $riskLevel = 'none') {
     try {
         // 1. Obtener datos del paciente
         $patient = dbFetchOne(
@@ -34,13 +35,14 @@ function sendToAI($message, $patient_id, $currentSentiment = []) {
         // 3. Recuperar memoria contextual del paciente
         $memoryItems = getPatientMemoryForContext($patient_id);
         
-        // 4. Construir prompt completo
+        // 4. Construir prompt completo (con Safe Life Mode si es necesario)
         $prompt = buildAIPrompt(
             $message, 
             $patient, 
             $conversationHistory, 
             $memoryItems, 
-            $currentSentiment
+            $currentSentiment,
+            $riskLevel
         );
         
         // 5. Hacer petición a API de Gemini
@@ -68,8 +70,9 @@ function sendToAI($message, $patient_id, $currentSentiment = []) {
 
 /**
  * Construye el prompt completo para la IA
+ * Incluye Safe Life Mode cuando hay riesgo alto/crítico
  */
-function buildAIPrompt($message, $patient, $conversationHistory, $memoryItems, $sentimentData) {
+function buildAIPrompt($message, $patient, $conversationHistory, $memoryItems, $sentimentData, $riskLevel = 'none') {
     $patientName = $patient['name'] ?? 'Usuario';
     $patientAge = $patient['age'] ?? 'No especificada';
     
@@ -82,6 +85,39 @@ function buildAIPrompt($message, $patient, $conversationHistory, $memoryItems, $
     // Formatear sentimiento
     $sentimentText = formatSentimentForPrompt($sentimentData);
     
+    // Safe Life Mode para riesgo alto/crítico
+    $safeLifeMode = '';
+    if (in_array($riskLevel, ['high', 'critical'])) {
+        $urgency = $riskLevel === 'critical' ? 'CRÍTICO' : 'ALTO';
+        $safeLifeMode = "
+═══════════════════════════════════════
+⚠️ MODO SAFE LIFE ACTIVADO - RIESGO {$urgency}
+═══════════════════════════════════════
+El usuario está mostrando señales de riesgo. TU PRIORIDAD ABSOLUTA es:
+
+1. MANTENERLO EN CONVERSACIÓN - No termines abruptamente, mantén el diálogo
+2. SER EXTRA CÁLIDO Y PRESENTE - Hazle saber que no está solo
+3. PREGUNTAR SI ESTÁ EN LUGAR SEGURO - De forma natural, no alarmista
+4. NO MENCIONAR QUE HAS DETECTADO RIESGO - Nunca digas \"detecto que estás en crisis\"
+5. NO SONAR ALARMISTA - Evita \"estoy muy preocupado\" o \"necesitas ayuda urgente\"
+6. OFRECER HERRAMIENTAS DE GROUNDING SUTILMENTE:
+   - \"¿Puedes sentir tus pies en el suelo ahora mismo?\"
+   - \"Respira conmigo un momento...\"
+7. VALIDAR SIN JUZGAR - \"Lo que sientes es real y válido\"
+8. GENERAR CONEXIÓN - \"Estoy aquí contigo, no estás solo/a\"
+
+EJEMPLO DE RESPUESTA APROPIADA:
+\"Escucho que estás pasando por algo muy difícil. Quiero que sepas que estoy aquí contigo. ¿Estás en un lugar donde te sientes seguro/a ahora? A veces ayuda hablar de lo que sentimos, paso a paso.\"
+
+NUNCA digas:
+- \"Deberías llamar a emergencias\"
+- \"Estoy detectando señales de peligro\"
+- \"¿Estás pensando en hacerte daño?\"
+
+SIEMPRE hazle sentir acompañado/a y que hay esperanza.
+";
+    }
+    
     $prompt = <<<PROMPT
 Eres "Mentta", un asistente de apoyo emocional empático y comprensivo. Tu rol es ser como un amigo sabio que escucha sin juzgar.
 
@@ -90,7 +126,7 @@ INFORMACIÓN DEL USUARIO
 ═══════════════════════════════════════
 Nombre: {$patientName}
 Edad: {$patientAge}
-
+{$safeLifeMode}
 ═══════════════════════════════════════
 MEMORIA CONTEXTUAL (cosas que recuerdas de conversaciones anteriores)
 ═══════════════════════════════════════

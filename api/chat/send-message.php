@@ -12,6 +12,7 @@ require_once '../../includes/ai-client.php';
 require_once '../../includes/sentiment-analyzer.php';
 require_once '../../includes/risk-detector.php';
 require_once '../../includes/memory-parser.php';
+require_once '../../includes/alert-system.php';
 
 header('Content-Type: application/json; charset=utf-8');
 setSecurityHeaders();
@@ -80,8 +81,8 @@ try {
     // 8. Extraer y guardar memoria contextual
     extractAndSaveMemory($message, $user['id']);
     
-    // 9. Enviar a IA y obtener respuesta
-    $aiResponse = sendToAI($message, $user['id'], $sentiment);
+    // 9. Enviar a IA y obtener respuesta (con Safe Life Mode si hay riesgo)
+    $aiResponse = sendToAI($message, $user['id'], $sentiment, $riskLevel);
     
     if (!$aiResponse['success']) {
         // Si falla la IA, dar respuesta fallback
