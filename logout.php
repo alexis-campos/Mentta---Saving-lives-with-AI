@@ -1,12 +1,12 @@
 <?php
 /**
  * MENTTA - Logout
- * Cierra la sesión del usuario
+ * Cierra la sesión y redirige al inicio
  */
 
 require_once 'includes/auth.php';
 
 logout();
 
-header('Location: login.php');
+header('Location: index.php');
 exit;

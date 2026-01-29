@@ -1,157 +1,328 @@
 /**
- * MENTTA - Utility Functions
- * General purpose JavaScript helpers
+ * MENTTA - Utilidades JavaScript
+ * Funciones auxiliares compartidas entre páginas
  */
 
-const Utils = {
-    /**
-     * Show toast notification
-     */
-    toast(message, duration = 3000) {
-        const existing = document.querySelector('.toast');
-        if (existing) existing.remove();
-        
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => toast.remove(), duration);
-    },
+// ========================================
+// Formateo de Fechas
+// ========================================
+
+/**
+ * Formatear fecha en formato largo
+ * @param {string} dateString - Fecha en formato ISO
+ * @returns {string} Fecha formateada (ej: "15 de enero de 2026")
+ */
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-PE', { 
+        day: 'numeric', 
+        month: 'long',
+        year: 'numeric'
+    });
+}
+
+/**
+ * Formatear fecha corta
+ * @param {string} dateString - Fecha en formato ISO
+ * @returns {string} Fecha formateada (ej: "15/01/2026")
+ */
+function formatDateShort(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-PE', { 
+        day: '2-digit', 
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+/**
+ * Formatear hora
+ * @param {string} dateString - Fecha en formato ISO
+ * @returns {string} Hora formateada (ej: "14:30")
+ */
+function formatTime(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('es-PE', { 
+        hour: '2-digit', 
+        minute: '2-digit'
+    });
+}
+
+/**
+ * Tiempo relativo ("hace 2 horas")
+ * @param {string} timestamp - Timestamp o fecha ISO
+ * @returns {string} Tiempo relativo
+ */
+function timeAgo(timestamp) {
+    if (!timestamp) return 'Nunca';
     
-    /**
-     * Format date to relative time
-     */
-    timeAgo(dateString) {
-        const date = new Date(dateString);
-        const now = new Date();
-        const seconds = Math.floor((now - date) / 1000);
-        
-        if (seconds < 60) return 'ahora';
-        if (seconds < 3600) return `hace ${Math.floor(seconds / 60)} min`;
-        if (seconds < 86400) return `hace ${Math.floor(seconds / 3600)} h`;
-        if (seconds < 604800) return `hace ${Math.floor(seconds / 86400)} días`;
-        
-        return date.toLocaleDateString('es-PE', { day: 'numeric', month: 'short' });
-    },
+    const now = new Date();
+    const past = new Date(timestamp);
+    const diff = Math.floor((now - past) / 1000); // segundos
     
-    /**
-     * Escape HTML to prevent XSS
-     */
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    },
+    if (diff < 0) return 'Ahora';
+    if (diff < 60) return 'Hace ' + diff + ' segundos';
+    if (diff < 3600) return 'Hace ' + Math.floor(diff/60) + ' minutos';
+    if (diff < 86400) return 'Hace ' + Math.floor(diff/3600) + ' horas';
+    if (diff < 604800) return 'Hace ' + Math.floor(diff/86400) + ' días';
+    return 'Hace ' + Math.floor(diff/604800) + ' semanas';
+}
+
+// ========================================
+// Utilidades de Texto
+// ========================================
+
+/**
+ * Escape HTML para prevenir XSS
+ * @param {string} text - Texto a escapar
+ * @returns {string} Texto escapado
+ */
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+/**
+ * Truncar texto con elipsis
+ * @param {string} text - Texto a truncar
+ * @param {number} maxLength - Longitud máxima
+ * @returns {string} Texto truncado
+ */
+function truncateText(text, maxLength = 100) {
+    if (!text || text.length <= maxLength) return text;
+    return text.substring(0, maxLength).trim() + '...';
+}
+
+/**
+ * Capitalizar primera letra
+ * @param {string} text - Texto
+ * @returns {string} Texto capitalizado
+ */
+function capitalize(text) {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}
+
+// ========================================
+// Notificaciones Toast
+// ========================================
+
+/**
+ * Mostrar notificación toast
+ * @param {string} message - Mensaje a mostrar
+ * @param {string} type - Tipo: 'success', 'error', 'warning', 'info'
+ * @param {number} duration - Duración en ms
+ */
+function showToast(message, type = 'info', duration = 3000) {
+    // Remover toasts anteriores
+    const existingToast = document.querySelector('.toast-notification');
+    if (existingToast) existingToast.remove();
     
-    /**
-     * Debounce function calls
-     */
-    debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    },
+    const bgColor = {
+        'success': 'bg-green-500',
+        'error': 'bg-red-500',
+        'warning': 'bg-orange-500',
+        'info': 'bg-blue-500'
+    }[type] || 'bg-blue-500';
     
-    /**
-     * Make API request with error handling
-     */
-    async api(url, options = {}) {
-        try {
-            const response = await fetch(url, {
-                ...options,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    ...options.headers
-                }
-            });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.error || 'Error en la solicitud');
+    const icon = {
+        'success': '✓',
+        'error': '✕',
+        'warning': '⚠',
+        'info': 'ℹ'
+    }[type] || 'ℹ';
+    
+    const toast = document.createElement('div');
+    toast.className = `toast-notification fixed bottom-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-slideIn`;
+    toast.innerHTML = `<span class="text-lg">${icon}</span><span>${escapeHtml(message)}</span>`;
+    
+    // Añadir animación CSS si no existe
+    if (!document.getElementById('toast-styles')) {
+        const style = document.createElement('style');
+        style.id = 'toast-styles';
+        style.textContent = `
+            @keyframes slideIn {
+                from { opacity: 0; transform: translateX(100px); }
+                to { opacity: 1; transform: translateX(0); }
             }
-            
-            return data;
-        } catch (error) {
-            console.error('API Error:', error);
-            throw error;
-        }
-    },
+            @keyframes slideOut {
+                from { opacity: 1; transform: translateX(0); }
+                to { opacity: 0; transform: translateX(100px); }
+            }
+            .animate-slideIn { animation: slideIn 0.3s ease-out; }
+            .animate-slideOut { animation: slideOut 0.3s ease-in forwards; }
+        `;
+        document.head.appendChild(style);
+    }
     
-    /**
-     * Scroll element to bottom smoothly
-     */
-    scrollToBottom(element, smooth = true) {
-        element.scrollTo({
-            top: element.scrollHeight,
-            behavior: smooth ? 'smooth' : 'auto'
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.remove('animate-slideIn');
+        toast.classList.add('animate-slideOut');
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
+// ========================================
+// Utilidades de API
+// ========================================
+
+/**
+ * Fetch con manejo de errores
+ * @param {string} url - URL del endpoint
+ * @param {object} options - Opciones de fetch
+ * @returns {Promise<object>} Respuesta parseada
+ */
+async function apiFetch(url, options = {}) {
+    try {
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                'Accept': 'application/json',
+                ...options.headers
+            }
         });
-    },
-    
-    /**
-     * Check if element is scrolled to bottom
-     */
-    isScrolledToBottom(element, threshold = 100) {
-        return element.scrollHeight - element.scrollTop - element.clientHeight < threshold;
-    },
-    
-    /**
-     * Format text with line breaks
-     */
-    formatText(text) {
-        return this.escapeHtml(text).replace(/\n/g, '<br>');
-    },
-    
-    /**
-     * Get current timestamp
-     */
-    now() {
-        return new Date().toISOString();
-    },
-    
-    /**
-     * Store data in localStorage
-     */
-    store(key, value) {
-        try {
-            localStorage.setItem(`mentta_${key}`, JSON.stringify(value));
-        } catch (e) {
-            console.warn('LocalStorage not available');
+        
+        const data = await response.json();
+        
+        if (!data.success && data.error) {
+            throw new Error(data.error);
         }
-    },
+        
+        return data;
+    } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+    }
+}
+
+/**
+ * POST con FormData
+ * @param {string} url - URL del endpoint
+ * @param {object} data - Datos a enviar
+ * @returns {Promise<object>} Respuesta parseada
+ */
+async function apiPost(url, data) {
+    const formData = new FormData();
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
     
-    /**
-     * Retrieve data from localStorage
-     */
-    retrieve(key, defaultValue = null) {
-        try {
-            const item = localStorage.getItem(`mentta_${key}`);
-            return item ? JSON.parse(item) : defaultValue;
-        } catch (e) {
-            return defaultValue;
-        }
-    },
-    
-    /**
-     * Play notification sound
-     */
-    playSound(soundName = 'notification') {
-        try {
-            const audio = new Audio(`assets/sounds/${soundName}.mp3`);
-            audio.volume = 0.5;
-            audio.play().catch(() => {});
-        } catch (e) {
-            // Silently fail
+    return apiFetch(url, {
+        method: 'POST',
+        body: formData
+    });
+}
+
+// ========================================
+// Utilidades de Sesión
+// ========================================
+
+/**
+ * Verificar si el usuario está autenticado
+ * @returns {Promise<object|null>} Datos del usuario o null
+ */
+async function checkSession() {
+    try {
+        const data = await apiFetch('api/auth/check-session.php');
+        return data.success ? data.data : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+/**
+ * Cerrar sesión
+ */
+function logout() {
+    window.location.href = 'logout.php';
+}
+
+// ========================================
+// Utilidades del DOM
+// ========================================
+
+/**
+ * Crear elemento con clases y contenido
+ * @param {string} tag - Tag HTML
+ * @param {string} className - Clases CSS
+ * @param {string} innerHTML - Contenido HTML
+ * @returns {HTMLElement} Elemento creado
+ */
+function createElement(tag, className = '', innerHTML = '') {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (innerHTML) el.innerHTML = innerHTML;
+    return el;
+}
+
+/**
+ * Mostrar/ocultar elemento
+ * @param {string|HTMLElement} selector - Selector o elemento
+ * @param {boolean} show - true para mostrar, false para ocultar
+ */
+function toggleElement(selector, show) {
+    const el = typeof selector === 'string' ? document.querySelector(selector) : selector;
+    if (el) {
+        if (show) {
+            el.classList.remove('hidden');
+        } else {
+            el.classList.add('hidden');
         }
     }
-};
+}
 
-// Make Utils globally available
-window.Utils = Utils;
+// ========================================
+// Debounce y Throttle
+// ========================================
+
+/**
+ * Debounce function
+ * @param {Function} func - Función a ejecutar
+ * @param {number} wait - Tiempo de espera en ms
+ * @returns {Function} Función con debounce
+ */
+function debounce(func, wait = 300) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+/**
+ * Throttle function
+ * @param {Function} func - Función a ejecutar
+ * @param {number} limit - Límite de tiempo en ms
+ * @returns {Function} Función con throttle
+ */
+function throttle(func, limit = 300) {
+    let inThrottle;
+    return function executedFunction(...args) {
+        if (!inThrottle) {
+            func(...args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+// Export for modules (optional)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        formatDate, formatDateShort, formatTime, timeAgo,
+        escapeHtml, truncateText, capitalize,
+        showToast, apiFetch, apiPost, checkSession, logout,
+        createElement, toggleElement, debounce, throttle
+    };
+}

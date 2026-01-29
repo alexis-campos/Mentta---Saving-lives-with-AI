@@ -1,7 +1,7 @@
 # Mentta - AI-Powered Mental Health Support
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.4.0-blue.svg" alt="Version 0.4.0">
+  <img src="https://img.shields.io/badge/version-0.5.0-blue.svg" alt="Version 0.5.0">
   <img src="https://img.shields.io/badge/PHP-8.0%2B-777BB4.svg" alt="PHP 8.0+">
   <img src="https://img.shields.io/badge/MySQL-8.0%2B-4479A1.svg" alt="MySQL 8.0+">
   <img src="https://img.shields.io/badge/AI-Google%20Gemini%203-FF6F00.svg" alt="Google Gemini 3">
@@ -10,21 +10,20 @@
 
 A 24/7 emotional support platform combining AI-powered conversational therapy with professional psychologist supervision. Designed to prevent suicide and provide accessible mental health support.
 
-## 🆕 What's New in v0.4.0
+## 🆕 What's New in v0.5.0
 
-### 📊 Psychologist Dashboard
-- **Patient Overview** - See all linked patients with real-time status
-- **Emotion Charts** - 30-day emotional evolution with Chart.js
-- **Alert Timeline** - Visual history of crisis alerts per patient
-- **Topic Analysis** - AI-extracted conversation themes
-- **Patient Metrics** - Messages/day, streak, last activity
-- **Real-time Alerts** - Popup notifications with sound
+### 🏠 Landing Page & Authentication
+- **Modern Landing Page** - Hero section, problem stats, how-it-works, features
+- **Login System** - Form validation, loading states, role-based redirect
+- **Registration** - Age validation, password confirmation, auto-login
+- **Session Management** - Secure PHP sessions with expiration
+- **Page Protection** - Role-based access control for chat/dashboard
+- **Utility Library** - 20+ helper functions in `utils.js`
 
-### 🔍 Previous (v0.3.1): AI-Powered Analysis
-- Every message analyzed by AI for context
-- Contextual understanding (colloquial vs real crisis)
-- Semantic memory extraction
-- Unified AI analyzer
+### 📊 Previous (v0.4.0): Psychologist Dashboard
+- Patient overview with real-time status
+- 30-day emotion charts with Chart.js
+- Alert timeline and topic analysis
 
 ## ⚡ Features
 
@@ -252,7 +251,17 @@ http://localhost/mentta/test/test-alerts.php
 
 ## 🔄 Changelog
 
-### v0.4.0 (Current)
+### v0.5.0 (Current)
+**Authentication & Landing Page**
+- Modern landing page with hero, stats, and features
+- Login/Register system with form validation
+- API endpoints: `login.php`, `register.php`, `check-session.php`
+- Session management with secure cookies
+- Role-based page protection
+- JavaScript utility library (`utils.js`)
+- Complete flow test (`test-complete-flow.php`)
+
+### v0.4.0
 **Psychologist Dashboard**
 - Added complete dashboard page (`dashboard.php`)
 - Patient list with real-time status indicators (stable/monitor/risk)
