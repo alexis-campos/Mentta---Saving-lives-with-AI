@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Chart.js-4.x-FF6384.svg" alt="Chart.js">
 </p>
 
-A emotional support platform combining AI-powered conversational therapy with professional psychologist supervision. Designed to prevent suicide and provide accessible mental health support.
+A 24/7 emotional support platform combining AI-powered conversational therapy with professional psychologist supervision. Designed to prevent suicide and provide accessible mental health support.
 
 ## 🆕 What's New in v0.5.0
 
