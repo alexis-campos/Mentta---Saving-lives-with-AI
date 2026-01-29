@@ -1,0 +1,2 @@
+<!-- Placeholder for alert sound - Replace with actual MP3 file -->
+<!-- This HTML file prevents 404 errors in development -->

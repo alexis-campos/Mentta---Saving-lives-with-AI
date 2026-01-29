@@ -1,27 +1,30 @@
 # Mentta - AI-Powered Mental Health Support
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.3.1-blue.svg" alt="Version 0.3.1">
+  <img src="https://img.shields.io/badge/version-0.4.0-blue.svg" alt="Version 0.4.0">
   <img src="https://img.shields.io/badge/PHP-8.0%2B-777BB4.svg" alt="PHP 8.0+">
   <img src="https://img.shields.io/badge/MySQL-8.0%2B-4479A1.svg" alt="MySQL 8.0+">
   <img src="https://img.shields.io/badge/AI-Google%20Gemini%203-FF6F00.svg" alt="Google Gemini 3">
+  <img src="https://img.shields.io/badge/Chart.js-4.x-FF6384.svg" alt="Chart.js">
 </p>
 
 A 24/7 emotional support platform combining AI-powered conversational therapy with professional psychologist supervision. Designed to prevent suicide and provide accessible mental health support.
 
-## 🆕 What's New in v0.3.1
+## 🆕 What's New in v0.4.0
 
-### 🤖 AI-Powered Contextual Analysis
-- **Every message analyzed by AI** - No more relying solely on keywords
-- **Contextual understanding** - AI knows "me quiero morir de risa" is NOT a crisis
-- **Semantic memory extraction** - AI extracts people, relationships, events, and places
-- **Unified analyzer** - Single AI call handles risk, sentiment, and memory
+### 📊 Psychologist Dashboard
+- **Patient Overview** - See all linked patients with real-time status
+- **Emotion Charts** - 30-day emotional evolution with Chart.js
+- **Alert Timeline** - Visual history of crisis alerts per patient
+- **Topic Analysis** - AI-extracted conversation themes
+- **Patient Metrics** - Messages/day, streak, last activity
+- **Real-time Alerts** - Popup notifications with sound
 
-### 🛠️ Technical Improvements
-- Updated to **Gemini 3 Flash Preview** model
-- API auth via `x-goog-api-key` header (per latest Google docs)
-- Safety settings configured for mental health content analysis
-- Comprehensive test suite with individual test buttons
+### 🔍 Previous (v0.3.1): AI-Powered Analysis
+- Every message analyzed by AI for context
+- Contextual understanding (colloquial vs real crisis)
+- Semantic memory extraction
+- Unified AI analyzer
 
 ## ⚡ Features
 
@@ -157,12 +160,17 @@ mentta/
 │   │   └── get-sentiment-history.php
 │   └── psychologist/           # Psychologist API endpoints
 │       ├── check-alerts.php    # Long polling for alerts
-│       └── acknowledge-alert.php
+│       ├── acknowledge-alert.php
+│       ├── get-patients.php    # 🆕 List linked patients
+│       └── get-patient-detail.php # 🆕 Patient metrics & history
 ├── assets/
-│   ├── css/                    # Stylesheets
+│   ├── css/
+│   │   ├── chat.css            # Chat styles
+│   │   └── dashboard.css       # 🆕 Dashboard styles
 │   ├── js/
 │   │   ├── chat.js             # Chat interface logic
 │   │   ├── alerts.js           # Real-time alert system
+│   │   ├── dashboard.js        # 🆕 Dashboard with charts
 │   │   └── utils.js            # Utility functions
 │   └── sounds/                 # Alert sounds
 ├── database/
@@ -173,19 +181,20 @@ mentta/
 │   ├── db.php                  # Database connection
 │   ├── auth.php                # Authentication system
 │   ├── ai-client.php           # Gemini AI client + Safe Life Mode
-│   ├── ai-analyzer.php         # 🆕 Unified AI analyzer
+│   ├── ai-analyzer.php         # Unified AI analyzer
 │   ├── sentiment-analyzer.php  # Legacy 5-emotion analysis (fallback)
 │   ├── risk-detector.php       # Legacy risk detection (fallback)
 │   ├── memory-parser.php       # Legacy memory parser (fallback)
 │   └── alert-system.php        # Alert management
 ├── logs/                       # Error logs
 ├── test/
-│   ├── test-api.php            # 🆕 API connection test
-│   ├── test-ai-analyzer.php    # 🆕 AI analysis tests
-│   ├── test-ai-memory.php      # 🆕 Memory extraction tests
+│   ├── test-api.php            # API connection test
+│   ├── test-ai-analyzer.php    # AI analysis tests
+│   ├── test-ai-memory.php      # Memory extraction tests
 │   ├── test-chat.php           # Chat system tests
 │   └── test-alerts.php         # Alert system tests
 ├── chat.php                    # Patient chat interface
+├── dashboard.php               # 🆕 Psychologist dashboard
 ├── login.php                   # Login page
 ├── register.php                # Registration page
 ├── .env.example                # Environment template
@@ -243,22 +252,29 @@ http://localhost/mentta/test/test-alerts.php
 
 ## 🔄 Changelog
 
-### v0.3.1 (Current)
+### v0.4.0 (Current)
+**Psychologist Dashboard**
+- Added complete dashboard page (`dashboard.php`)
+- Patient list with real-time status indicators (stable/monitor/risk)
+- 30-day emotional evolution chart with Chart.js
+- Alert timeline with severity indicators
+- Topic word cloud from patient conversations
+- Patient metrics (messages, streak, engagement)
+- Real-time alert popup notifications
+- Responsive design with mobile support
+
+**New API Endpoints**
+- `get-patients.php` - List linked patients with status
+- `get-patient-detail.php` - Full patient analytics
+
+### v0.3.1
 **AI-Powered Analysis**
 - Added unified AI analyzer (`ai-analyzer.php`)
 - Every message now analyzed by AI for context
 - Contextual risk detection (understands colloquial expressions)
-- Deep sentiment analysis with 5 emotions
 - Semantic memory extraction (people, relationships, events, places)
-- Safe Life Mode auto-activation based on AI assessment
-- Fallback to legacy keyword systems if AI fails
-
-**Technical Updates**
 - Updated to Gemini 3 Flash Preview model
-- API auth changed to `x-goog-api-key` header
-- Added safety settings for mental health content
-- Created comprehensive test suite
-- Added analysis logging table (`ai_analysis_logs`)
+- API auth via `x-goog-api-key` header
 
 ### v0.3.0
 - Added complete alert system with notification chain

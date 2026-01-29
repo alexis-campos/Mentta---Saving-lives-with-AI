@@ -1,0 +1,267 @@
+/**
+ * MENTTA - Dashboard Styles
+ * Estilos adicionales para el panel de psicólogo
+ */
+
+/* ============================================
+   PATIENT CARD ANIMATIONS
+   ============================================ */
+
+.patient-card {
+    transition: all 0.2s ease;
+}
+
+.patient-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.patient-card.selected {
+    background-color: #EFF6FF;
+    border-color: #3B82F6;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-slideIn {
+    animation: slideIn 0.3s ease-out;
+}
+
+.animate-slideUp {
+    animation: slideUp 0.3s ease-out;
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ============================================
+   CHART CONTAINER
+   ============================================ */
+
+#emotion-chart {
+    max-height: 300px;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+aside::-webkit-scrollbar,
+#alerts-timeline::-webkit-scrollbar {
+    width: 6px;
+}
+
+aside::-webkit-scrollbar-track,
+#alerts-timeline::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+aside::-webkit-scrollbar-thumb,
+#alerts-timeline::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+aside::-webkit-scrollbar-thumb:hover,
+#alerts-timeline::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* ============================================
+   ALERT BADGE
+   ============================================ */
+
+#alert-badge {
+    animation: pulse 2s infinite;
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ============================================
+   STATUS BADGES
+   ============================================ */
+
+.status-stable {
+    background-color: #D1FAE5;
+    color: #065F46;
+}
+
+.status-monitor {
+    background-color: #FEF3C7;
+    color: #92400E;
+}
+
+.status-risk {
+    background-color: #FEE2E2;
+    color: #991B1B;
+}
+
+/* ============================================
+   TOPIC TAGS
+   ============================================ */
+
+#top-topics span {
+    transition: transform 0.2s ease;
+}
+
+#top-topics span:hover {
+    transform: scale(1.05);
+}
+
+/* ============================================
+   ALERT POPUP
+   ============================================ */
+
+#alert-popup-container>div {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+
+    /* Sidebar toggle for mobile */
+    #sidebar {
+        position: fixed;
+        left: -100%;
+        top: 73px;
+        height: calc(100vh - 73px);
+        z-index: 30;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #sidebar.open {
+        left: 0;
+    }
+
+    main {
+        width: 100%;
+    }
+
+    .grid-cols-2.lg\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-cols-1.lg\:grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+
+    #patient-info .rounded-xl {
+        padding: 1rem;
+    }
+}
+
+/* ============================================
+   DARK MODE SUPPORT (Future)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+    /* Can be enabled in future versions */
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+
+    header,
+    aside,
+    #alert-popup-container {
+        display: none !important;
+    }
+
+    main {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    .shadow-sm,
+    .shadow-lg,
+    .shadow-xl {
+        box-shadow: none !important;
+    }
+}

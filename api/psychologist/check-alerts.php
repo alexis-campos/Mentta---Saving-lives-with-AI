@@ -4,6 +4,10 @@
  * Endpoint de long polling para alertas en tiempo real
  */
 
+// Suppress HTML error output for API
+ini_set('display_errors', 0);
+error_reporting(0);
+
 require_once '../../includes/config.php';
 require_once '../../includes/db.php';
 require_once '../../includes/auth.php';

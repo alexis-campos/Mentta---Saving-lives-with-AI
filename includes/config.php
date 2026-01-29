@@ -79,7 +79,11 @@ define('ALERT_POLLING_INTERVAL', 5000);
 
 // Environment Configuration
 date_default_timezone_set(APP_TIMEZONE);
-mb_internal_encoding('UTF-8');
+
+// Set UTF-8 encoding if mbstring is available
+if (function_exists('mb_internal_encoding')) {
+    mb_internal_encoding('UTF-8');
+}
 
 if (APP_ENV === 'development') {
     error_reporting(E_ALL);
