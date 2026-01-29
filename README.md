@@ -1,41 +1,86 @@
 # Mentta - AI-Powered Mental Health Support
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.3.0-blue.svg" alt="Version 0.3.0">
+  <img src="https://img.shields.io/badge/version-0.3.1-blue.svg" alt="Version 0.3.1">
   <img src="https://img.shields.io/badge/PHP-8.0%2B-777BB4.svg" alt="PHP 8.0+">
   <img src="https://img.shields.io/badge/MySQL-8.0%2B-4479A1.svg" alt="MySQL 8.0+">
-  <img src="https://img.shields.io/badge/AI-Google%20Gemini-FF6F00.svg" alt="Google Gemini">
+  <img src="https://img.shields.io/badge/AI-Google%20Gemini%203-FF6F00.svg" alt="Google Gemini 3">
 </p>
 
 A 24/7 emotional support platform combining AI-powered conversational therapy with professional psychologist supervision. Designed to prevent suicide and provide accessible mental health support.
 
-## 🆕 What's New in v0.3.0
+## 🆕 What's New in v0.3.1
 
-- **Complete Alert System** with notification chain (psychologist → emergency contacts → national line)
-- **Safe Life Mode** - AI changes tone during crisis without alerting patient
-- **Long Polling** for real-time psychologist alerts
-- **Enhanced Risk Detection** with more patterns for sadness, stress, and crisis
-- **Psychologist API** endpoints for alert management
-- **Alert Testing** tools for verification
+### 🤖 AI-Powered Contextual Analysis
+- **Every message analyzed by AI** - No more relying solely on keywords
+- **Contextual understanding** - AI knows "me quiero morir de risa" is NOT a crisis
+- **Semantic memory extraction** - AI extracts people, relationships, events, and places
+- **Unified analyzer** - Single AI call handles risk, sentiment, and memory
+
+### 🛠️ Technical Improvements
+- Updated to **Gemini 3 Flash Preview** model
+- API auth via `x-goog-api-key` header (per latest Google docs)
+- Safety settings configured for mental health content analysis
+- Comprehensive test suite with individual test buttons
 
 ## ⚡ Features
 
 | Feature | Description |
 |---------|-------------|
-| 🤖 **AI Chat** | Empathetic conversations powered by Google Gemini |
+| 🤖 **AI Chat** | Empathetic conversations powered by Google Gemini 3 |
+| 🧠 **Contextual Risk Detection** | AI understands intent, not just keywords |
 | 🔒 **Safe Life Mode** | Automatic silent alerts when crisis is detected |
 | 🚨 **Alert System** | Real-time notifications to psychologists with sound |
-| 📊 **Sentiment Tracking** | Real-time emotion analysis per message |
-| 🧠 **Memory System** | AI remembers context from previous conversations |
+| 📊 **Deep Sentiment Analysis** | 5-emotion analysis (positive, negative, anxiety, sadness, anger) |
+| 💾 **Memory System** | AI extracts and remembers people, places, events |
 | 👥 **Professional Dashboard** | Psychologists monitor and respond to alerts |
 | 📱 **Mobile-First** | Beautiful responsive design for all devices |
 
-## 📋 Requirements
+## 🧠 How AI Analysis Works
+
+```
+Patient sends message
+         ↓
+   AI Analyzer (single call)
+         ↓
+   ┌─────────────────────────────────────┐
+   │  1. Risk Assessment                 │
+   │     - Level: none/low/medium/high/critical
+   │     - Is it REAL risk? (context check)
+   │     - Trigger alert?               │
+   │                                     │
+   │  2. Deep Sentiment                  │
+   │     - 5 emotions with scores        │
+   │     - Dominant emotion              │
+   │                                     │
+   │  3. Memory Extraction               │
+   │     - People mentioned              │
+   │     - Relationships (Ana → hermana) │
+   │     - Events (perdió su trabajo)    │
+   │     - Places (Lima, parque)         │
+   │     - Topics detected               │
+   │                                     │
+   │  4. Safe Life Mode Decision         │
+   │     - Activate warm response?       │
+   └─────────────────────────────────────┘
+         ↓
+   Response + Alert (if needed)
+```
+
+### Example: Contextual Understanding
+
+| Message | Old (Keywords) | New (AI) |
+|---------|---------------|----------|
+| "Me quiero morir de risa" | � CRITICAL | ✅ None (colloquial expression) |
+| "Todo es gris, sin sentido" | ✅ None | 🚨 High (implicit hopelessness) |
+| "Mi amigo se cortó ayer" | 🚨 HIGH | ⚠️ Low (about someone else) |
+
+## �📋 Requirements
 
 - PHP 8.0+
 - MySQL 8.0+ or MariaDB 10.3+
 - Apache/Nginx with PHP support
-- Google Gemini API key
+- Google Gemini API key (get free at [aistudio.google.com](https://aistudio.google.com))
 
 ## 🚀 Installation
 
@@ -107,7 +152,7 @@ APP_URL=http://localhost/mentta
 mentta/
 ├── api/
 │   ├── chat/                   # Chat API endpoints
-│   │   ├── send-message.php
+│   │   ├── send-message.php    # Main chat (uses AI analyzer)
 │   │   ├── get-history.php
 │   │   └── get-sentiment-history.php
 │   └── psychologist/           # Psychologist API endpoints
@@ -127,13 +172,17 @@ mentta/
 │   ├── config.php              # Configuration (loads .env)
 │   ├── db.php                  # Database connection
 │   ├── auth.php                # Authentication system
-│   ├── ai-client.php           # Gemini AI + Safe Life Mode
-│   ├── sentiment-analyzer.php  # 5-emotion analysis
-│   ├── risk-detector.php       # Risk level detection
-│   ├── memory-parser.php       # Contextual memory
+│   ├── ai-client.php           # Gemini AI client + Safe Life Mode
+│   ├── ai-analyzer.php         # 🆕 Unified AI analyzer
+│   ├── sentiment-analyzer.php  # Legacy 5-emotion analysis (fallback)
+│   ├── risk-detector.php       # Legacy risk detection (fallback)
+│   ├── memory-parser.php       # Legacy memory parser (fallback)
 │   └── alert-system.php        # Alert management
 ├── logs/                       # Error logs
 ├── test/
+│   ├── test-api.php            # 🆕 API connection test
+│   ├── test-ai-analyzer.php    # 🆕 AI analysis tests
+│   ├── test-ai-memory.php      # 🆕 Memory extraction tests
 │   ├── test-chat.php           # Chat system tests
 │   └── test-alerts.php         # Alert system tests
 ├── chat.php                    # Patient chat interface
@@ -148,9 +197,10 @@ mentta/
 ```
 Patient sends risky message
         ↓
-   Risk Detection
+   AI Analysis
         ↓
-    High/Critical?
+  Is it REAL risk?
+  (not colloquial)
     /           \
   Yes            No
    ↓              ↓
@@ -173,6 +223,15 @@ Psychologist   /        \
 ## 🧪 Testing
 
 ```bash
+# Test API connection
+http://localhost/mentta/test/test-api.php
+
+# Test AI analyzer (risk/sentiment)
+http://localhost/mentta/test/test-ai-analyzer.php
+
+# Test memory extraction
+http://localhost/mentta/test/test-ai-memory.php
+
 # Test chat components
 http://localhost/mentta/test/test-chat.php
 
@@ -180,9 +239,28 @@ http://localhost/mentta/test/test-chat.php
 http://localhost/mentta/test/test-alerts.php
 ```
 
+> 💡 **Note:** Google Gemini has rate limits (~15 requests/minute on free tier). Run tests one at a time.
+
 ## 🔄 Changelog
 
-### v0.3.0 (Current)
+### v0.3.1 (Current)
+**AI-Powered Analysis**
+- Added unified AI analyzer (`ai-analyzer.php`)
+- Every message now analyzed by AI for context
+- Contextual risk detection (understands colloquial expressions)
+- Deep sentiment analysis with 5 emotions
+- Semantic memory extraction (people, relationships, events, places)
+- Safe Life Mode auto-activation based on AI assessment
+- Fallback to legacy keyword systems if AI fails
+
+**Technical Updates**
+- Updated to Gemini 3 Flash Preview model
+- API auth changed to `x-goog-api-key` header
+- Added safety settings for mental health content
+- Created comprehensive test suite
+- Added analysis logging table (`ai_analysis_logs`)
+
+### v0.3.0
 - Added complete alert system with notification chain
 - Implemented Safe Life Mode in AI responses
 - Created long polling for real-time psychologist alerts
@@ -212,6 +290,7 @@ http://localhost/mentta/test/test-alerts.php
 - Rate limiting on chat endpoints
 - XSS protection via input sanitization
 - Silent alerts protect patient privacy
+- Safety settings allow AI to analyze sensitive content
 
 ## 📄 License
 

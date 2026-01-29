@@ -176,9 +176,10 @@ PROMPT;
 function callGeminiAPI($prompt, $maxTokens = 300) {
     $apiKey = AI_API_KEY;
     $model = AI_MODEL;
-    $url = AI_API_URL . $model . ':generateContent?key=' . $apiKey;
+    // API key now goes in header, not URL (per latest Google API docs)
+    $url = AI_API_URL . $model . ':generateContent';
     
-    if ($apiKey === 'TU_API_KEY_AQUI') {
+    if ($apiKey === 'TU_API_KEY_AQUI' || $apiKey === 'YOUR_API_KEY_HERE') {
         // Modo de desarrollo - respuesta simulada
         return getDevModeResponse($prompt);
     }
@@ -225,7 +226,8 @@ function callGeminiAPI($prompt, $maxTokens = 300) {
         CURLOPT_POST => true,
         CURLOPT_POSTFIELDS => json_encode($data),
         CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json'
+            'Content-Type: application/json',
+            'x-goog-api-key: ' . $apiKey  // API key in header per latest docs
         ],
         CURLOPT_TIMEOUT => AI_TIMEOUT,
         CURLOPT_CONNECTTIMEOUT => 10,

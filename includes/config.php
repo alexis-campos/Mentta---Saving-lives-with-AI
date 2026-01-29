@@ -45,7 +45,7 @@ define('DB_CHARSET', 'utf8mb4');
 // AI Configuration (Google Gemini)
 define('AI_API_KEY', env('AI_API_KEY', 'YOUR_API_KEY_HERE'));
 define('AI_API_URL', 'https://generativelanguage.googleapis.com/v1beta/models/');
-define('AI_MODEL', 'gemini-1.5-flash');
+define('AI_MODEL', 'gemini-3-flash-preview');
 define('AI_TIMEOUT', 30);
 
 // Security Settings
