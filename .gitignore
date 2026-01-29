@@ -1,0 +1,31 @@
+# Ignorar archivos de configuración sensibles
+includes/config.php
+
+# Logs
+logs/*.log
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDEs
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Temporales
+*.tmp
+*.temp
+*.swp
+*~
+
+# Dependencias (si usas composer en el futuro)
+/vendor/
+composer.lock
+
+# Cache
+*.cache
+.php_cs.cache
