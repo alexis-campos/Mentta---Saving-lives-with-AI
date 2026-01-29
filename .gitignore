@@ -1,31 +1,35 @@
-# Ignorar archivos de configuración sensibles
-includes/config.php
+# Environment files (SENSITIVE - never commit)
+.env
 
 # Logs
 logs/*.log
 *.log
 
-# Sistema operativo
+# OS files
 .DS_Store
 Thumbs.db
 Desktop.ini
 
-# IDEs
+# IDE files
 .idea/
 .vscode/
 *.sublime-project
 *.sublime-workspace
 
-# Temporales
+# Temporary files
 *.tmp
 *.temp
 *.swp
 *~
 
-# Dependencias (si usas composer en el futuro)
+# Dependencies (for future use)
 /vendor/
 composer.lock
 
 # Cache
 *.cache
 .php_cs.cache
+
+# Backup files
+*.bak
+*.backup
