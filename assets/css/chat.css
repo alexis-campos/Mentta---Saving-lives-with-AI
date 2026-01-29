@@ -1,0 +1,219 @@
+/* MENTTA - Chat Styles */
+/* Mobile-first, calming design */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior: none;
+}
+
+/* Hide scrollbar but keep functionality */
+#messagesContainer {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+#messagesContainer::-webkit-scrollbar {
+    width: 4px;
+}
+
+#messagesContainer::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#messagesContainer::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.3);
+    border-radius: 20px;
+}
+
+/* Message bubbles */
+.message-bubble {
+    max-width: 85%;
+    word-wrap: break-word;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.message-user {
+    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+    color: white;
+    border-radius: 20px 20px 4px 20px;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+}
+
+.message-ai {
+    background: white;
+    color: #374151;
+    border: 1px solid #E5E7EB;
+    border-radius: 20px 20px 20px 4px;
+    padding: 12px 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Textarea auto-resize */
+#messageInput {
+    line-height: 1.5;
+    transition: height 0.1s ease;
+}
+
+/* Button states */
+#sendButton:not(:disabled):hover {
+    transform: scale(1.05);
+}
+
+#sendButton:not(:disabled):active {
+    transform: scale(0.95);
+}
+
+/* Loading dots animation */
+.animate-bounce {
+    animation: bounce 0.6s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* Modal animation */
+#logoutModal > div {
+    animation: modalSlideIn 0.2s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Mood indicator colors */
+.mood-positive { background-color: #10B981 !important; }
+.mood-neutral { background-color: #F59E0B !important; }
+.mood-negative { background-color: #EF4444 !important; }
+.mood-anxiety { background-color: #F97316 !important; }
+
+/* Safe area for notch devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+    header {
+        padding-top: env(safe-area-inset-top);
+    }
+    
+    .fixed.bottom-0 {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* Desktop optimizations */
+@media (min-width: 640px) {
+    .message-bubble {
+        max-width: 70%;
+    }
+}
+
+/* Focus styles */
+#messageInput:focus {
+    outline: none;
+}
+
+/* Toast notification styles */
+.toast {
+    position: fixed;
+    bottom: 140px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(17, 24, 39, 0.9);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    z-index: 100;
+    animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2.7s forwards;
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes toastOut {
+    from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+}
+
+/* Typing indicator */
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 12px 16px;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #9CA3AF;
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) { animation-delay: 0ms; }
+.typing-indicator span:nth-child(2) { animation-delay: 200ms; }
+.typing-indicator span:nth-child(3) { animation-delay: 400ms; }
+
+@keyframes typing {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        background-color: #9CA3AF;
+    }
+    30% {
+        transform: translateY(-4px);
+        background-color: #6366F1;
+    }
+}
