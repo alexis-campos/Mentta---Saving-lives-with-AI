@@ -15,8 +15,8 @@
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-PE', { 
-        day: 'numeric', 
+    return date.toLocaleDateString('es-PE', {
+        day: 'numeric',
         month: 'long',
         year: 'numeric'
     });
@@ -30,8 +30,8 @@ function formatDate(dateString) {
 function formatDateShort(dateString) {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-PE', { 
-        day: '2-digit', 
+    return date.toLocaleDateString('es-PE', {
+        day: '2-digit',
         month: '2-digit',
         year: 'numeric'
     });
@@ -45,8 +45,8 @@ function formatDateShort(dateString) {
 function formatTime(dateString) {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleTimeString('es-PE', { 
-        hour: '2-digit', 
+    return date.toLocaleTimeString('es-PE', {
+        hour: '2-digit',
         minute: '2-digit'
     });
 }
@@ -58,17 +58,17 @@ function formatTime(dateString) {
  */
 function timeAgo(timestamp) {
     if (!timestamp) return 'Nunca';
-    
+
     const now = new Date();
     const past = new Date(timestamp);
     const diff = Math.floor((now - past) / 1000); // segundos
-    
+
     if (diff < 0) return 'Ahora';
     if (diff < 60) return 'Hace ' + diff + ' segundos';
-    if (diff < 3600) return 'Hace ' + Math.floor(diff/60) + ' minutos';
-    if (diff < 86400) return 'Hace ' + Math.floor(diff/3600) + ' horas';
-    if (diff < 604800) return 'Hace ' + Math.floor(diff/86400) + ' días';
-    return 'Hace ' + Math.floor(diff/604800) + ' semanas';
+    if (diff < 3600) return 'Hace ' + Math.floor(diff / 60) + ' minutos';
+    if (diff < 86400) return 'Hace ' + Math.floor(diff / 3600) + ' horas';
+    if (diff < 604800) return 'Hace ' + Math.floor(diff / 86400) + ' días';
+    return 'Hace ' + Math.floor(diff / 604800) + ' semanas';
 }
 
 // ========================================
@@ -122,25 +122,25 @@ function showToast(message, type = 'info', duration = 3000) {
     // Remover toasts anteriores
     const existingToast = document.querySelector('.toast-notification');
     if (existingToast) existingToast.remove();
-    
+
     const bgColor = {
         'success': 'bg-green-500',
         'error': 'bg-red-500',
         'warning': 'bg-orange-500',
         'info': 'bg-blue-500'
     }[type] || 'bg-blue-500';
-    
+
     const icon = {
         'success': '✓',
         'error': '✕',
         'warning': '⚠',
         'info': 'ℹ'
     }[type] || 'ℹ';
-    
+
     const toast = document.createElement('div');
     toast.className = `toast-notification fixed bottom-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-slideIn`;
     toast.innerHTML = `<span class="text-lg">${icon}</span><span>${escapeHtml(message)}</span>`;
-    
+
     // Añadir animación CSS si no existe
     if (!document.getElementById('toast-styles')) {
         const style = document.createElement('style');
@@ -159,9 +159,9 @@ function showToast(message, type = 'info', duration = 3000) {
         `;
         document.head.appendChild(style);
     }
-    
+
     document.body.appendChild(toast);
-    
+
     setTimeout(() => {
         toast.classList.remove('animate-slideIn');
         toast.classList.add('animate-slideOut');
@@ -188,13 +188,13 @@ async function apiFetch(url, options = {}) {
                 ...options.headers
             }
         });
-        
+
         const data = await response.json();
-        
+
         if (!data.success && data.error) {
             throw new Error(data.error);
         }
-        
+
         return data;
     } catch (error) {
         console.error('API Error:', error);
@@ -213,7 +213,7 @@ async function apiPost(url, data) {
     for (const key in data) {
         formData.append(key, data[key]);
     }
-    
+
     return apiFetch(url, {
         method: 'POST',
         body: formData
@@ -317,12 +317,83 @@ function throttle(func, limit = 300) {
     };
 }
 
+// ========================================
+// Funciones adicionales para Chat
+// ========================================
+
+/**
+ * Formatear texto para mostrar en chat (escape + line breaks)
+ * @param {string} text - Texto a formatear
+ * @returns {string} HTML seguro con saltos de línea
+ */
+function formatText(text) {
+    if (!text) return '';
+    // Escape HTML y convertir saltos de línea a <br>
+    return escapeHtml(text).replace(/\n/g, '<br>');
+}
+
+/**
+ * Scroll suave al fondo de un contenedor
+ * @param {HTMLElement} container - Contenedor a scrollear
+ * @param {boolean} smooth - Usar animación suave
+ */
+function scrollToBottom(container, smooth = true) {
+    if (!container) return;
+    container.scrollTo({
+        top: container.scrollHeight,
+        behavior: smooth ? 'smooth' : 'auto'
+    });
+}
+
+// ========================================
+// Objeto Utils (compatibilidad con chat.js)
+// ========================================
+
+/**
+ * Objeto Utils que agrupa todas las utilidades
+ * Permite usar Utils.method() o directamente method()
+ */
+const Utils = {
+    // Fechas
+    formatDate,
+    formatDateShort,
+    formatTime,
+    timeAgo,
+
+    // Texto
+    escapeHtml,
+    truncateText,
+    capitalize,
+    formatText,
+
+    // Notificaciones
+    toast: showToast,
+    showToast,
+
+    // API
+    api: apiFetch,
+    apiFetch,
+    apiPost,
+
+    // Sesión
+    checkSession,
+    logout,
+
+    // DOM
+    createElement,
+    toggleElement,
+    scrollToBottom,
+
+    // Utilidades
+    debounce,
+    throttle
+};
+
+// Hacer Utils global
+window.Utils = Utils;
+
 // Export for modules (optional)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        formatDate, formatDateShort, formatTime, timeAgo,
-        escapeHtml, truncateText, capitalize,
-        showToast, apiFetch, apiPost, checkSession, logout,
-        createElement, toggleElement, debounce, throttle
-    };
+    module.exports = Utils;
 }
+
