@@ -1,29 +1,29 @@
 # Mentta - AI-Powered Mental Health Support
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.5.0-blue.svg" alt="Version 0.5.0">
+  <img src="https://img.shields.io/badge/version-0.5.1-blue.svg" alt="Version 0.5.1">
   <img src="https://img.shields.io/badge/PHP-8.0%2B-777BB4.svg" alt="PHP 8.0+">
   <img src="https://img.shields.io/badge/MySQL-8.0%2B-4479A1.svg" alt="MySQL 8.0+">
   <img src="https://img.shields.io/badge/AI-Google%20Gemini%203-FF6F00.svg" alt="Google Gemini 3">
   <img src="https://img.shields.io/badge/Chart.js-4.x-FF6384.svg" alt="Chart.js">
 </p>
 
-A emotional support platform combining AI-powered conversational therapy with professional psychologist supervision. Designed to prevent suicide and provide accessible mental health support.
+A 24/7 emotional support platform combining AI-powered conversational therapy with professional psychologist supervision. Designed to prevent suicide and provide accessible mental health support.
 
-## 🆕 What's New in v0.5.0
+## 🆕 What's New in v0.5.1
 
-### 🏠 Landing Page & Authentication
-- **Modern Landing Page** - Hero section, problem stats, how-it-works, features
-- **Login System** - Form validation, loading states, role-based redirect
-- **Registration** - Age validation, password confirmation, auto-login
-- **Session Management** - Secure PHP sessions with expiration
-- **Page Protection** - Role-based access control for chat/dashboard
-- **Utility Library** - 20+ helper functions in `utils.js`
+### 🐛 Bug Fixes & Improvements
+- **Fixed AI Model** - Updated to `gemini-3-flash-preview` (latest stable)
+- **Increased Response Limits** - AI responses now up to 4000 tokens (more empathetic)
+- **Utils.js Compatibility** - Added `Utils` object wrapper for chat.js integration
+- **Removed Duplicate Functions** - Fixed `timeAgo()` redeclaration errors
+- **API Error Handling** - Better fallback responses when AI quota exceeded
+- **Error Suppression** - API endpoints return clean JSON even on PHP errors
 
-### 📊 Previous (v0.4.0): Psychologist Dashboard
-- Patient overview with real-time status
-- 30-day emotion charts with Chart.js
-- Alert timeline and topic analysis
+### 🏠 Previous (v0.5.0): Landing Page & Authentication
+- Modern landing page with hero, stats, and features
+- Login/Register system with form validation
+- Session management and role-based page protection
 
 ## ⚡ Features
 
@@ -251,7 +251,17 @@ http://localhost/mentta/test/test-alerts.php
 
 ## 🔄 Changelog
 
-### v0.5.0 (Current)
+### v0.5.1 (Current)
+**Bug Fixes & Improvements**
+- Fixed AI model configuration (`gemini-3-flash-preview`)
+- Increased AI response token limits (300 → 4000)
+- Added `Utils` object wrapper in `utils.js` for backwards compatibility
+- Removed duplicate `timeAgo()` function declarations
+- Improved API error handling with clean JSON fallbacks
+- Added error suppression for API endpoints
+- Added `test-gemini-api.php` diagnostic tool
+
+### v0.5.0
 **Authentication & Landing Page**
 - Modern landing page with hero, stats, and features
 - Login/Register system with form validation
