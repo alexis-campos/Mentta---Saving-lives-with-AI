@@ -142,6 +142,11 @@ async function sendMessage() {
         const formData = new FormData();
         formData.append('message', message);
 
+        // Include session_id if Menu module is available
+        if (typeof Menu !== 'undefined' && Menu.getCurrentSessionId()) {
+            formData.append('session_id', Menu.getCurrentSessionId());
+        }
+
         const response = await fetch('api/chat/send-message.php', {
             method: 'POST',
             body: formData,
