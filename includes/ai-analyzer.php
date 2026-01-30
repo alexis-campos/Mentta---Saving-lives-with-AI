@@ -151,7 +151,7 @@ function callGeminiForAnalysis($prompt) {
             'temperature' => 0.1, // Baja temperatura para análisis consistente
             'topK' => 1,
             'topP' => 0.8,
-            'maxOutputTokens' => 1500,
+            'maxOutputTokens' => 3000,
         ],
         // CRÍTICO: Desactivar filtros de seguridad para análisis de salud mental
         // Esto permite que la IA analice contenido sobre suicidio/autolesión

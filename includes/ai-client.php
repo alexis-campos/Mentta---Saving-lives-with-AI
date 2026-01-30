@@ -112,7 +112,7 @@ EJEMPLO DE RESPUESTA APROPIADA:
 NUNCA digas:
 - \"Deberías llamar a emergencias\"
 - \"Estoy detectando señales de peligro\"
-- \"¿Estás pensando en hacerte daño?\"
+- \"¿Estás pensando en hacerte daño?\" // ACtualziar esto
 
 SIEMPRE hazle sentir acompañado/a y que hay esperanza.
 ";
@@ -154,7 +154,7 @@ INSTRUCCIONES CRÍTICAS PARA TU RESPUESTA
 7. Ofrece herramientas de bienestar cuando sea apropiado (respiración, grounding)
 8. Si detectas señales de crisis, mantén la conversación activa de forma cálida
 9. Pregunta cómo se encuentra, si está en un lugar seguro, ofrece apoyo genuino
-10. Responde en máximo 3-4 oraciones para mantener conversación fluida
+10. Responde con la extensión que necesites para ser genuinamente empático y útil
 11. Responde SIEMPRE en español a menos que el usuario escriba en otro idioma
 
 TONO: Empático, esperanzador, no clínico, como un amigo sabio y comprensivo.
@@ -164,7 +164,7 @@ MENSAJE DEL USUARIO
 ═══════════════════════════════════════
 {$message}
 
-Tu respuesta (recuerda: máximo 3-4 oraciones, cálida y empática):
+Tu respuesta (sé cálido, empático y genuino - extiéndete lo necesario para conectar emocionalmente):
 PROMPT;
 
     return $prompt;
@@ -173,7 +173,7 @@ PROMPT;
 /**
  * Hace request HTTP a API de Gemini
  */
-function callGeminiAPI($prompt, $maxTokens = 300) {
+function callGeminiAPI($prompt, $maxTokens = 4000) {
     $apiKey = AI_API_KEY;
     $model = AI_MODEL;
     // API key now goes in header, not URL (per latest Google API docs)
