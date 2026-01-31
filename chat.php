@@ -121,7 +121,7 @@ if ($weekMood !== null) {
                     <span class="menu-btn-icon">➕</span>
                     <span>Nuevo Chat</span>
                 </button>
-                <button class="menu-btn" onclick="openMapModal()">
+                <button class="menu-btn" onclick="window.location.href='map.php'">
                     <span class="menu-btn-icon">🗺️</span>
                     <span>Mapa de Centros</span>
                 </button>
@@ -303,25 +303,8 @@ if ($weekMood !== null) {
         </div>
     </div>
     
-    <!-- Map Placeholder Modal -->
-    <div id="map-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">🗺️ Mapa de Centros</h3>
-                <button class="modal-close" onclick="closeMapModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="map-placeholder">
-                    <div class="map-placeholder-icon">🗺️</div>
-                    <h3>Próximamente</h3>
-                    <p>Mapa de centros de salud mental cercanos a tu ubicación</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="resource-btn-secondary resource-btn" onclick="closeMapModal()">Cerrar</button>
-            </div>
-        </div>
-    </div>
+    
+    <!-- Map is now a full page at map.php -->
     
     <!-- Crisis Contact Modal -->
     <div id="crisis-modal" class="modal-overlay">
