@@ -7,180 +7,182 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/risk-detector.php';
+
+// ============================================================
+// NOTA: La función sendToAI() fue removida (código zombie).
+// El flujo actual usa analyzeWithAI() en ai-analyzer.php
+// ============================================================
 
 /**
- * Envía mensaje a Gemini y recibe respuesta contextualizada
- * 
- * @param string $message - Mensaje del usuario
- * @param int $patient_id - ID del paciente
- * @param array $currentSentiment - Análisis de sentimiento actual
- * @param string $riskLevel - Nivel de riesgo detectado (none, low, medium, high, critical)
- * @return array ['success' => bool, 'response' => string, 'error' => string|null]
+ * Construye prompt con personalidad "AMIGO ADAPTATIVO"
+ * Adapta tono según contexto: celebra, empodera, escucha, aconseja
  */
-function sendToAI($message, $patient_id, $currentSentiment = [], $riskLevel = 'none') {
-    try {
-        // 1. Obtener datos del paciente
-        $patient = dbFetchOne(
-            "SELECT name, age, language FROM users WHERE id = ?", 
-            [$patient_id]
-        );
-        
-        if (!$patient) {
-            throw new Exception('Paciente no encontrado');
-        }
-        
-        // 2. Recuperar últimos mensajes del paciente
-        $conversationHistory = getConversationHistory($patient_id, CHAT_HISTORY_LIMIT);
-        
-        // 3. Recuperar memoria contextual del paciente
-        $memoryItems = getPatientMemoryForContext($patient_id);
-        
-        // 4. Construir prompt completo (con Safe Life Mode si es necesario)
-        $prompt = buildAIPrompt(
-            $message, 
-            $patient, 
-            $conversationHistory, 
-            $memoryItems, 
-            $currentSentiment,
-            $riskLevel
-        );
-        
-        // 5. Hacer petición a API de Gemini
-        $response = callGeminiAPI($prompt);
-        
-        return [
-            'success' => true,
-            'response' => $response,
-            'error' => null
-        ];
-        
-    } catch (Exception $e) {
-        logError('Error en sendToAI', [
-            'error' => $e->getMessage(),
-            'patient_id' => $patient_id
-        ]);
-        
-        return [
-            'success' => false,
-            'response' => null,
-            'error' => $e->getMessage()
-        ];
-    }
-}
-
-/**
- * Construye el prompt completo para la IA
- * Incluye Safe Life Mode cuando hay riesgo alto/crítico
- */
-function buildAIPrompt($message, $patient, $conversationHistory, $memoryItems, $sentimentData, $riskLevel = 'none') {
+function buildAIPrompt($message, $patient, $conversationHistory, $memoryItems, $sentimentData, $riskData = 'none') {
     $patientName = $patient['name'] ?? 'Usuario';
-    $patientAge = $patient['age'] ?? 'No especificada';
+    $patientAge = $patient['age'] ?? '';
     
-    // Formatear memoria contextual
-    $memoryText = formatMemoryForPrompt($memoryItems);
-    
-    // Formatear historial de conversación
+    // Formatear datos contextuales
     $historyText = formatHistoryForPrompt($conversationHistory);
-    
-    // Formatear sentimiento
+    $memoryText = formatMemoryForPrompt($memoryItems);
     $sentimentText = formatSentimentForPrompt($sentimentData);
     
-    // Safe Life Mode para riesgo alto/crítico
-    $safeLifeMode = '';
-    if (in_array($riskLevel, ['high', 'critical'])) {
-        $urgency = $riskLevel === 'critical' ? 'CRÍTICO' : 'ALTO';
-        $safeLifeMode = "
-═══════════════════════════════════════
-⚠️ MODO SAFE LIFE ACTIVADO - RIESGO {$urgency}
-═══════════════════════════════════════
-El usuario está mostrando señales de riesgo. TU PRIORIDAD ABSOLUTA es:
-
-1. MANTENERLO EN CONVERSACIÓN - No termines abruptamente, mantén el diálogo
-2. SER EXTRA CÁLIDO Y PRESENTE - Hazle saber que no está solo
-3. PREGUNTAR SI ESTÁ EN LUGAR SEGURO - De forma natural, no alarmista
-4. NO MENCIONAR QUE HAS DETECTADO RIESGO - Nunca digas \"detecto que estás en crisis\"
-5. NO SONAR ALARMISTA - Evita \"estoy muy preocupado\" o \"necesitas ayuda urgente\"
-6. OFRECER HERRAMIENTAS DE GROUNDING SUTILMENTE:
-   - \"¿Puedes sentir tus pies en el suelo ahora mismo?\"
-   - \"Respira conmigo un momento...\"
-7. VALIDAR SIN JUZGAR - \"Lo que sientes es real y válido\"
-8. GENERAR CONEXIÓN - \"Estoy aquí contigo, no estás solo/a\"
-
-EJEMPLO DE RESPUESTA APROPIADA:
-\"Escucho que estás pasando por algo muy difícil. Quiero que sepas que estoy aquí contigo. ¿Estás en un lugar donde te sientes seguro/a ahora? A veces ayuda hablar de lo que sentimos, paso a paso.\"
-
-NUNCA digas:
-- \"Deberías llamar a emergencias\"
-- \"Estoy detectando señales de peligro\"
-- \"¿Estás pensando en hacerte daño?\" // ACtualziar esto
-
-SIEMPRE hazle sentir acompañado/a y que hay esperanza.
-";
-    }
+    // Procesar riesgo
+    $risk_level = is_array($riskData) ? $riskData['suggested_level'] : riskLevelToInt($riskData);
+    $risk_score = is_array($riskData) ? $riskData['risk_score'] : 0;
+    $keywords = is_array($riskData) && !empty($riskData['keywords_found']) 
+        ? implode(', ', $riskData['keywords_found']) : 'ninguno';
     
+    // === PROMPT AMIGO ADAPTATIVO ===
     $prompt = <<<PROMPT
-Eres "Mentta", un asistente de apoyo emocional empático y comprensivo. Tu rol es ser como un amigo sabio que escucha sin juzgar.
+ROL: Eres Mentta, un AMIGO cercano que sabe de salud mental. NO eres terapeuta, NO sientes lástima.
+Eres como ese amigo sabio que escucha, aconseja, celebra logros, y sabe cuándo decir "esto es serio, busca ayuda profesional".
 
-═══════════════════════════════════════
-INFORMACIÓN DEL USUARIO
-═══════════════════════════════════════
-Nombre: {$patientName}
-Edad: {$patientAge}
-{$safeLifeMode}
-═══════════════════════════════════════
-MEMORIA CONTEXTUAL (cosas que recuerdas de conversaciones anteriores)
-═══════════════════════════════════════
-{$memoryText}
+PERSONALIDAD ADAPTATIVA (ajusta según contexto):
+- Si usuario comparte LOGRO → Celebra genuinamente ("¡Genial! ¿Cómo lo lograste?")
+- Si usuario está DESANIMADO → Empodera ("Sé que puedes con esto. ¿Qué necesitas?")
+- Si usuario quiere DESAHOGARSE → Escucha sin juzgar, haz preguntas abiertas
+- Si usuario está CONFUNDIDO → Orienta, ayúdale a pensar opciones
+- Si usuario en CRISIS LEVE → Escucha activa, aconseja basándote en PAP
+- Si usuario en CRISIS SEVERA (nivel 4-5) → Toma en serio, recomienda ayuda profesional
 
-═══════════════════════════════════════
-HISTORIAL RECIENTE DE LA CONVERSACIÓN
-═══════════════════════════════════════
+CÓMO HABLA UN AMIGO (vs cómo NO hablar):
+❌ "Entiendo tu dolor" (lástima)     → ✅ "¿Qué pasó exactamente?"
+❌ "Es válido sentirse así" (validar todo) → ✅ "Suena difícil. ¿Qué opciones ves?"
+❌ "Todo estará bien" (promesa vacía) → ✅ "Estoy aquí contigo en esto"
+❌ Siempre estar de acuerdo → ✅ "¿Has pensado que quizás...?"
+
+RECURSOS PERÚ (solo cuando sea apropiado):
+- Línea 113 (opción 5): Salud mental, 24/7
+- SAMU 106: Emergencias
+- Mapa de centros de ayuda en la app
+
+REGLAS:
+1. Responde en español, usa "tú" (informal)
+2. Máximo 4-5 oraciones, sé conciso pero cálido
+3. Para nivel 4-5: "Esto me preocupa. Creo que deberías hablar con un profesional. ¿Conoces la línea 113?"
+4. NO diagnostiques, NO recetes medicamentos
+5. NO repitas el nombre del usuario al inicio
+
+FORMATO (OBLIGATORIO):
+[RISK_LEVEL: X] [PAP_PHASE: Y]
+Tu respuesta aquí...
+
+NIVELES: 0=tranquilo, 1=leve, 2=moderado, 3=alto, 4=crítico, 5=inminente
+FASES PAP: A=Escucha, B=Regulación, C=Necesidades, D=Redes, E=Psicoeducación
+
+CONTEXTO ACTUAL:
+- Usuario: {$patientName} ({$patientAge} años)
+- Análisis backend: nivel {$risk_level}/5, score {$risk_score}/100
+- Keywords detectados: {$keywords}
+- Emoción detectada: {$sentimentText}
+- Memoria: {$memoryText}
+
+HISTORIAL RECIENTE:
 {$historyText}
 
-═══════════════════════════════════════
-ESTADO EMOCIONAL DETECTADO EN EL MENSAJE ACTUAL
-═══════════════════════════════════════
-{$sentimentText}
+MENSAJE DEL USUARIO:
+"{$message}"
 
-═══════════════════════════════════════
-INSTRUCCIONES CRÍTICAS PARA TU RESPUESTA
-═══════════════════════════════════════
-1. Usa el nombre del usuario ({$patientName}) de forma natural cuando sea apropiado
-2. Referencia eventos y personas que ya te han contado (mira la memoria contextual)
-3. Sé cálido, empático, como un amigo que escucha sin juzgar
-4. NUNCA diagnostiques condiciones médicas ("parece que tienes depresión")
-5. NUNCA recomiendes medicamentos específicos
-6. Valida emociones: "Es completamente válido sentirse así"
-7. Ofrece herramientas de bienestar cuando sea apropiado (respiración, grounding)
-8. Si detectas señales de crisis, mantén la conversación activa de forma cálida
-9. Pregunta cómo se encuentra, si está en un lugar seguro, ofrece apoyo genuino
-10. Responde con la extensión que necesites para ser genuinamente empático y útil
-11. Responde SIEMPRE en español a menos que el usuario escriba en otro idioma
-
-TONO: Empático, esperanzador, no clínico, como un amigo sabio y comprensivo.
-
-═══════════════════════════════════════
-MENSAJE DEL USUARIO
-═══════════════════════════════════════
-{$message}
-
-Tu respuesta (sé cálido, empático y genuino - extiéndete lo necesario para conectar emocionalmente):
+TU RESPUESTA COMO AMIGO:
 PROMPT;
-
+    
     return $prompt;
 }
 
 /**
- * Hace request HTTP a API de Gemini
+ * Sugiere recursos de psicoeducación según mensaje y nivel de riesgo
+ * 
+ * @param string $message - Mensaje del usuario
+ * @param int $risk_level - Nivel de riesgo sugerido (0-5)
+ * @return array - Lista de recursos sugeridos
  */
-function callGeminiAPI($prompt, $maxTokens = 4000) {
+function getSuggestedResources($message, $risk_level) {
+    // Si nivel es crítico, no sugerir ejercicios (prioridad es seguridad)
+    if ($risk_level >= 4) {
+        return [];
+    }
+    
+    $message_lower = mb_strtolower($message, 'UTF-8');
+    $resources = [];
+    
+    // Keywords para sugerir recursos de ansiedad
+    if (mb_strpos($message_lower, 'ansi') !== false || 
+        mb_strpos($message_lower, 'nervios') !== false ||
+        mb_strpos($message_lower, 'pánico') !== false ||
+        mb_strpos($message_lower, 'panico') !== false) {
+        $resources[] = [
+            'title' => 'Técnica 5-4-3-2-1 para ansiedad',
+            'description' => 'Nombra 5 cosas que ves, 4 que tocas, 3 que escuchas, 2 que hueles, 1 que saboreas'
+        ];
+        $resources[] = [
+            'title' => 'Respiración 4-7-8',
+            'description' => 'Inhala 4 seg, mantén 7 seg, exhala 8 seg. Repite 4 veces'
+        ];
+    }
+    
+    // Keywords para problemas de sueño
+    if (mb_strpos($message_lower, 'dormir') !== false || 
+        mb_strpos($message_lower, 'insomnio') !== false ||
+        mb_strpos($message_lower, 'no puedo dormir') !== false) {
+        $resources[] = [
+            'title' => 'Higiene del sueño',
+            'description' => 'Evita pantallas 1h antes, ambiente oscuro, temperatura fresca'
+        ];
+    }
+    
+    // Keywords para soledad
+    if (mb_strpos($message_lower, 'solo') !== false || 
+        mb_strpos($message_lower, 'soledad') !== false ||
+        mb_strpos($message_lower, 'nadie me entiende') !== false) {
+        $resources[] = [
+            'title' => 'Conexión social gradual',
+            'description' => 'Empieza con un mensaje a un amigo, no necesitas ver a nadie si no quieres'
+        ];
+    }
+    
+    // Keywords para estrés
+    if (mb_strpos($message_lower, 'estrés') !== false || 
+        mb_strpos($message_lower, 'estres') !== false ||
+        mb_strpos($message_lower, 'abrumado') !== false ||
+        mb_strpos($message_lower, 'presión') !== false) {
+        $resources[] = [
+            'title' => 'Técnica de la pausa de 60 segundos',
+            'description' => 'Para, cierra los ojos, respira 3 veces, pregúntate qué necesitas AHORA MISMO'
+        ];
+    }
+    
+    // Keywords para tristeza/depresión
+    if (mb_strpos($message_lower, 'triste') !== false || 
+        mb_strpos($message_lower, 'deprimid') !== false ||
+        mb_strpos($message_lower, 'vacío') !== false) {
+        $resources[] = [
+            'title' => 'Activación conductual mínima',
+            'description' => 'Haz UNA cosa pequeña: levántate, toma agua, abre la ventana. No tienes que hacer más'
+        ];
+    }
+    
+    return $resources;
+}
+
+/**
+ * Hace request HTTP a API de Gemini con reintentos exponenciales
+ * 
+ * Implementa Exponential Backoff para manejar errores transitorios (503, 429, etc.)
+ * Crítico para apps de salud mental donde el silencio de la IA no es aceptable.
+ * 
+ * @param string $prompt - Prompt a enviar
+ * @param int $maxTokens - Máximo de tokens en respuesta
+ * @param int $maxRetries - Número máximo de reintentos (default 3)
+ * @return string - Respuesta de la IA
+ * @throws Exception - Si todos los reintentos fallan
+ */
+function callGeminiAPI($prompt, $maxTokens = 4000, $maxRetries = 3) {
     $apiKey = AI_API_KEY;
     $model = AI_MODEL;
-    // API key now goes in header, not URL (per latest Google API docs)
     $url = AI_API_URL . $model . ':generateContent';
     
     if ($apiKey === 'TU_API_KEY_AQUI' || $apiKey === 'YOUR_API_KEY_HERE') {
-        // Modo de desarrollo - respuesta simulada
         return getDevModeResponse($prompt);
     }
     
@@ -218,62 +220,111 @@ function callGeminiAPI($prompt, $maxTokens = 4000) {
         ]
     ];
     
-    $ch = curl_init();
+    $lastError = null;
+    $lastHttpCode = 0;
     
-    curl_setopt_array($ch, [
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => json_encode($data),
-        CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json',
-            'x-goog-api-key: ' . $apiKey  // API key in header per latest docs
-        ],
-        CURLOPT_TIMEOUT => AI_TIMEOUT,
-        CURLOPT_CONNECTTIMEOUT => 10,
-        CURLOPT_SSL_VERIFYPEER => true
-    ]);
+    // Códigos HTTP que ameritan reintento
+    $retryableCodes = [429, 500, 502, 503, 504];
     
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $error = curl_error($ch);
-    
-    curl_close($ch);
-    
-    if ($error) {
-        logError('cURL error en Gemini API', ['error' => $error]);
-        throw new Exception('Error de conexión con el servicio de IA');
-    }
-    
-    if ($httpCode !== 200) {
-        logError('Gemini API HTTP error', [
+    for ($attempt = 0; $attempt <= $maxRetries; $attempt++) {
+        // Espera exponencial antes de reintentar (excepto primer intento)
+        if ($attempt > 0) {
+            $waitSeconds = pow(2, $attempt - 1); // 1s, 2s, 4s...
+            logError("Gemini API - Reintento #{$attempt} después de {$waitSeconds}s", [
+                'previous_error' => $lastError,
+                'previous_http_code' => $lastHttpCode
+            ]);
+            sleep($waitSeconds);
+        }
+        
+        $ch = curl_init();
+        
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'x-goog-api-key: ' . $apiKey
+            ],
+            CURLOPT_TIMEOUT => AI_TIMEOUT,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_SSL_VERIFYPEER => true
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        
+        curl_close($ch);
+        
+        // Error de conexión - reintentar
+        if ($curlError) {
+            $lastError = $curlError;
+            $lastHttpCode = 0;
+            continue; // Reintentar
+        }
+        
+        // Éxito
+        if ($httpCode === 200) {
+            $result = json_decode($response, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                logError('Error parseando respuesta de Gemini', ['response' => $response]);
+                throw new Exception('Error procesando respuesta de IA');
+            }
+            
+            // Extraer texto de respuesta
+            if (isset($result['candidates'][0]['content']['parts'][0]['text'])) {
+                // Log éxito si hubo reintentos
+                if ($attempt > 0) {
+                    logError("Gemini API - Éxito después de {$attempt} reintentos", []);
+                }
+                return trim($result['candidates'][0]['content']['parts'][0]['text']);
+            }
+            
+            // Bloqueado por seguridad
+            if (isset($result['candidates'][0]['finishReason']) && 
+                $result['candidates'][0]['finishReason'] === 'SAFETY') {
+                logError('Respuesta bloqueada por seguridad de Gemini', ['result' => $result]);
+                return "Entiendo que estás pasando por un momento difícil. Estoy aquí para escucharte. ¿Te gustaría contarme más sobre cómo te sientes?";
+            }
+            
+            logError('Estructura de respuesta inesperada de Gemini', ['result' => $result]);
+            throw new Exception('Respuesta inesperada de IA');
+        }
+        
+        // Error que amerita reintento
+        if (in_array($httpCode, $retryableCodes)) {
+            $lastError = "HTTP {$httpCode}";
+            $lastHttpCode = $httpCode;
+            
+            // Log solo en primer intento fallido
+            if ($attempt === 0) {
+                logError('Gemini API temporalmente no disponible, iniciando reintentos', [
+                    'http_code' => $httpCode,
+                    'max_retries' => $maxRetries
+                ]);
+            }
+            continue; // Reintentar
+        }
+        
+        // Error no recuperable (400, 401, 403, etc.)
+        logError('Gemini API error no recuperable', [
             'http_code' => $httpCode,
             'response' => $response
         ]);
         throw new Exception('Error en el servicio de IA (código: ' . $httpCode . ')');
     }
     
-    $result = json_decode($response, true);
-    
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        logError('Error parseando respuesta de Gemini', ['response' => $response]);
-        throw new Exception('Error procesando respuesta de IA');
-    }
-    
-    // Extraer texto de respuesta de Gemini
-    if (isset($result['candidates'][0]['content']['parts'][0]['text'])) {
-        return trim($result['candidates'][0]['content']['parts'][0]['text']);
-    }
-    
-    // Verificar si fue bloqueado por seguridad
-    if (isset($result['candidates'][0]['finishReason']) && 
-        $result['candidates'][0]['finishReason'] === 'SAFETY') {
-        logError('Respuesta bloqueada por seguridad de Gemini', ['result' => $result]);
-        return "Entiendo que estás pasando por un momento difícil. Estoy aquí para escucharte. ¿Te gustaría contarme más sobre cómo te sientes?";
-    }
-    
-    logError('Estructura de respuesta inesperada de Gemini', ['result' => $result]);
-    throw new Exception('Respuesta inesperada de IA');
+    // Todos los reintentos fallaron
+    logError('Gemini API - Todos los reintentos fallaron', [
+        'attempts' => $maxRetries + 1,
+        'last_error' => $lastError,
+        'last_http_code' => $lastHttpCode
+    ]);
+    throw new Exception('El servicio de IA no está disponible. Por favor intenta en unos minutos.');
 }
 
 /**
@@ -339,7 +390,8 @@ function formatMemoryForPrompt($memoryItems) {
     ];
     
     foreach ($memoryItems as $memory) {
-        $type = $typeLabels[$memory['memory_type']] ?? $memory['memory_type'];
+        $typeKey = $memory['memory_type'] ?? 'unknown';
+        $type = $typeLabels[$typeKey] ?? $typeKey;
         $formatted[] = "- {$type}: {$memory['key_name']} → {$memory['value']}";
     }
     
