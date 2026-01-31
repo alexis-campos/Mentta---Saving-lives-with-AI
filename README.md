@@ -1,29 +1,39 @@
 # Mentta - AI-Powered Mental Health Support
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.5.1-blue.svg" alt="Version 0.5.1">
+  <img src="https://img.shields.io/badge/version-0.5.2-blue.svg" alt="Version 0.5.2">
   <img src="https://img.shields.io/badge/PHP-8.0%2B-777BB4.svg" alt="PHP 8.0+">
   <img src="https://img.shields.io/badge/MySQL-8.0%2B-4479A1.svg" alt="MySQL 8.0+">
   <img src="https://img.shields.io/badge/AI-Google%20Gemini%203-FF6F00.svg" alt="Google Gemini 3">
-  <img src="https://img.shields.io/badge/Chart.js-4.x-FF6384.svg" alt="Chart.js">
+  <img src="https://img.shields.io/badge/Google%20Maps-API-34A853.svg" alt="Google Maps">
 </p>
 
 A 24/7 emotional support platform combining AI-powered conversational therapy with professional psychologist supervision. Designed to prevent suicide and provide accessible mental health support.
 
-## 🆕 What's New in v0.5.1
+## 🆕 What's New in v0.5.2
 
-### 🐛 Bug Fixes & Improvements
-- **Fixed AI Model** - Updated to `gemini-3-flash-preview` (latest stable)
-- **Increased Response Limits** - AI responses now up to 4000 tokens (more empathetic)
-- **Utils.js Compatibility** - Added `Utils` object wrapper for chat.js integration
-- **Removed Duplicate Functions** - Fixed `timeAgo()` redeclaration errors
-- **API Error Handling** - Better fallback responses when AI quota exceeded
-- **Error Suppression** - API endpoints return clean JSON even on PHP errors
+### 🗺️ Interactive Map of Mental Health Centers
+- **Full-page map** at `map.php` with Google Maps integration
+- **Geolocation** - Automatically centers on user's location (with Lima fallback)
+- **20+ Mental Health Centers** in Lima with real data
+- **Color-coded markers:**
+  - 🔵 Blue: Your location
+  - 🟢 Green: Centers using Mentta
+  - 🟠 Orange: 24h Emergency centers
+  - 🔴 Red: Other centers
+- **Haversine distance** calculation for nearest centers
+- **Filters:** All, Mentta-only, Emergency 24h
+- **Search** by name, district, or services
+- **Responsive panel:** Side panel (desktop) / Bottom swipeable panel (mobile)
+- **Actions:** Call center, Get directions (Google Maps)
 
-### 🏠 Previous (v0.5.0): Landing Page & Authentication
-- Modern landing page with hero, stats, and features
-- Login/Register system with form validation
-- Session management and role-based page protection
+### 🍔 Hamburger Menu Enhancement
+- "Mapa de Centros" button now opens full map page
+- Removed placeholder modal
+
+### Previous (v0.5.1): Bug Fixes & Improvements
+- Fixed AI Model - Updated to `gemini-3-flash-preview`
+- Increased Response Limits - AI responses up to 4000 tokens
 
 ## ⚡ Features
 
@@ -154,49 +164,48 @@ APP_URL=http://localhost/mentta
 mentta/
 ├── api/
 │   ├── chat/                   # Chat API endpoints
-│   │   ├── send-message.php    # Main chat (uses AI analyzer)
+│   │   ├── send-message.php
 │   │   ├── get-history.php
-│   │   └── get-sentiment-history.php
+│   │   └── get-chat-list.php   # Chat sessions for sidebar
+│   ├── map/                    # 🆕 Map API endpoints (v0.5.2)
+│   │   ├── get-nearby-centers.php  # Haversine distance search
+│   │   └── search-centers.php  # Text search by name/district
+│   ├── patient/                # Patient settings API
+│   │   ├── get-preferences.php
+│   │   └── update-theme.php
 │   └── psychologist/           # Psychologist API endpoints
-│       ├── check-alerts.php    # Long polling for alerts
-│       ├── acknowledge-alert.php
-│       ├── get-patients.php    # 🆕 List linked patients
-│       └── get-patient-detail.php # 🆕 Patient metrics & history
+│       ├── check-alerts.php
+│       └── get-patients.php
 ├── assets/
 │   ├── css/
-│   │   ├── chat.css            # Chat styles
-│   │   └── dashboard.css       # 🆕 Dashboard styles
+│   │   ├── chat.css
+│   │   ├── theme.css           # Dark/Light mode theming
+│   │   └── map.css             # 🆕 Map page styles (v0.5.2)
 │   ├── js/
-│   │   ├── chat.js             # Chat interface logic
-│   │   ├── alerts.js           # Real-time alert system
-│   │   ├── dashboard.js        # 🆕 Dashboard with charts
-│   │   └── utils.js            # Utility functions
-│   └── sounds/                 # Alert sounds
+│   │   ├── chat.js
+│   │   ├── menu.js             # Hamburger menu logic
+│   │   ├── theme.js            # Theme switching
+│   │   ├── map.js              # 🆕 Google Maps integration (v0.5.2)
+│   │   └── utils.js
+│   └── sounds/
 ├── database/
-│   ├── schema.sql              # Database structure
-│   └── seed.sql                # Test data
+│   ├── schema.sql
+│   ├── seed.sql
+│   ├── migration_hamburger_menu.sql
+│   └── migration_map.sql       # 🆕 Mental health centers (v0.5.2)
 ├── includes/
-│   ├── config.php              # Configuration (loads .env)
-│   ├── db.php                  # Database connection
-│   ├── auth.php                # Authentication system
-│   ├── ai-client.php           # Gemini AI client + Safe Life Mode
-│   ├── ai-analyzer.php         # Unified AI analyzer
-│   ├── sentiment-analyzer.php  # Legacy 5-emotion analysis (fallback)
-│   ├── risk-detector.php       # Legacy risk detection (fallback)
-│   ├── memory-parser.php       # Legacy memory parser (fallback)
-│   └── alert-system.php        # Alert management
-├── logs/                       # Error logs
-├── test/
-│   ├── test-api.php            # API connection test
-│   ├── test-ai-analyzer.php    # AI analysis tests
-│   ├── test-ai-memory.php      # Memory extraction tests
-│   ├── test-chat.php           # Chat system tests
-│   └── test-alerts.php         # Alert system tests
+│   ├── config.php
+│   ├── db.php
+│   ├── auth.php
+│   ├── ai-client.php
+│   └── ai-analyzer.php
 ├── chat.php                    # Patient chat interface
-├── dashboard.php               # 🆕 Psychologist dashboard
-├── login.php                   # Login page
-├── register.php                # Registration page
-├── .env.example                # Environment template
+├── map.php                     # 🆕 Mental health centers map (v0.5.2)
+├── dashboard.php               # Psychologist dashboard
+├── profile.php                 # User profile/settings
+├── login.php
+├── register.php
+├── .env.example
 └── README.md
 ```
 

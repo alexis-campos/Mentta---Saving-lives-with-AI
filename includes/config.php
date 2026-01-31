@@ -56,12 +56,15 @@ define('PASSWORD_MIN_LENGTH', 8);
 
 // Application Settings
 define('APP_NAME', 'Mentta');
-define('APP_VERSION', '0.2.0');
+define('APP_VERSION', '0.5.2');
 define('APP_URL', env('APP_URL', 'http://localhost/Mentta - Salvando vidas con la IA'));
 define('APP_ENV', env('APP_ENV', 'development'));
 define('APP_TIMEZONE', 'America/Lima');
 define('DEFAULT_LANGUAGE', 'es');
 define('SUPPORTED_LANGUAGES', ['es', 'en']);
+
+// Google Maps API (for mental health centers map)
+define('GOOGLE_MAPS_API_KEY', env('GOOGLE_MAPS_API_KEY', ''));
 
 // Emergency Settings (Peru)
 define('EMERGENCY_LINE', '113');
