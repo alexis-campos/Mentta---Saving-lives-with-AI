@@ -1,7 +1,7 @@
 <?php
 /**
  * MENTTA - API: Enviar Mensaje (v0.3.1 - AI Powered)
- * Endpoint principal del chat con análisis completo por IA
+ * Endpoint principal del chat con arquitectura Circuit Breaker
  */
 
 require_once '../../includes/config.php';
@@ -9,8 +9,9 @@ require_once '../../includes/db.php';
 require_once '../../includes/auth.php';
 require_once '../../includes/functions.php';
 require_once '../../includes/ai-client.php';
-require_once '../../includes/ai-analyzer.php';  // Nuevo analizador unificado
-require_once '../../includes/alert-system.php';
+require_once '../../includes/ai-analyzer.php';
+require_once '../../includes/risk-detector.php';
+require_once '../../includes/circuit-breaker.php';
 
 header('Content-Type: application/json; charset=utf-8');
 setSecurityHeaders();
@@ -39,12 +40,12 @@ if (empty($message)) {
 }
 
 if (mb_strlen($message) > CHAT_MAX_MESSAGE_LENGTH) {
-    jsonResponse(false, null, 'El mensaje es demasiado largo (máximo ' . CHAT_MAX_MESSAGE_LENGTH . ' caracteres)');
+    jsonResponse(false, null, 'El mensaje es demasiado largo');
 }
 
-// Validar session_id si se proporciona
+// Validar session_id
 if (!empty($sessionId) && !preg_match('/^session_\d+_[a-z0-9]+$/', $sessionId)) {
-    $sessionId = ''; // Ignorar si formato inválido
+    $sessionId = ''; 
 }
 
 // 3. Rate limiting
@@ -55,144 +56,153 @@ if (!checkRateLimit($user['id'], 'send_message', RATE_LIMIT_MESSAGES, RATE_LIMIT
 try {
     $db = getDB();
     
-    // 4. Verificar si análisis está pausado
-    $analysisPaused = false;
-    $stmt = $db->prepare("
-        SELECT analysis_paused, analysis_paused_until 
-        FROM user_preferences 
-        WHERE user_id = ?
-    ");
-    $stmt->execute([$user['id']]);
-    $prefs = $stmt->fetch(PDO::FETCH_ASSOC);
+    // 4. Obtener historial reciente SOLO DE LA SESIÓN ACTUAL (evita contaminación)
+    $historyQuery = "SELECT message, sender, created_at FROM conversations 
+         WHERE patient_id = ?";
+    $historyParams = [$user['id']];
     
-    if ($prefs && $prefs['analysis_paused']) {
-        if (strtotime($prefs['analysis_paused_until']) > time()) {
-            $analysisPaused = true;
+    if (!empty($sessionId)) {
+        $historyQuery .= " AND session_id = ?";
+        $historyParams[] = $sessionId;
+    }
+    $historyQuery .= " ORDER BY created_at DESC LIMIT 6"; // 6 mensajes de sesión actual
+    
+    $conversationHistory = dbFetchAll($historyQuery, $historyParams);
+    
+    // 5. Análisis PAP Híbrido (Keyword + Contexto) - Siempre se ejecuta
+    $papRiskAnalysis = analyzeRiskLevel($message, $user['id']);
+    $suggestedRiskLevel = $papRiskAnalysis['suggested_level']; // 0-5
+    $messageHasRiskKeywords = $papRiskAnalysis['risk_score'] > 0; // CLAVE: ¿El mensaje actual tiene keywords?
+    
+    // 6. Usar IA con Circuit Breaker y Modo Seguro
+    $aiResult = analyzeWithAI(
+        $message, 
+        $user['id'], 
+        $suggestedRiskLevel, 
+        $conversationHistory
+    );
+    
+    if (!$aiResult['success']) {
+        throw new Exception('Error crítico en AI Analysis');
+    }
+    
+    // Extraer respuesta
+    $aiMessage = $aiResult['response'];
+    $source = $aiResult['source']; // 'ai' o 'safe_mode'
+    
+    // Variables para parsing
+    $finalRiskLevel = 0;
+    $papPhase = null;
+    $panicButton = null;
+    
+    // 7. Parsear Tags (Vienen tanto de IA como de Modo Seguro)
+    if (preg_match('/\[RISK_LEVEL:\s*(\d+)\]/', $aiMessage, $matches)) {
+        $finalRiskLevel = intval($matches[1]);
+        $aiMessage = preg_replace('/\[RISK_LEVEL:\s*\d+\]/', '', $aiMessage);
+    } else {
+        $finalRiskLevel = $suggestedRiskLevel; // Fallback al análisis local
+    }
+    
+    if (preg_match('/\[PAP_PHASE:\s*([A-E])\]/', $aiMessage, $matches)) {
+        $papPhase = $matches[1];
+        $aiMessage = preg_replace('/\[PAP_PHASE:\s*[A-E]\]/', '', $aiMessage);
+    } else {
+        $papPhase = 'A'; // Default
+    }
+    
+    $aiMessage = trim($aiMessage);
+    
+    // 8. Escalamiento con VALIDACIÓN MULTI-CAPA (evita falsos positivos)
+    // Capa 1: ¿El mensaje actual tiene keywords de riesgo?
+    // Capa 2: ¿La IA confirmó nivel 4-5?
+    // Solo escala si AMBAS condiciones se cumplen
+    $shouldEscalate = false;
+    
+    if ($finalRiskLevel >= 4) {
+        if ($messageHasRiskKeywords) {
+            // El mensaje actual SÍ tiene keywords de crisis → Escalar
+            $shouldEscalate = true;
         } else {
-            // Expiró, reactivar automáticamente
-            $stmt = $db->prepare("
-                UPDATE user_preferences 
-                SET analysis_paused = FALSE, analysis_paused_until = NULL
-                WHERE user_id = ?
-            ");
-            $stmt->execute([$user['id']]);
+            // El mensaje actual NO tiene keywords → Posible falso positivo
+            // Solo escalar si IA dijo nivel 5 (inmediato)
+            if ($finalRiskLevel >= 5) {
+                $shouldEscalate = true;
+            } else {
+                logError('ESCALAMIENTO BLOQUEADO (Posible Falso Positivo)', [
+                    'message' => mb_substr($message, 0, 50),
+                    'ai_level' => $finalRiskLevel,
+                    'keyword_score' => $papRiskAnalysis['risk_score']
+                ]);
+            }
         }
     }
     
-    // 5. Obtener historial reciente para contexto
-    $conversationHistory = dbFetchAll(
-        "SELECT message, sender, created_at 
-         FROM conversations 
-         WHERE patient_id = ? 
-         ORDER BY created_at DESC 
-         LIMIT ?",
-        [$user['id'], CHAT_HISTORY_LIMIT]
-    );
-    
-    // Variables para análisis
-    $riskLevel = 'none';
-    $triggerAlert = false;
-    $sentiment = [];
-    $safeLifeMode = false;
-    $analysis = null;
-    
-    // 6. 🤖 ANÁLISIS COMPLETO CON IA (solo si no está pausado)
-    if (!$analysisPaused) {
-        // La IA analiza: riesgo contextual, sentimiento profundo, extracción de memoria
-        $analysis = analyzeMessageWithAI($message, $user['id'], $conversationHistory);
+    if ($shouldEscalate) {
+        require_once __DIR__ . '/../crisis/escalate.php';
+        $escalationResult = escalateCrisis($user['id'], $finalRiskLevel, $message);
         
-        // Extraer datos del análisis
-        $riskLevel = $analysis['risk_assessment']['level'] ?? 'none';
-        $triggerAlert = $analysis['risk_assessment']['trigger_alert'] ?? false;
-        $sentiment = $analysis['sentiment'] ?? [];
-        $safeLifeMode = $analysis['safe_life_mode']['activate'] ?? false;
+        if ($escalationResult['success']) {
+            $panicButton = $escalationResult['panic_button'];
+            logError('ALERTA DE CRISIS ACTIVADA', [
+                 'level' => $finalRiskLevel,
+                 'source' => $source
+            ]);
+        }
     }
     
-    // 7. Guardar mensaje del usuario con análisis de IA
+    // 9. Guardar mensaje de usuario
     $stmt = $db->prepare("
-        INSERT INTO conversations (patient_id, session_id, message, sender, sentiment_score, risk_level, created_at)
-        VALUES (:patient_id, :session_id, :message, 'user', :sentiment, :risk_level, NOW())
+        INSERT INTO conversations (patient_id, session_id, message, sender, risk_level, created_at)
+        VALUES (:patient_id, :session_id, :message, 'user', :risk_level, NOW())
     ");
     $stmt->execute([
         'patient_id' => $user['id'],
         'session_id' => !empty($sessionId) ? $sessionId : null,
         'message' => $message,
-        'sentiment' => !empty($sentiment) ? json_encode($sentiment) : null,
-        'risk_level' => $riskLevel
+        'risk_level' => $suggestedRiskLevel
     ]);
     
     $userMessageId = $db->lastInsertId();
     
-    // 8. Si la IA detecta riesgo real, crear alerta silenciosa (solo si análisis no pausado)
-    $alertTriggered = false;
-    if (!$analysisPaused && $triggerAlert && $analysis && ($analysis['risk_assessment']['is_real_risk'] ?? false)) {
-        require_once '../../includes/risk-detector.php';
-        createRiskAlert($user['id'], $message, $riskLevel);
-        $alertTriggered = true;
-        
-        logError('🚨 Alerta disparada por análisis de IA', [
-            'patient_id' => $user['id'],
-            'risk_level' => $riskLevel,
-            'reasoning' => $analysis['risk_assessment']['reasoning'] ?? 'No especificado'
-        ]);
-    }
-    
-    // 9. Procesar y guardar memoria extraída por IA (solo si análisis no pausado)
-    if (!$analysisPaused && $analysis && !empty($analysis['memory_extraction'])) {
-        processExtractedMemory($user['id'], $analysis['memory_extraction']);
-    }
-    
-    // 9. Enviar a IA para respuesta (con Safe Life Mode si aplica)
-    $aiResponse = sendToAI($message, $user['id'], $sentiment, $safeLifeMode ? 'high' : $riskLevel);
-    
-    if (!$aiResponse['success']) {
-        // Si falla la IA, dar respuesta fallback
-        $fallbackResponse = "Entiendo que quieres hablar. Estoy aquí para escucharte. ¿Podrías contarme un poco más sobre lo que sientes?";
-        $aiMessage = $fallbackResponse;
-        logError('Fallback AI response usado', ['error' => $aiResponse['error']]);
-    } else {
-        $aiMessage = $aiResponse['response'];
-    }
-    
-    // 11. Guardar respuesta de IA
+    // 10. Guardar respuesta de Sistema (IA o Safe Mode)
     $stmt = $db->prepare("
-        INSERT INTO conversations (patient_id, session_id, message, sender, created_at)
-        VALUES (:patient_id, :session_id, :message, 'ai', NOW())
+        INSERT INTO conversations (patient_id, session_id, message, sender, final_risk_level, pap_phase, created_at)
+        VALUES (:patient_id, :session_id, :message, 'ai', :final_risk_level, :pap_phase, NOW())
     ");
     $stmt->execute([
         'patient_id' => $user['id'],
         'session_id' => !empty($sessionId) ? $sessionId : null,
-        'message' => $aiMessage
+        'message' => $aiMessage,
+        'final_risk_level' => $finalRiskLevel,
+        'pap_phase' => $papPhase
     ]);
     
-    // 12. Retornar respuesta exitosa
-    // Nota: Incluimos más datos del análisis (sin exponer que hubo alerta)
+    // 11. Preparar respuesta JSON
     $responseData = [
         'message' => $aiMessage,
         'message_id' => $userMessageId,
-        'analysis_paused' => $analysisPaused
+        'final_risk_level' => $finalRiskLevel,
+        'pap_phase' => $papPhase,
+        'response_source' => $source // Para debugging (ai vs safe_mode)
     ];
     
-    // Solo incluir datos de sentimiento si análisis no está pausado
-    if (!$analysisPaused && !empty($sentiment)) {
-        $responseData['sentiment'] = [
-            'positive' => $sentiment['positive'] ?? 0,
-            'negative' => $sentiment['negative'] ?? 0,
-            'anxiety' => $sentiment['anxiety'] ?? 0,
-            'sadness' => $sentiment['sadness'] ?? 0,
-            'anger' => $sentiment['anger'] ?? 0,
-            'dominant' => $sentiment['dominant_emotion'] ?? 'neutral'
-        ];
-        $responseData['emotional_state'] = $analysis['emotional_state']['current_mood'] ?? null;
-        $responseData['topics'] = $analysis['memory_extraction']['topics'] ?? [];
+    if ($panicButton) {
+        $responseData['panic_button'] = $panicButton;
     }
     
     jsonResponse(true, $responseData);
     
 } catch (Exception $e) {
-    logError('Error en send-message.php', [
+    // CAPTURA FINAL DE ERRORES: Evita HTML leaks
+    logError('CRITICAL ERROR en Chat', [
         'error' => $e->getMessage(),
-        'user_id' => $user['id']
+        'trace' => $e->getTraceAsString()
     ]);
-    jsonResponse(false, null, 'Error al procesar el mensaje. Por favor, intenta de nuevo.');
+    
+    // Respuesta de emergencia extrema (si incluso el Circuit Breaker falló)
+    jsonResponse(true, [
+        'message' => "Lo siento, estoy teniendo dificultades técnicas momentáneas. Por favor, si necesitas ayuda urgente, llama al 113.",
+        'final_risk_level' => 0,
+        'pap_phase' => 'A'
+    ]);
 }

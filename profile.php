@@ -395,6 +395,53 @@ try {
                 <?php endif; ?>
             </section>
             
+            <!-- Crisis Preferences Section (NEW - PAP System) -->
+            <section class="profile-section">
+                <h2 class="profile-section-title">🆘 Protocolo de Emergencia Automática</h2>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                    Configura cómo Mentta debe actuar cuando detecte una crisis emocional grave.
+                </p>
+                
+                <div class="preference-item">
+                    <div class="preference-info">
+                        <h4>👨‍⚕️ Notificar a mi psicólogo</h4>
+                        <p>Enviar alerta a mi psicólogo vinculado en caso de crisis</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notify-psychologist" checked 
+                               onchange="Profile.saveCrisisPreferences()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="preference-item">
+                    <div class="preference-info">
+                        <h4>👪 Contactar a mis contactos de emergencia</h4>
+                        <p>Notificar a mis contactos si estoy en peligro</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notify-contacts" checked 
+                               onchange="Profile.saveCrisisPreferences()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="preference-item" style="border: 1px solid var(--danger); border-radius: 0.5rem; padding: 0.75rem; margin-top: 0.5rem;">
+                    <div class="preference-info">
+                        <h4 style="color: var(--danger);">🚨 Ayuda automática de emergencia</h4>
+                        <p>Mostrar botón de llamada al 113/106 cuando se detecte peligro inminente</p>
+                        <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+                            Requiere tu consentimiento explícito
+                        </p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auto-call-emergency" 
+                               onchange="Profile.handleAutoCallChange(this)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </section>
+            
             <!-- Preferences Section -->
             <section class="profile-section">
                 <h2 class="profile-section-title">⚙️ Preferencias</h2>
@@ -528,10 +575,108 @@ try {
             </div>
         </div>
     </div>
+    
+    <!-- Consent Modal for Auto-Call Feature -->
+    <div id="consent-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 28rem;">
+            <div class="modal-body py-6">
+                <div style="font-size: 3rem; margin-bottom: 1rem; text-align: center;">🚨</div>
+                <h3 style="color: var(--text-primary); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; text-align: center;">
+                    Consentimiento para Ayuda de Emergencia
+                </h3>
+                <p style="color: var(--text-secondary); font-size: 0.9375rem; margin-bottom: 1rem;">
+                    Al activar esta opción, autorizas a Mentta a:
+                </p>
+                <ul style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem; padding-left: 1.5rem;">
+                    <li>Mostrar un botón de llamada rápida al 113 o 106 cuando detecte que estás en peligro</li>
+                    <li>Registrar esta preferencia para futuras sesiones</li>
+                </ul>
+                <p style="color: var(--text-tertiary); font-size: 0.75rem; margin-bottom: 1.5rem;">
+                    Puedes desactivar esta opción en cualquier momento. Tu privacidad es importante para nosotros.
+                </p>
+                <div class="flex gap-3">
+                    <button class="btn-secondary" style="flex: 1;" onclick="Profile.cancelConsent()">
+                        No, gracias
+                    </button>
+                    <button class="btn-primary" style="flex: 1; background: var(--danger);" onclick="Profile.acceptConsent()">
+                        Sí, acepto
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- JavaScript -->
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/theme.js"></script>
     <script src="assets/js/profile.js"></script>
+    
+    <!-- Crisis Preferences Initialization -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Load crisis preferences
+        Profile.loadCrisisPreferences();
+    });
+    
+    // Extend Profile object with crisis preference methods
+    Profile.loadCrisisPreferences = async function() {
+        try {
+            const response = await fetch('api/patient/get-crisis-preferences.php');
+            const data = await response.json();
+            
+            if (data.success) {
+                document.getElementById('notify-psychologist').checked = data.data.notify_psychologist;
+                document.getElementById('notify-contacts').checked = data.data.notify_emergency_contacts;
+                document.getElementById('auto-call-emergency').checked = data.data.auto_call_emergency_line;
+            }
+        } catch (error) {
+            console.error('Error loading crisis preferences:', error);
+        }
+    };
+    
+    Profile.saveCrisisPreferences = async function() {
+        const formData = new FormData();
+        formData.append('notify_psychologist', document.getElementById('notify-psychologist').checked);
+        formData.append('notify_emergency_contacts', document.getElementById('notify-contacts').checked);
+        formData.append('auto_call_emergency_line', document.getElementById('auto-call-emergency').checked);
+        
+        try {
+            const response = await fetch('api/patient/save-crisis-preferences.php', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                Utils.toast('Preferencias guardadas');
+            } else {
+                Utils.toast('Error al guardar: ' + (data.error || 'Intenta de nuevo'));
+            }
+        } catch (error) {
+            console.error('Error saving crisis preferences:', error);
+            Utils.toast('Error de conexión');
+        }
+    };
+    
+    Profile.handleAutoCallChange = function(checkbox) {
+        if (checkbox.checked) {
+            // Show consent modal
+            document.getElementById('consent-modal').classList.add('active');
+        } else {
+            Profile.saveCrisisPreferences();
+        }
+    };
+    
+    Profile.cancelConsent = function() {
+        document.getElementById('auto-call-emergency').checked = false;
+        document.getElementById('consent-modal').classList.remove('active');
+    };
+    
+    Profile.acceptConsent = function() {
+        document.getElementById('consent-modal').classList.remove('active');
+        Profile.saveCrisisPreferences();
+        Utils.toast('Ayuda de emergencia activada');
+    };
+    </script>
 </body>
 </html>
