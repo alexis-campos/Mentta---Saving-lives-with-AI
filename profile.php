@@ -28,7 +28,8 @@ try {
         $analysisPaused = true;
         $pausedUntil = $prefs['analysis_paused_until'];
     }
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 
 // Obtener contactos de emergencia
 $emergencyContacts = [];
@@ -36,7 +37,8 @@ try {
     $stmt = $db->prepare("SELECT * FROM emergency_contacts WHERE patient_id = ? ORDER BY priority ASC");
     $stmt->execute([$user['id']]);
     $emergencyContacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 
 // Obtener psicólogo vinculado
 $linkedPsychologist = null;
@@ -49,16 +51,18 @@ try {
     ");
     $stmt->execute([$user['id']]);
     $linkedPsychologist = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 ?>
 <!DOCTYPE html>
 <html lang="es" data-theme="<?= htmlspecialchars($theme) ?>">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="<?= $theme === 'dark' ? '#1F2937' : '#6366F1' ?>">
     <title>Mi Cuenta - Mentta</title>
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -83,189 +87,144 @@ try {
             }
         }
     </script>
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/theme.css">
-    
+
+    <!-- Google Fonts - Warm, approachable fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Spectral:wght@300;400;500&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom Core CSS -->
+    <link rel="stylesheet" href="assets/css/mentta-core.css">
+
+    <!-- Profile Specific Overrides -->
     <style>
         .profile-section {
-            background-color: var(--bg-secondary);
+            background-color: var(--bg-tertiary);
+            /* Fixed consistency */
             border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
+            border-radius: 1.5rem;
+            /* Matched to chat border radius */
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-medium);
         }
-        
+
         .profile-section-title {
-            font-size: 1rem;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.25rem;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
-        
+
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
-        
+
         .form-label {
             display: block;
+            font-family: 'DM Sans', sans-serif;
             font-size: 0.875rem;
             font-weight: 500;
             color: var(--text-secondary);
-            margin-bottom: 0.375rem;
+            margin-bottom: 0.5rem;
         }
-        
+
         .form-input {
             width: 100%;
-            padding: 0.625rem 0.875rem;
-            background-color: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            background-color: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
             color: var(--text-primary);
-            font-size: 0.9375rem;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Spectral', serif;
+            font-size: 1rem;
+            transition: all 0.2s ease;
         }
-        
+
         .form-input:focus {
             outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px var(--accent-light);
+            border-color: var(--accent-color);
+            background-color: var(--bg-tertiary);
+            box-shadow: 0 0 0 4px rgba(203, 170, 142, 0.1);
         }
-        
-        .form-input:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
+
         .btn-primary {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            padding: 0.625rem 1.25rem;
-            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, var(--bg-message-user) 0%, #3a4a3a 100%);
             color: white;
             border: none;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
+            font-family: 'DM Sans', sans-serif;
             font-size: 0.9375rem;
             font-weight: 500;
             cursor: pointer;
-            transition: box-shadow 0.2s ease, transform 0.1s ease;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-medium);
         }
-        
+
         .btn-primary:hover {
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-strong);
         }
-        
-        .btn-primary:active {
-            transform: scale(0.98);
-        }
-        
+
         .btn-secondary {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            padding: 0.625rem 1.25rem;
-            background-color: var(--bg-tertiary);
+            padding: 0.875rem 1.5rem;
+            background-color: var(--bg-primary);
             color: var(--text-primary);
             border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
+            font-family: 'DM Sans', sans-serif;
             font-size: 0.9375rem;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
         }
-        
+
         .btn-secondary:hover {
-            background-color: var(--border-color);
+            background-color: var(--bg-secondary);
+            border-color: var(--accent-color);
         }
-        
-        .btn-danger {
-            background-color: var(--danger);
-            color: white;
-            border: none;
-        }
-        
-        .btn-danger:hover {
-            background-color: #DC2626;
-        }
-        
+
         .contact-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.75rem;
-            background-color: var(--bg-tertiary);
-            border-radius: 0.5rem;
-            margin-bottom: 0.5rem;
+            padding: 1rem;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
         }
-        
-        .contact-info {
-            flex: 1;
-        }
-        
-        .contact-name {
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-        
-        .contact-details {
-            font-size: 0.8125rem;
-            color: var(--text-secondary);
-        }
-        
-        .preference-item {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 1rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .preference-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        
-        .preference-info h4 {
-            font-weight: 500;
-            color: var(--text-primary);
-            margin: 0 0 0.25rem 0;
-        }
-        
-        .preference-info p {
-            font-size: 0.8125rem;
-            color: var(--text-secondary);
-            margin: 0;
-        }
-        
-        .analysis-warning {
-            background-color: var(--warning-light);
-            border-left: 4px solid var(--warning);
-            padding: 0.75rem;
-            border-radius: 0 0.5rem 0.5rem 0;
-            margin-top: 0.5rem;
-        }
-        
-        .analysis-warning p {
-            color: var(--warning);
-            font-size: 0.8125rem;
-            margin: 0;
+
+        .contact-card:hover {
+            border-color: var(--accent-color);
         }
     </style>
 </head>
+
 <body class="antialiased" style="background-color: var(--bg-primary);">
-    
+
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50" style="background-color: var(--bg-secondary); border-bottom: 1px solid var(--border-color);">
+    <header class="fixed top-0 left-0 right-0 z-50"
+        style="background-color: var(--bg-secondary); border-bottom: 1px solid var(--border-color);">
         <div class="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
-            <a href="chat.php" class="p-2 rounded-lg transition-colors" style="color: var(--text-secondary);" title="Volver al chat">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <a href="chat.php" class="p-2 rounded-lg transition-colors" style="color: var(--text-secondary);"
+                title="Volver al chat">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
@@ -276,73 +235,75 @@ try {
     <!-- Main Content -->
     <main class="pt-16 pb-8">
         <div class="max-w-2xl mx-auto px-4 py-6">
-            
+
             <!-- Personal Info Section -->
             <section class="profile-section">
                 <h2 class="profile-section-title">👤 Información Personal</h2>
-                
+
                 <form id="profile-form" onsubmit="Profile.updateProfile(event)">
                     <div class="form-group">
                         <label class="form-label" for="name">Nombre</label>
-                        <input type="text" id="name" name="name" class="form-input" 
-                               value="<?= htmlspecialchars($user['name']) ?>" required>
+                        <input type="text" id="name" name="name" class="form-input"
+                            value="<?= htmlspecialchars($user['name'] ?? '') ?>" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label" for="email">Correo electrónico</label>
-                        <input type="email" id="email" class="form-input" 
-                               value="<?= htmlspecialchars($user['email']) ?>" disabled>
+                        <input type="email" id="email" class="form-input"
+                            value="<?= htmlspecialchars($user['email'] ?? '') ?>" disabled>
                         <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">
                             El correo no puede ser modificado
                         </p>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label" for="age">Edad</label>
-                        <input type="number" id="age" name="age" class="form-input" 
-                               value="<?= $user['age'] ?? '' ?>" min="13" max="120" placeholder="Opcional">
+                        <input type="number" id="age" name="age" class="form-input" value="<?= $user['age'] ?? '' ?>"
+                            min="13" max="120" placeholder="Opcional">
                     </div>
-                    
+
                     <button type="submit" class="btn-primary">
                         Guardar cambios
                     </button>
                 </form>
             </section>
-            
+
             <!-- Change Password Section -->
             <section class="profile-section">
                 <h2 class="profile-section-title">🔐 Cambiar Contraseña</h2>
-                
+
                 <form id="password-form" onsubmit="Profile.changePassword(event)">
                     <div class="form-group">
                         <label class="form-label" for="current_password">Contraseña actual</label>
-                        <input type="password" id="current_password" name="current_password" class="form-input" required>
+                        <input type="password" id="current_password" name="current_password" class="form-input"
+                            required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label" for="new_password">Nueva contraseña</label>
-                        <input type="password" id="new_password" name="new_password" class="form-input" 
-                               minlength="8" required>
+                        <input type="password" id="new_password" name="new_password" class="form-input" minlength="8"
+                            required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label" for="confirm_password">Confirmar contraseña</label>
-                        <input type="password" id="confirm_password" name="confirm_password" class="form-input" required>
+                        <input type="password" id="confirm_password" name="confirm_password" class="form-input"
+                            required>
                     </div>
-                    
+
                     <button type="submit" class="btn-primary">
                         Cambiar contraseña
                     </button>
                 </form>
             </section>
-            
+
             <!-- Emergency Contacts Section -->
             <section class="profile-section">
                 <h2 class="profile-section-title">👪 Contactos de Emergencia</h2>
                 <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
                     Estos contactos serán notificados en caso de una situación de crisis.
                 </p>
-                
+
                 <div id="contacts-list">
                     <?php if (empty($emergencyContacts)): ?>
                         <p style="color: var(--text-tertiary); font-size: 0.875rem; text-align: center; padding: 1rem;">
@@ -354,28 +315,29 @@ try {
                                 <div class="contact-info">
                                     <div class="contact-name"><?= htmlspecialchars($contact['contact_name']) ?></div>
                                     <div class="contact-details">
-                                        <?= htmlspecialchars($contact['contact_relationship']) ?> • 
+                                        <?= htmlspecialchars($contact['contact_relationship']) ?> •
                                         <?= htmlspecialchars($contact['contact_phone']) ?>
                                     </div>
                                 </div>
                                 <button class="btn-secondary" style="padding: 0.5rem; font-size: 0.75rem; color: var(--danger);"
-                                        onclick="Profile.deleteContact(<?= $contact['id'] ?>)">
+                                    onclick="Profile.deleteContact(<?= $contact['id'] ?>)">
                                     Eliminar
                                 </button>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
-                
-                <button class="btn-secondary" style="width: 100%; margin-top: 0.75rem;" onclick="Profile.showAddContactModal()">
+
+                <button class="btn-secondary" style="width: 100%; margin-top: 0.75rem;"
+                    onclick="Profile.showAddContactModal()">
                     ➕ Agregar Contacto
                 </button>
             </section>
-            
+
             <!-- Linked Psychologist Section -->
             <section class="profile-section">
                 <h2 class="profile-section-title">👨‍⚕️ Psicólogo Vinculado</h2>
-                
+
                 <?php if ($linkedPsychologist): ?>
                     <div class="contact-card">
                         <div class="contact-info">
@@ -394,39 +356,39 @@ try {
                     </button>
                 <?php endif; ?>
             </section>
-            
+
             <!-- Crisis Preferences Section (NEW - PAP System) -->
             <section class="profile-section">
                 <h2 class="profile-section-title">🆘 Protocolo de Emergencia Automática</h2>
                 <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
                     Configura cómo Mentta debe actuar cuando detecte una crisis emocional grave.
                 </p>
-                
+
                 <div class="preference-item">
                     <div class="preference-info">
                         <h4>👨‍⚕️ Notificar a mi psicólogo</h4>
                         <p>Enviar alerta a mi psicólogo vinculado en caso de crisis</p>
                     </div>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="notify-psychologist" checked 
-                               onchange="Profile.saveCrisisPreferences()">
+                        <input type="checkbox" id="notify-psychologist" checked
+                            onchange="Profile.saveCrisisPreferences()">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
-                
+
                 <div class="preference-item">
                     <div class="preference-info">
                         <h4>👪 Contactar a mis contactos de emergencia</h4>
                         <p>Notificar a mis contactos si estoy en peligro</p>
                     </div>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="notify-contacts" checked 
-                               onchange="Profile.saveCrisisPreferences()">
+                        <input type="checkbox" id="notify-contacts" checked onchange="Profile.saveCrisisPreferences()">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
-                
-                <div class="preference-item" style="border: 1px solid var(--danger); border-radius: 0.5rem; padding: 0.75rem; margin-top: 0.5rem;">
+
+                <div class="preference-item"
+                    style="border: 1px solid var(--danger); border-radius: 0.5rem; padding: 0.75rem; margin-top: 0.5rem;">
                     <div class="preference-info">
                         <h4 style="color: var(--danger);">🚨 Ayuda automática de emergencia</h4>
                         <p>Mostrar botón de llamada al 113/106 cuando se detecte peligro inminente</p>
@@ -435,17 +397,16 @@ try {
                         </p>
                     </div>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="auto-call-emergency" 
-                               onchange="Profile.handleAutoCallChange(this)">
+                        <input type="checkbox" id="auto-call-emergency" onchange="Profile.handleAutoCallChange(this)">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
             </section>
-            
+
             <!-- Preferences Section -->
             <section class="profile-section">
                 <h2 class="profile-section-title">⚙️ Preferencias</h2>
-                
+
                 <!-- Theme Toggle -->
                 <div class="preference-item">
                     <div class="preference-info">
@@ -453,38 +414,38 @@ try {
                         <p>Reduce la fatiga visual en ambientes con poca luz</p>
                     </div>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="theme-toggle" 
-                               <?= $theme === 'dark' ? 'checked' : '' ?> 
-                               onchange="toggleTheme()">
+                        <input type="checkbox" id="theme-toggle" <?= $theme === 'dark' ? 'checked' : '' ?>
+                            onchange="toggleTheme()">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
-                
+
                 <!-- Pause Analysis Toggle -->
                 <div class="preference-item">
                     <div class="preference-info">
                         <h4>⏸️ Pausar Análisis Emocional</h4>
                         <p>Desactiva temporalmente el análisis de emociones y alertas automáticas por 24 horas</p>
-                        
+
                         <?php if ($analysisPaused): ?>
                             <div class="analysis-warning">
-                                <p>⏸️ Análisis pausado hasta: <strong><?= date('d M, H:i', strtotime($pausedUntil)) ?></strong></p>
+                                <p>⏸️ Análisis pausado hasta:
+                                    <strong><?= date('d M, H:i', strtotime($pausedUntil)) ?></strong>
+                                </p>
                             </div>
                         <?php endif; ?>
                     </div>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="analysis-toggle" 
-                               <?= $analysisPaused ? 'checked' : '' ?> 
-                               onchange="Profile.toggleAnalysisPause()">
+                        <input type="checkbox" id="analysis-toggle" <?= $analysisPaused ? 'checked' : '' ?>
+                            onchange="Profile.toggleAnalysisPause()">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
             </section>
-            
+
             <!-- Privacy Section -->
             <section class="profile-section">
                 <h2 class="profile-section-title">🔒 Privacidad</h2>
-                
+
                 <button class="btn-secondary btn-danger" style="width: 100%;" onclick="Profile.confirmDeleteHistory()">
                     🗑️ Eliminar historial de conversaciones
                 </button>
@@ -492,17 +453,17 @@ try {
                     Esta acción no se puede deshacer
                 </p>
             </section>
-            
+
             <!-- Logout Section -->
             <section class="profile-section" style="border-color: transparent; background: transparent;">
                 <button class="btn-secondary" style="width: 100%;" onclick="Profile.logout()">
                     🚪 Cerrar Sesión
                 </button>
             </section>
-            
+
         </div>
     </main>
-    
+
     <!-- Add Contact Modal -->
     <div id="add-contact-modal" class="modal-overlay">
         <div class="modal-content">
@@ -516,7 +477,7 @@ try {
                         <label class="form-label" for="contact_name">Nombre</label>
                         <input type="text" id="contact_name" name="name" class="form-input" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label" for="contact_relationship">Relación</label>
                         <select id="contact_relationship" name="relationship" class="form-input" required>
@@ -529,12 +490,12 @@ try {
                             <option value="Otro">Otro</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label" for="contact_phone">Teléfono</label>
                         <input type="tel" id="contact_phone" name="phone" class="form-input" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label" for="contact_priority">Prioridad</label>
                         <select id="contact_priority" name="priority" class="form-input">
@@ -545,13 +506,14 @@ try {
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-secondary" onclick="Profile.closeAddContactModal()">Cancelar</button>
+                    <button type="button" class="btn-secondary"
+                        onclick="Profile.closeAddContactModal()">Cancelar</button>
                     <button type="submit" class="btn-primary">Agregar</button>
                 </div>
             </form>
         </div>
     </div>
-    
+
     <!-- Confirm Delete Modal -->
     <div id="confirm-delete-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 24rem;">
@@ -575,19 +537,21 @@ try {
             </div>
         </div>
     </div>
-    
+
     <!-- Consent Modal for Auto-Call Feature -->
     <div id="consent-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 28rem;">
             <div class="modal-body py-6">
                 <div style="font-size: 3rem; margin-bottom: 1rem; text-align: center;">🚨</div>
-                <h3 style="color: var(--text-primary); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; text-align: center;">
+                <h3
+                    style="color: var(--text-primary); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; text-align: center;">
                     Consentimiento para Ayuda de Emergencia
                 </h3>
                 <p style="color: var(--text-secondary); font-size: 0.9375rem; margin-bottom: 1rem;">
                     Al activar esta opción, autorizas a Mentta a:
                 </p>
-                <ul style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem; padding-left: 1.5rem;">
+                <ul
+                    style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem; padding-left: 1.5rem;">
                     <li>Mostrar un botón de llamada rápida al 113 o 106 cuando detecte que estás en peligro</li>
                     <li>Registrar esta preferencia para futuras sesiones</li>
                 </ul>
@@ -598,7 +562,8 @@ try {
                     <button class="btn-secondary" style="flex: 1;" onclick="Profile.cancelConsent()">
                         No, gracias
                     </button>
-                    <button class="btn-primary" style="flex: 1; background: var(--danger);" onclick="Profile.acceptConsent()">
+                    <button class="btn-primary" style="flex: 1; background: var(--danger);"
+                        onclick="Profile.acceptConsent()">
                         Sí, acepto
                     </button>
                 </div>
@@ -610,73 +575,74 @@ try {
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/theme.js"></script>
     <script src="assets/js/profile.js"></script>
-    
+
     <!-- Crisis Preferences Initialization -->
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Load crisis preferences
-        Profile.loadCrisisPreferences();
-    });
-    
-    // Extend Profile object with crisis preference methods
-    Profile.loadCrisisPreferences = async function() {
-        try {
-            const response = await fetch('api/patient/get-crisis-preferences.php');
-            const data = await response.json();
-            
-            if (data.success) {
-                document.getElementById('notify-psychologist').checked = data.data.notify_psychologist;
-                document.getElementById('notify-contacts').checked = data.data.notify_emergency_contacts;
-                document.getElementById('auto-call-emergency').checked = data.data.auto_call_emergency_line;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load crisis preferences
+            Profile.loadCrisisPreferences();
+        });
+
+        // Extend Profile object with crisis preference methods
+        Profile.loadCrisisPreferences = async function () {
+            try {
+                const response = await fetch('api/patient/get-crisis-preferences.php');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('notify-psychologist').checked = data.data.notify_psychologist;
+                    document.getElementById('notify-contacts').checked = data.data.notify_emergency_contacts;
+                    document.getElementById('auto-call-emergency').checked = data.data.auto_call_emergency_line;
+                }
+            } catch (error) {
+                console.error('Error loading crisis preferences:', error);
             }
-        } catch (error) {
-            console.error('Error loading crisis preferences:', error);
-        }
-    };
-    
-    Profile.saveCrisisPreferences = async function() {
-        const formData = new FormData();
-        formData.append('notify_psychologist', document.getElementById('notify-psychologist').checked);
-        formData.append('notify_emergency_contacts', document.getElementById('notify-contacts').checked);
-        formData.append('auto_call_emergency_line', document.getElementById('auto-call-emergency').checked);
-        
-        try {
-            const response = await fetch('api/patient/save-crisis-preferences.php', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
-            
-            if (data.success) {
-                Utils.toast('Preferencias guardadas');
+        };
+
+        Profile.saveCrisisPreferences = async function () {
+            const formData = new FormData();
+            formData.append('notify_psychologist', document.getElementById('notify-psychologist').checked);
+            formData.append('notify_emergency_contacts', document.getElementById('notify-contacts').checked);
+            formData.append('auto_call_emergency_line', document.getElementById('auto-call-emergency').checked);
+
+            try {
+                const response = await fetch('api/patient/save-crisis-preferences.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    Utils.toast('Preferencias guardadas');
+                } else {
+                    Utils.toast('Error al guardar: ' + (data.error || 'Intenta de nuevo'));
+                }
+            } catch (error) {
+                console.error('Error saving crisis preferences:', error);
+                Utils.toast('Error de conexión');
+            }
+        };
+
+        Profile.handleAutoCallChange = function (checkbox) {
+            if (checkbox.checked) {
+                // Show consent modal
+                document.getElementById('consent-modal').classList.add('active');
             } else {
-                Utils.toast('Error al guardar: ' + (data.error || 'Intenta de nuevo'));
+                Profile.saveCrisisPreferences();
             }
-        } catch (error) {
-            console.error('Error saving crisis preferences:', error);
-            Utils.toast('Error de conexión');
-        }
-    };
-    
-    Profile.handleAutoCallChange = function(checkbox) {
-        if (checkbox.checked) {
-            // Show consent modal
-            document.getElementById('consent-modal').classList.add('active');
-        } else {
+        };
+
+        Profile.cancelConsent = function () {
+            document.getElementById('auto-call-emergency').checked = false;
+            document.getElementById('consent-modal').classList.remove('active');
+        };
+
+        Profile.acceptConsent = function () {
+            document.getElementById('consent-modal').classList.remove('active');
             Profile.saveCrisisPreferences();
-        }
-    };
-    
-    Profile.cancelConsent = function() {
-        document.getElementById('auto-call-emergency').checked = false;
-        document.getElementById('consent-modal').classList.remove('active');
-    };
-    
-    Profile.acceptConsent = function() {
-        document.getElementById('consent-modal').classList.remove('active');
-        Profile.saveCrisisPreferences();
-        Utils.toast('Ayuda de emergencia activada');
-    };
+            Utils.toast('Ayuda de emergencia activada');
+        };
     </script>
 </body>
+
 </html>

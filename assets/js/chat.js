@@ -65,7 +65,15 @@ function setupEventListeners() {
  */
 async function loadChatHistory() {
     try {
-        const response = await Utils.api('api/chat/get-history.php');
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+
+        let endpoint = 'api/chat/get-history.php';
+        if (sessionId) {
+            endpoint += `?session_id=${encodeURIComponent(sessionId)}`;
+        }
+
+        const response = await Utils.api(endpoint);
 
         if (response.success && response.data.messages.length > 0) {
             conversationHistory = response.data.messages;
@@ -289,14 +297,19 @@ function hideWelcomeMessage() {
 /**
  * Logout functions
  */
+/**
+ * Logout functions
+ */
 function confirmLogout() {
-    elements.logoutModal.classList.remove('hidden');
-    elements.logoutModal.classList.add('flex');
+    if (elements.logoutModal) {
+        elements.logoutModal.classList.add('active');
+    }
 }
 
 function closeLogoutModal() {
-    elements.logoutModal.classList.add('hidden');
-    elements.logoutModal.classList.remove('flex');
+    if (elements.logoutModal) {
+        elements.logoutModal.classList.remove('active');
+    }
 }
 
 function logout() {
@@ -317,7 +330,7 @@ function showPanicButton(config = {}) {
 
     const panicButton = document.createElement('div');
     panicButton.id = 'panic-button-overlay';
-    panicButton.className = 'fixed bottom-4 right-4 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-2xl shadow-2xl p-4 z-50 max-w-sm animate-pulse';
+    panicButton.className = 'fixed bottom-4 right-4 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-2xl shadow-2xl p-4 z-[100] max-w-sm animate-pulse';
 
     panicButton.innerHTML = `
         <div class="flex flex-col gap-3">

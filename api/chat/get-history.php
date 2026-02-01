@@ -28,14 +28,17 @@ if ($user['role'] !== 'patient') {
 }
 
 // Parámetros de paginación
-$limit = isset($_GET['limit']) ? min(100, max(1, (int)$_GET['limit'])) : 50;
-$offset = isset($_GET['offset']) ? max(0, (int)$_GET['offset']) : 0;
+$limit = isset($_GET['limit']) ? min(100, max(1, (int) $_GET['limit'])) : 50;
+$offset = isset($_GET['offset']) ? max(0, (int) $_GET['offset']) : 0;
 
 try {
     $db = getDB();
-    
-    // Obtener mensajes
-    $stmt = $db->prepare("
+
+    // Obtener parámetros
+    $sessionId = isset($_GET['session_id']) ? trim($_GET['session_id']) : null;
+
+    // Construir query base
+    $sql = "
         SELECT 
             id,
             message,
@@ -44,20 +47,32 @@ try {
             created_at
         FROM conversations 
         WHERE patient_id = :patient_id 
-        ORDER BY created_at ASC
-        LIMIT :limit OFFSET :offset
-    ");
+    ";
+
+    // Filtro opcional por sesión
+    if ($sessionId) {
+        $sql .= " AND session_id = :session_id ";
+    }
+
+    $sql .= " ORDER BY created_at ASC LIMIT :limit OFFSET :offset";
+
+    $stmt = $db->prepare($sql);
     $stmt->bindValue(':patient_id', $user['id'], PDO::PARAM_INT);
+
+    if ($sessionId) {
+        $stmt->bindValue(':session_id', $sessionId, PDO::PARAM_STR);
+    }
+
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
-    
+
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
     // Formatear mensajes
-    $formattedMessages = array_map(function($msg) {
+    $formattedMessages = array_map(function ($msg) {
         return [
-            'id' => (int)$msg['id'],
+            'id' => (int) $msg['id'],
             'message' => $msg['message'],
             'sender' => $msg['sender'],
             'sentiment' => $msg['sentiment_score'] ? json_decode($msg['sentiment_score'], true) : null,
@@ -65,12 +80,12 @@ try {
             'time_ago' => timeAgo($msg['created_at'])
         ];
     }, $messages);
-    
+
     // Obtener total de mensajes
     $stmt = $db->prepare("SELECT COUNT(*) FROM conversations WHERE patient_id = ?");
     $stmt->execute([$user['id']]);
-    $totalMessages = (int)$stmt->fetchColumn();
-    
+    $totalMessages = (int) $stmt->fetchColumn();
+
     jsonResponse(true, [
         'messages' => $formattedMessages,
         'pagination' => [
@@ -80,7 +95,7 @@ try {
             'has_more' => ($offset + $limit) < $totalMessages
         ]
     ]);
-    
+
 } catch (Exception $e) {
     logError('Error en get-history.php', ['error' => $e->getMessage()]);
     jsonResponse(false, null, 'Error al cargar el historial');
