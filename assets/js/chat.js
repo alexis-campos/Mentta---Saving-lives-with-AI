@@ -236,7 +236,7 @@ function updateSentimentIndicator(sentiment) {
     // Hide after 5 seconds
     setTimeout(() => {
         elements.sentimentIndicator.classList.add('hidden');
-    }, 5000);
+    }, 10000);
 }
 
 /**
