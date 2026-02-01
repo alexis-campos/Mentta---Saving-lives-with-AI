@@ -45,7 +45,7 @@ define('DB_CHARSET', 'utf8mb4');
 // AI Configuration (Google Gemini)
 define('AI_API_KEY', env('AI_API_KEY', 'YOUR_API_KEY_HERE'));
 define('AI_API_URL', 'https://generativelanguage.googleapis.com/v1beta/models/');
-define('AI_MODEL', 'gemini-3-flash-preview');
+define('AI_MODEL', 'gemini-3-pro-preview');
 define('AI_TIMEOUT', 45); // Aumentado a 45s
 define('AI_TIMEOUT_CRITICAL', 60); // Aumentado a 60s para crisis
 define('AI_MAX_FAILURES', 3); // Intentos antes de abrir el circuito

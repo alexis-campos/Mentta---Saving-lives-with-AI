@@ -65,7 +65,17 @@ function setupEventListeners() {
  */
 async function loadChatHistory() {
     try {
-        const response = await Utils.api('api/chat/get-history.php');
+        // Solo cargar historial si hay una sesión activa
+        const sessionId = (typeof Menu !== 'undefined' && Menu.getCurrentSessionId)
+            ? Menu.getCurrentSessionId()
+            : null;
+
+        if (!sessionId) {
+            // Nueva sesión, no cargar historial
+            return;
+        }
+
+        const response = await Utils.api(`api/chat/get-history.php?session_id=${encodeURIComponent(sessionId)}`);
 
         if (response.success && response.data.messages.length > 0) {
             conversationHistory = response.data.messages;
@@ -74,7 +84,7 @@ async function loadChatHistory() {
             scrollToBottom(false);
         }
     } catch (error) {
-        console.error('Error loading history:', error);
+        // Silent fail - don't expose internal errors
     } finally {
         elements.messageInput.focus();
     }
@@ -189,7 +199,7 @@ async function sendMessage() {
             if (lastMessage) lastMessage.remove();
         }
     } catch (error) {
-        console.error('Send error:', error);
+        // Silent fail - don't expose internal errors
         Utils.toast('No se pudo enviar el mensaje. Intenta de nuevo.');
     } finally {
         isLoading = false;
@@ -343,9 +353,6 @@ function showPanicButton(config = {}) {
     `;
 
     document.body.appendChild(panicButton);
-
-    // Log that panic button was shown
-    console.log('[PAP] Panic button displayed', config);
 }
 
 /**
