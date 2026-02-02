@@ -1,0 +1,8 @@
+{
+  "name": "Mentta Live - Multimodal Mental Health",
+  "description": "Real-time multimodal mental health intervention platform using Gemini Live API for audio and video analysis.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
