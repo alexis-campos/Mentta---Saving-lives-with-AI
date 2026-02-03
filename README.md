@@ -6,7 +6,6 @@
   <img src="https://img.shields.io/badge/MySQL-8.0%2B-4479A1.svg" alt="MySQL 8.0+">
   <img src="https://img.shields.io/badge/AI-Google%20Gemini%203.0-FF6F00.svg" alt="Google Gemini 3.0">
   <img src="https://img.shields.io/badge/Maps-Leaflet%20%2B%20Google-34A853.svg" alt="Maps">
-  <img src="https://img.shields.io/badge/License-Private-red.svg" alt="License">
 </p>
 
 <p align="center">
@@ -438,21 +437,6 @@ composer require --dev phpunit/phpunit:^10
 ```
 
 > 💡 **Note:** Tests require `php-xml` extension (`sudo apt install php8.4-xml`)
-
----
-
-## 🤝 Contributing
-
-This is a private project for academic purposes. For inquiries, contact the development team.
-
----
-
-## 📄 License
-
-Private project - All rights reserved.
-
-**Universidad Nacional Mayor de San Marcos**  
-Facultad de Ingeniería de Sistemas e Informática
 
 ---
 
