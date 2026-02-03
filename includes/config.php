@@ -57,7 +57,7 @@ if (empty($aiApiKey) || $aiApiKey === 'YOUR_API_KEY_HERE') {
 }
 define('AI_API_KEY', $aiApiKey);
 define('AI_API_URL', 'https://generativelanguage.googleapis.com/v1beta/models/');
-define('AI_MODEL', env('AI_MODEL', 'gemini-2.0-flash'));
+define('AI_MODEL', env('AI_MODEL', 'gemini-3-pro-preview'));
 define('AI_TIMEOUT', 45);
 define('AI_TIMEOUT_CRITICAL', 60);
 define('AI_MAX_FAILURES', 3);

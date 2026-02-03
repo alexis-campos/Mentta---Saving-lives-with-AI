@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/version-0.5.3-blue.svg" alt="Version 0.5.3">
   <img src="https://img.shields.io/badge/PHP-8.0%2B-777BB4.svg" alt="PHP 8.0+">
   <img src="https://img.shields.io/badge/MySQL-8.0%2B-4479A1.svg" alt="MySQL 8.0+">
-  <img src="https://img.shields.io/badge/AI-Google%20Gemini%202.0-FF6F00.svg" alt="Google Gemini 2.0">
+  <img src="https://img.shields.io/badge/AI-Google%20Gemini%203.0-FF6F00.svg" alt="Google Gemini 3.0">
   <img src="https://img.shields.io/badge/Maps-Leaflet%20%2B%20Google-34A853.svg" alt="Maps">
   <img src="https://img.shields.io/badge/License-Private-red.svg" alt="License">
 </p>
