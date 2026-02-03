@@ -789,8 +789,8 @@ if ($hour >= 5 && $hour < 12) {
                 overlay.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
 
-                // Set iframe source (dev: localhost:3001, prod: /multimodal/)
-                const liveAppUrl = 'http://localhost:3001';
+                // Set iframe source (dev: localhost:3000, prod: /multimodal/)
+                const liveAppUrl = 'http://localhost:3000';
                 iframe.src = liveAppUrl;
 
                 // Start timer
