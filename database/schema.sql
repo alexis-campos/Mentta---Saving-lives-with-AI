@@ -335,6 +335,51 @@ CREATE TABLE IF NOT EXISTS system_config (
   PRIMARY KEY (config_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- TABLA: live_sessions
+-- Sesiones de videollamada con Gemini Live API
+CREATE TABLE IF NOT EXISTS live_sessions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    patient_id INT NOT NULL,
+    session_token VARCHAR(64) NOT NULL UNIQUE COMMENT 'Token temporal para la sesión',
+    
+    -- Tiempos
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ended_at TIMESTAMP NULL,
+    duration_seconds INT DEFAULT 0,
+    
+    -- Análisis de riesgo
+    max_risk_level INT DEFAULT 0 COMMENT '0=bajo, 1=moderado, 2=alto, 3=crítico',
+    emotions_detected JSON NULL COMMENT 'Array de emociones detectadas durante la sesión',
+    risk_events JSON NULL COMMENT 'Eventos de riesgo con timestamps',
+    
+    -- Resumen y datos
+    summary TEXT NULL COMMENT 'Resumen generado al final de la sesión',
+    transcript_available BOOLEAN DEFAULT FALSE,
+    
+    -- Métricas
+    alerts_triggered INT DEFAULT 0,
+    video_enabled BOOLEAN DEFAULT TRUE,
+    audio_enabled BOOLEAN DEFAULT TRUE,
+    
+    -- Estado
+    status ENUM('active', 'completed', 'disconnected', 'error') DEFAULT 'active',
+    error_message TEXT NULL,
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_live_sessions_patient 
+        FOREIGN KEY (patient_id) REFERENCES users(id) 
+        ON DELETE CASCADE,
+    
+    INDEX idx_patient_id (patient_id),
+    INDEX idx_status (status),
+    INDEX idx_started_at (started_at),
+    INDEX idx_max_risk (max_risk_level),
+    INDEX idx_session_token (session_token)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+COMMENT='Sesiones de videollamada con Gemini Live API';
+
 -- ==========================================================
 -- 8. VISTAS
 -- ==========================================================

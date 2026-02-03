@@ -3,6 +3,8 @@ import { GoogleGenAI, LiveServerMessage, Modality, FunctionDeclaration, Type } f
 import { RiskLevel, ConnectionStatus, MentalHealthState } from '../types';
 import { base64ToUint8Array, createPcmBlob } from '../utils/audioUtils';
 import RiskIndicator from './RiskIndicator';
+import StatusIndicator, { AIStatus } from './StatusIndicator';
+import Avatar3D from './Avatar3D';
 import { ArrowLeft, Mic, MicOff, Video, VideoOff, PhoneOff, AlertTriangle } from 'lucide-react';
 
 // --- Configuration ---
@@ -36,7 +38,7 @@ const reportRiskTool: FunctionDeclaration = {
 };
 
 interface LiveSessionProps {
-  onEndSession: () => void;
+  onEndSession: (sessionData?: { maxRiskLevel: number; emotions: string[]; riskEvents: any[]; alertsTriggered: number }) => void;
 }
 
 const LiveSession: React.FC<LiveSessionProps> = ({ onEndSession }) => {
@@ -50,6 +52,10 @@ const LiveSession: React.FC<LiveSessionProps> = ({ onEndSession }) => {
     primaryEmotion: 'Calm',
     notes: []
   });
+  const [emotionsHistory, setEmotionsHistory] = useState<string[]>([]);
+  const [riskEvents, setRiskEvents] = useState<any[]>([]);
+  const [alertsCount, setAlertsCount] = useState(0);
+  const [aiStatus, setAiStatus] = useState<AIStatus>('idle');
 
   // Refs for Media and Processing
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -215,10 +221,16 @@ NUNCA:
               if (!isMicOn) return;
               const inputData = e.inputBuffer.getChannelData(0);
 
-              // Simple volume meter
+              // Simple volume meter - also detect if user is speaking
               let sum = 0;
               for (let i = 0; i < inputData.length; i++) sum += inputData[i] * inputData[i];
-              setVolume(Math.sqrt(sum / inputData.length) * 100);
+              const currentVolume = Math.sqrt(sum / inputData.length) * 100;
+              setVolume(currentVolume);
+
+              // If volume is high, user is speaking
+              if (currentVolume > 5 && aiStatus !== 'speaking') {
+                setAiStatus('listening');
+              }
 
               const blob = createPcmBlob(inputData);
               sessionPromiseRef.current?.then(session => {
@@ -230,10 +242,20 @@ NUNCA:
             processor.connect(inputContextRef.current.destination);
           },
           onmessage: async (msg: LiveServerMessage) => {
-            // Handle Audio Output
+            // Handle Audio Output - IA is speaking
             const audioData = msg.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
             if (audioData) {
+              setAiStatus('speaking');
               await playAudioChunk(audioData);
+              // After audio finishes, go back to idle
+              setTimeout(() => {
+                setAiStatus('idle');
+              }, 500);
+            }
+
+            // If model is thinking (turnComplete false), show processing
+            if (msg.serverContent && !msg.serverContent.turnComplete && !audioData) {
+              setAiStatus('processing');
             }
 
             // Handle Interruption
@@ -248,11 +270,39 @@ NUNCA:
               for (const call of msg.toolCall.functionCalls) {
                 if (call.name === 'reportMentalHealthStatus') {
                   const { riskLevel, emotion, reason } = call.args as any;
+
+                  // Update AI state
                   setAiState(prev => ({
                     riskLevel: riskLevel as RiskLevel,
                     primaryEmotion: emotion as string,
                     notes: [...prev.notes, reason as string]
                   }));
+
+                  // Track emotions history
+                  setEmotionsHistory(prev => [...prev, emotion as string]);
+
+                  // Track risk events
+                  setRiskEvents(prev => [...prev, {
+                    timestamp: new Date().toISOString(),
+                    riskLevel,
+                    emotion,
+                    reason
+                  }]);
+
+                  // If high risk, send alert to backend
+                  if (riskLevel >= 2) {
+                    const sessionToken = window.opener?.sessionStorage?.getItem('liveSessionToken') ||
+                      sessionStorage.getItem('liveSessionToken');
+                    if (sessionToken) {
+                      fetch('http://localhost/Mentta---Saving-lives-with-AI/api/live/trigger-alert.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ sessionToken, riskLevel, emotion, reason })
+                      }).then(() => {
+                        setAlertsCount(prev => prev + 1);
+                      }).catch(console.error);
+                    }
+                  }
 
                   // Respond to the tool call
                   sessionPromiseRef.current?.then(session => {
@@ -349,46 +399,66 @@ NUNCA:
           </div>
           <span className="text-gray-400 text-sm">Sesión Segura en Vivo</span>
         </div>
-        <button onClick={onEndSession} className="text-slate-400 hover:text-white transition">
+        <button onClick={() => onEndSession({
+          maxRiskLevel: aiState.riskLevel,
+          emotions: emotionsHistory,
+          riskEvents: riskEvents,
+          alertsTriggered: alertsCount
+        })} className="text-slate-400 hover:text-white transition">
           <ArrowLeft size={24} />
         </button>
       </div>
 
-      {/* Main Content */}
+      {/* Main Content - Split Layout */}
       <div className="flex-1 flex flex-col md:flex-row relative overflow-hidden">
 
-        {/* Video Area */}
-        <div className="flex-1 relative bg-black flex items-center justify-center">
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            className={`w-full h-full object-cover ${isVideoOn ? 'opacity-100' : 'opacity-0'}`}
-          />
-          {!isVideoOn && (
-            <div className="absolute inset-0 flex items-center justify-center text-slate-600">
-              <span className="text-lg">Cámara Apagada</span>
-            </div>
-          )}
+        {/* LEFT: Avatar 3D (70%) */}
+        <div className="flex-[2] relative bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
+          <Avatar3D aiStatus={aiStatus} className="w-full h-full" />
 
-          {/* AI Overlay Info */}
-          <div className="absolute top-6 right-6 left-6 flex justify-end">
-            <RiskIndicator level={aiState.riskLevel} emotion={aiState.primaryEmotion} />
-          </div>
-
-          {/* AI Speaking Indicator */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+          {/* Status Indicator - centered at bottom */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
             {status === 'connected' ? (
-              <div className="flex items-center gap-2 bg-slate-900/70 backdrop-blur-md px-6 py-3 rounded-full border border-slate-700">
-                <div className={`w-3 h-3 rounded-full ${volume > 5 ? 'bg-green-400 animate-pulse' : 'bg-slate-400'}`}></div>
-                <span className="text-sm font-medium text-white">Mentta te escucha...</span>
-              </div>
+              <StatusIndicator status={aiStatus} volume={volume} />
             ) : (
               <div className="bg-yellow-500/20 text-yellow-200 px-4 py-2 rounded-lg backdrop-blur border border-yellow-500/30">
                 Conectando línea segura...
               </div>
             )}
+          </div>
+        </div>
+
+        {/* RIGHT: User Camera (30%) */}
+        <div className="flex-1 relative bg-black flex flex-col">
+          {/* Camera feed */}
+          <div className={`flex-1 relative transition-all duration-300 ${aiStatus === 'listening' ? 'ring-4 ring-green-500/50 ring-inset' : ''}`}>
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className={`w-full h-full object-cover ${isVideoOn ? 'opacity-100' : 'opacity-0'}`}
+            />
+            {!isVideoOn && (
+              <div className="absolute inset-0 flex items-center justify-center text-slate-600 bg-slate-900">
+                <div className="text-center">
+                  <VideoOff size={48} className="mx-auto mb-2 opacity-50" />
+                  <span className="text-sm">Cámara Apagada</span>
+                </div>
+              </div>
+            )}
+
+            {/* Your label */}
+            <div className="absolute top-3 left-3">
+              <span className="bg-slate-900/80 px-3 py-1 rounded-full text-xs text-slate-300 backdrop-blur">
+                Tú {aiStatus === 'listening' && '🎙️'}
+              </span>
+            </div>
+          </div>
+
+          {/* Risk Indicator - below camera */}
+          <div className="p-3 bg-slate-900/90 border-t border-slate-800">
+            <RiskIndicator level={aiState.riskLevel} emotion={aiState.primaryEmotion} />
           </div>
         </div>
       </div>
@@ -403,7 +473,12 @@ NUNCA:
         </button>
 
         <button
-          onClick={onEndSession}
+          onClick={() => onEndSession({
+            maxRiskLevel: aiState.riskLevel,
+            emotions: emotionsHistory,
+            riskEvents: riskEvents,
+            alertsTriggered: alertsCount
+          })}
           className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold shadow-lg shadow-red-900/20 flex items-center gap-2 transition-all transform hover:scale-105"
         >
           <PhoneOff size={24} />

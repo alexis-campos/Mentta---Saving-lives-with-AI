@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import LiveSession from './components/LiveSession';
 import { Heart, Shield, Zap, Video } from 'lucide-react';
+import { MentalHealthState, RiskLevel } from './types';
 
 const App: React.FC = () => {
   const [inSession, setInSession] = useState(false);
@@ -9,9 +10,42 @@ const App: React.FC = () => {
     setInSession(true);
   };
 
-  const endSession = () => {
+  const endSession = async (sessionData?: { maxRiskLevel: number; emotions: string[]; riskEvents: any[]; alertsTriggered: number }) => {
     setInSession(false);
-    console.log("Sesión terminada, guardando datos...");
+
+    // Get session token from parent window or sessionStorage
+    const sessionToken = window.opener?.sessionStorage?.getItem('liveSessionToken') ||
+      sessionStorage.getItem('liveSessionToken');
+
+    if (sessionToken && sessionData) {
+      try {
+        // Save session data to PHP backend
+        const response = await fetch('http://localhost/Mentta---Saving-lives-with-AI/api/live/save-session.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sessionToken,
+            summary: `Sesión de videollamada. Emoción predominante: ${sessionData.emotions[0] || 'Neutral'}. Nivel de riesgo máximo: ${sessionData.maxRiskLevel}.`,
+            maxRiskLevel: sessionData.maxRiskLevel,
+            emotions: sessionData.emotions,
+            riskEvents: sessionData.riskEvents,
+            alertsTriggered: sessionData.alertsTriggered
+          })
+        });
+
+        const result = await response.json();
+        console.log('Sesión guardada:', result);
+      } catch (error) {
+        console.error('Error guardando sesión:', error);
+      }
+    }
+
+    console.log("Sesión terminada");
+
+    // Close window if opened from chat.php
+    if (window.opener) {
+      window.close();
+    }
   };
 
   if (inSession) {
