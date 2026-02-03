@@ -14,7 +14,7 @@ const App: React.FC = () => {
     setInSession(false);
 
     // Get session token from parent window or sessionStorage
-    const sessionToken = window.opener?.sessionStorage?.getItem('liveSessionToken') ||
+    const sessionToken = window.parent?.sessionStorage?.getItem('liveSessionToken') ||
       sessionStorage.getItem('liveSessionToken');
 
     if (sessionToken && sessionData) {
@@ -42,7 +42,12 @@ const App: React.FC = () => {
 
     console.log("Sesión terminada");
 
-    // Close window if opened from chat.php
+    // Notify parent window to close overlay (when embedded in iframe)
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'MENTTA_LIVE_END' }, '*');
+    }
+
+    // Close window if opened as popup (fallback)
     if (window.opener) {
       window.close();
     }

@@ -55,6 +55,11 @@ const LiveSession: React.FC<LiveSessionProps> = ({ onEndSession }) => {
   const [emotionsHistory, setEmotionsHistory] = useState<string[]>([]);
   const [riskEvents, setRiskEvents] = useState<any[]>([]);
   const [alertsCount, setAlertsCount] = useState(0);
+
+  // Refs for state machine timing
+  const speakingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastAudioChunkTimeRef = useRef<number>(0);
+  const isPlayingAudioRef = useRef<boolean>(false);
   const [aiStatus, setAiStatus] = useState<AIStatus>('idle');
 
   // Refs for Media and Processing
@@ -227,9 +232,12 @@ NUNCA:
               const currentVolume = Math.sqrt(sum / inputData.length) * 100;
               setVolume(currentVolume);
 
-              // If volume is high, user is speaking
-              if (currentVolume > 5 && aiStatus !== 'speaking') {
+              // Only set to listening if NOT speaking and volume is high
+              if (currentVolume > 5 && !isPlayingAudioRef.current) {
                 setAiStatus('listening');
+              } else if (currentVolume <= 5 && !isPlayingAudioRef.current) {
+                // Low volume and not speaking - go idle after a moment
+                setAiStatus('idle');
               }
 
               const blob = createPcmBlob(inputData);
@@ -245,17 +253,42 @@ NUNCA:
             // Handle Audio Output - IA is speaking
             const audioData = msg.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
             if (audioData) {
+              // Mark as speaking and track audio activity
+              isPlayingAudioRef.current = true;
+              lastAudioChunkTimeRef.current = Date.now();
               setAiStatus('speaking');
+
+              // Clear any existing timeout
+              if (speakingTimeoutRef.current) {
+                clearTimeout(speakingTimeoutRef.current);
+              }
+
               await playAudioChunk(audioData);
-              // After audio finishes, go back to idle
-              setTimeout(() => {
-                setAiStatus('idle');
-              }, 500);
+
+              // Set timeout to detect when audio stream ends
+              // Only go idle if no new audio chunks arrive for 1.5 seconds
+              speakingTimeoutRef.current = setTimeout(() => {
+                const timeSinceLastChunk = Date.now() - lastAudioChunkTimeRef.current;
+                if (timeSinceLastChunk >= 1400) {
+                  isPlayingAudioRef.current = false;
+                  setAiStatus('idle');
+                }
+              }, 1500);
             }
 
-            // If model is thinking (turnComplete false), show processing
-            if (msg.serverContent && !msg.serverContent.turnComplete && !audioData) {
-              setAiStatus('processing');
+            // If model turn is complete, mark as done speaking after a short delay
+            if (msg.serverContent?.turnComplete) {
+              setTimeout(() => {
+                isPlayingAudioRef.current = false;
+                setAiStatus('idle');
+              }, 800);
+            }
+
+            // If model is thinking (has serverContent but no audio yet), show processing
+            if (msg.serverContent && !audioData && !msg.serverContent.turnComplete) {
+              if (!isPlayingAudioRef.current) {
+                setAiStatus('processing');
+              }
             }
 
             // Handle Interruption
@@ -382,6 +415,7 @@ NUNCA:
       inputContextRef.current?.close();
       outputContextRef.current?.close();
       if (videoIntervalRef.current) window.clearInterval(videoIntervalRef.current);
+      if (speakingTimeoutRef.current) clearTimeout(speakingTimeoutRef.current);
       // We can't strictly "close" the Gemini session object directly via SDK yet in a clean way without keeping reference to close(), 
       // but breaking the stream connection handles it server-side eventually.
     };
@@ -391,21 +425,16 @@ NUNCA:
   // --- UI ---
   return (
     <div className="fixed inset-0 bg-slate-900 z-50 flex flex-col">
-      {/* Header */}
-      <div className="p-4 bg-slate-900/50 backdrop-blur border-b border-slate-700 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <div className="bg-blue-600 p-2 rounded-lg">
-            <span className="font-bold text-white text-xl tracking-tight">Mentta</span>
-          </div>
-          <span className="text-gray-400 text-sm">Sesión Segura en Vivo</span>
-        </div>
+      {/* Header - minimal when embedded in iframe */}
+      <div className="absolute top-16 left-4 z-10">
         <button onClick={() => onEndSession({
           maxRiskLevel: aiState.riskLevel,
           emotions: emotionsHistory,
           riskEvents: riskEvents,
           alertsTriggered: alertsCount
-        })} className="text-slate-400 hover:text-white transition">
-          <ArrowLeft size={24} />
+        })} className="flex items-center gap-2 text-slate-300 hover:text-white transition bg-slate-800/70 hover:bg-slate-700/90 backdrop-blur-sm px-4 py-2.5 rounded-xl shadow-lg border border-slate-700/50">
+          <ArrowLeft size={18} />
+          <span className="text-sm font-medium">Terminar llamada</span>
         </button>
       </div>
 

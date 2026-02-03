@@ -236,7 +236,8 @@ if ($weekMood !== null) {
                         <span class="text-white font-bold text-3xl">M</span>
                     </div>
                     <h2 class="text-xl font-semibold mb-2" style="color: var(--text-primary);">Hola,
-                        <?= htmlspecialchars(explode(' ', $user['name'])[0]) ?> 👋</h2>
+                        <?= htmlspecialchars(explode(' ', $user['name'])[0]) ?> 👋
+                    </h2>
                     <p style="color: var(--text-secondary);" class="max-w-sm mx-auto">Estoy aquí para escucharte.
                         Cuéntame, ¿cómo te sientes hoy?</p>
                 </div>
@@ -531,16 +532,20 @@ if ($weekMood !== null) {
                 <button class="modal-close" onclick="closeLiveCallModal()">&times;</button>
             </div>
             <div class="modal-body text-center py-6">
-                <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-xl shadow-purple-500/30">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                <div
+                    class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-xl shadow-purple-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                 </div>
                 <h2 class="text-xl font-semibold mb-2" style="color: var(--text-primary);">Habla con Mentta en Vivo</h2>
                 <p style="color: var(--text-secondary);" class="mb-4 text-sm">
-                    Inicia una videollamada con nuestra IA de apoyo emocional. Mentta puede verte y escucharte para darte apoyo en tiempo real.
+                    Inicia una videollamada con nuestra IA de apoyo emocional. Mentta puede verte y escucharte para
+                    darte apoyo en tiempo real.
                 </p>
-                
+
                 <div class="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4 mb-4 text-left">
                     <h4 class="font-medium text-indigo-400 mb-2 text-sm">📋 Lo que necesitas:</h4>
                     <ul class="text-sm space-y-1" style="color: var(--text-secondary);">
@@ -549,18 +554,22 @@ if ($weekMood !== null) {
                         <li>✓ Cámara (opcional pero recomendada)</li>
                     </ul>
                 </div>
-                
+
                 <p class="text-xs mb-6" style="color: var(--text-tertiary);">
                     Si detectamos que estás en riesgo, alertaremos a un profesional. Tu seguridad es nuestra prioridad.
                 </p>
-                
+
                 <div class="flex gap-3">
-                    <button onclick="closeLiveCallModal()" class="flex-1 py-3 px-4 rounded-xl transition-colors" style="border: 1px solid var(--border-color); color: var(--text-primary); background-color: var(--bg-tertiary);">
+                    <button onclick="closeLiveCallModal()" class="flex-1 py-3 px-4 rounded-xl transition-colors"
+                        style="border: 1px solid var(--border-color); color: var(--text-primary); background-color: var(--bg-tertiary);">
                         Cancelar
                     </button>
-                    <button onclick="startLiveCall()" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    <button onclick="startLiveCall()"
+                        class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                         Iniciar Llamada
                     </button>
@@ -569,25 +578,77 @@ if ($weekMood !== null) {
         </div>
     </div>
 
+    <!-- Live Call Fullscreen Overlay -->
+    <div id="live-overlay" class="fixed inset-0 z-[100] bg-slate-900 hidden">
+        <!-- Close button floating -->
+        <button onclick="closeLiveOverlay()" 
+            class="absolute top-4 right-4 z-20 text-slate-400 hover:text-white transition-colors p-3 bg-slate-800/80 hover:bg-slate-700 rounded-full backdrop-blur-sm shadow-lg"
+            title="Cerrar llamada">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <!-- Timer floating -->
+        <div class="absolute top-4 left-4 z-20 bg-slate-800/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
+            <span class="text-slate-400 text-sm">⏱️ <span id="live-timer">00:00</span></span>
+        </div>
+        <!-- iframe container -->
+        <iframe id="live-iframe" class="w-full h-full border-0" allow="camera; microphone; autoplay"></iframe>
+    </div>
+
     <!-- JavaScript -->
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/theme.js"></script>
     <script src="assets/js/menu.js"></script>
     <script src="assets/js/chat.js"></script>
-    
+
     <!-- Live Call Functions -->
     <script>
+        // Session timer
+        let liveTimerInterval = null;
+        let liveStartTime = null;
+
         // Modal functions
         function openLiveCallModal() {
             closeMenu();
             document.getElementById('live-call-modal').classList.add('active');
         }
-        
+
         function closeLiveCallModal() {
             document.getElementById('live-call-modal').classList.remove('active');
         }
-        
-        // Start Live Call - Opens the React app in new window
+
+        // Close Live Overlay
+        function closeLiveOverlay() {
+            const overlay = document.getElementById('live-overlay');
+            const iframe = document.getElementById('live-iframe');
+
+            // Stop timer
+            if (liveTimerInterval) {
+                clearInterval(liveTimerInterval);
+                liveTimerInterval = null;
+            }
+
+            // Hide overlay
+            overlay.classList.add('hidden');
+
+            // Clear iframe
+            iframe.src = '';
+
+            // Re-enable body scroll
+            document.body.style.overflow = '';
+        }
+
+        // Update timer display
+        function updateLiveTimer() {
+            if (!liveStartTime) return;
+            const elapsed = Math.floor((Date.now() - liveStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('live-timer').textContent = `${minutes}:${seconds}`;
+        }
+
+        // Start Live Call - Opens in overlay iframe
         async function startLiveCall() {
             try {
                 // First, create a session in the backend to get token
@@ -595,37 +656,48 @@ if ($weekMood !== null) {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' }
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (!data.success) {
                     alert('Error al iniciar sesión: ' + (data.error || 'Error desconocido'));
                     return;
                 }
-                
-                // Store session token for later use
+
+                // Store session token
                 sessionStorage.setItem('liveSessionToken', data.sessionToken);
                 sessionStorage.setItem('liveSessionId', data.sessionId);
-                
-                // Close modal
+
+                // Close confirmation modal
                 closeLiveCallModal();
-                
-                // Open the Live app (React app running on port 3000 during dev)
-                // In production, this would be a subfolder or subdomain
-                const liveAppUrl = 'http://localhost:3000';
-                
-                // Open in new window
-                const liveWindow = window.open(liveAppUrl, 'MenttaLive', 'width=800,height=600');
-                
-                if (!liveWindow) {
-                    alert('Por favor permite las ventanas emergentes para usar Mentta Live');
-                }
-                
+
+                // Show overlay
+                const overlay = document.getElementById('live-overlay');
+                const iframe = document.getElementById('live-iframe');
+
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+
+                // Set iframe source (dev: localhost:3001, prod: /multimodal/)
+                const liveAppUrl = 'http://localhost:3001';
+                iframe.src = liveAppUrl;
+
+                // Start timer
+                liveStartTime = Date.now();
+                liveTimerInterval = setInterval(updateLiveTimer, 1000);
+
             } catch (error) {
                 console.error('Error starting live call:', error);
                 alert('Error de conexión. Por favor intenta de nuevo.');
             }
         }
+
+        // Listen for messages from iframe (when session ends)
+        window.addEventListener('message', function (event) {
+            if (event.data.type === 'MENTTA_LIVE_END') {
+                closeLiveOverlay();
+            }
+        });
     </script>
 </body>
 

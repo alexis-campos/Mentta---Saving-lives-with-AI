@@ -2,6 +2,7 @@
 /**
  * MENTTA - API: Check Alerts (Long Polling)
  * Endpoint de long polling para alertas en tiempo real
+ * FIXED: Respuesta compatible con dashboard.js
  */
 
 // Suppress HTML error output for API
@@ -23,31 +24,48 @@ if (!$user || $user['role'] !== 'psychologist') {
     jsonResponse(false, null, 'No autorizado');
 }
 
-// Long polling: esperar hasta 25 segundos por nuevas alertas
-$timeout = 25;
+// Timeout configurable (default 5s para compatibilidad con setInterval de 10s)
+$timeout = isset($_GET['timeout']) ? min(intval($_GET['timeout']), 25) : 5;
 $start_time = time();
 $last_check = isset($_GET['last_check']) ? intval($_GET['last_check']) : null;
 
-while (time() - $start_time < $timeout) {
-    // Buscar alertas pendientes
-    $alerts = getPendingAlerts($user['id'], $last_check);
-    
-    if (!empty($alerts)) {
-        // Hay nuevas alertas, retornar inmediatamente
-        jsonResponse(true, [
-            'alerts' => $alerts,
-            'count' => count($alerts),
-            'timestamp' => time()
-        ]);
-    }
-    
-    // No hay alertas, esperar 2 segundos antes de revisar de nuevo
-    sleep(2);
-}
+// Obtener conteo total de alertas pendientes
+$db = getDB();
+$countStmt = $db->prepare("
+    SELECT COUNT(*) as count FROM alerts 
+    WHERE psychologist_id = :psychologist_id AND status = 'pending'
+");
+$countStmt->execute(['psychologist_id' => $user['id']]);
+$pendingCount = (int) $countStmt->fetch(PDO::FETCH_ASSOC)['count'];
 
-// Timeout alcanzado, retornar vacío
+// Buscar nuevas alertas (desde last_check o últimos 30 segundos si no hay last_check)
+$newAlerts = [];
+$since = $last_check ? date('Y-m-d H:i:s', $last_check) : date('Y-m-d H:i:s', time() - 30);
+
+$alertsStmt = $db->prepare("
+    SELECT 
+        a.id, a.patient_id, a.alert_type, a.severity,
+        a.message_snapshot, a.created_at, a.status,
+        u.name as patient_name, u.age as patient_age
+    FROM alerts a
+    JOIN users u ON a.patient_id = u.id
+    WHERE a.psychologist_id = :psychologist_id
+    AND a.status = 'pending'
+    AND a.created_at > :since
+    ORDER BY a.severity DESC, a.created_at DESC
+    LIMIT 10
+");
+$alertsStmt->execute([
+    'psychologist_id' => $user['id'],
+    'since' => $since
+]);
+$newAlerts = $alertsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Retornar en formato compatible con dashboard.js
 jsonResponse(true, [
-    'alerts' => [],
-    'count' => 0,
+    'pending_count' => $pendingCount,
+    'new_alerts' => $newAlerts,
+    'alerts' => $newAlerts, // compatibilidad con alerts.js
+    'count' => count($newAlerts),
     'timestamp' => time()
 ]);

@@ -33,3 +33,7 @@ composer.lock
 # Backup files
 *.bak
 *.backup
+
+# Audio files
+*.wav
+*.mp3

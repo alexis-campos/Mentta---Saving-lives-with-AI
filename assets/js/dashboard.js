@@ -1,11 +1,13 @@
 /**
- * MENTTA - Dashboard JavaScript
+ * MENTTA - Dashboard JavaScript (FIXED)
  * Maneja la interacción del panel de psicólogo
+ * CORREGIDO: Sistema de alertas unificado
  */
 
 let selectedPatientId = null;
 let emotionChart = null;
 let allPatients = [];
+let lastAlertTimestamp = null;
 
 // ============================================
 // INICIALIZACIÓN
@@ -149,6 +151,12 @@ async function selectPatient(patientId, cardElement) {
     document.getElementById('patient-loading').classList.remove('hidden');
 
     await loadPatientDetail(patientId);
+}
+
+// Función global para ver paciente (llamada desde alertas)
+function viewPatient(patientId) {
+    const card = document.querySelector(`[data-patient-id="${patientId}"]`);
+    selectPatient(patientId, card);
 }
 
 async function loadPatientDetail(patientId) {
@@ -354,8 +362,9 @@ function renderAlertsTimeline(alerts) {
 
     alerts.forEach(alert => {
         const item = document.createElement('div');
-        item.className = 'flex gap-3 p-3 rounded-lg bg-gray-50 border-l-4 ' +
+        item.className = 'alert-item flex gap-3 p-3 rounded-lg bg-gray-50 border-l-4 ' +
             (alert.severity === 'red' ? 'border-red-500' : 'border-orange-500');
+        item.dataset.alertId = alert.id;
 
         const severityIcon = alert.severity === 'red' ? '🚨' : '⚠️';
         const severityText = alert.severity === 'red' ? 'Crítica' : 'Alerta';
@@ -375,13 +384,19 @@ function renderAlertsTimeline(alerts) {
                     <span class="text-xs text-gray-400">${formatDateTime(alert.created_at)}</span>
                 </div>
                 <p class="text-sm text-gray-700 mt-1 break-words">"${messagePreview}"</p>
-                <div class="mt-2">
+                <div class="mt-2 flex items-center gap-2">
                     <span class="text-xs px-2 py-1 rounded-full ${alert.status === 'pending'
                 ? 'bg-red-100 text-red-700'
                 : 'bg-gray-100 text-gray-600'
             }">
                         ${alert.status === 'pending' ? '● Pendiente' : '✓ Reconocida'}
                     </span>
+                    ${alert.status === 'pending' ? `
+                        <button onclick="acknowledgeAlert(${alert.id})" 
+                            class="text-xs px-3 py-1 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
+                            Marcar atendida
+                        </button>
+                    ` : ''}
                 </div>
             </div>
         `;
@@ -426,24 +441,30 @@ function renderTopTopics(topics) {
 }
 
 // ============================================
-// SISTEMA DE ALERTAS EN TIEMPO REAL
+// SISTEMA DE ALERTAS EN TIEMPO REAL (UNIFICADO)
 // ============================================
 
 let alertPollingInterval = null;
-let lastAlertCheck = Date.now();
 
 function startAlertPolling() {
+    console.log('🛡️ Sistema de alertas iniciado');
     checkForAlerts();
-    alertPollingInterval = setInterval(checkForAlerts, 10000); // Cada 10 segundos
+    // Polling cada 5 segundos para alertas críticas
+    alertPollingInterval = setInterval(checkForAlerts, 5000);
 }
 
 async function checkForAlerts() {
     try {
-        const response = await fetch('api/psychologist/check-alerts.php?timeout=5');
+        const url = `api/psychologist/check-alerts.php?timeout=3${lastAlertTimestamp ? '&last_check=' + lastAlertTimestamp : ''}`;
+        const response = await fetch(url);
         const data = await response.json();
 
         if (data.success && data.data) {
+            // Actualizar badge
             updateAlertBadge(data.data.pending_count);
+
+            // Guardar timestamp
+            lastAlertTimestamp = data.data.timestamp;
 
             // Si hay nuevas alertas, mostrar notificación
             if (data.data.new_alerts && data.data.new_alerts.length > 0) {
@@ -451,6 +472,9 @@ async function checkForAlerts() {
                     showAlertPopup(alert);
                 });
                 playAlertSound();
+
+                // Recargar lista de pacientes para actualizar badges
+                loadPatients();
             }
         }
     } catch (error) {
@@ -475,11 +499,21 @@ function showAlertPopup(alert) {
     popup.className = 'bg-white rounded-lg shadow-xl border-l-4 border-red-500 p-4 max-w-sm animate-slideIn';
     popup.innerHTML = `
         <div class="flex items-start gap-3">
-            <div class="text-2xl">🚨</div>
+            <div class="text-2xl animate-pulse">🚨</div>
             <div class="flex-1">
-                <div class="font-semibold text-red-600">Nueva Alerta</div>
-                <div class="text-sm text-gray-600 mt-1">${alert.patient_name || 'Paciente'}</div>
-                <div class="text-xs text-gray-400 mt-1">${formatDateTime(alert.created_at)}</div>
+                <div class="font-semibold text-red-600">Nueva Alerta de Crisis</div>
+                <div class="text-sm font-medium text-gray-800 mt-1">${alert.patient_name || 'Paciente'}</div>
+                <div class="text-xs text-gray-500 mt-1">${alert.message_snapshot ? alert.message_snapshot.substring(0, 60) + '...' : ''}</div>
+                <div class="flex gap-2 mt-3">
+                    <button onclick="viewPatient(${alert.patient_id}); this.closest('.animate-slideIn').remove();" 
+                        class="text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Ver paciente
+                    </button>
+                    <button onclick="acknowledgeAlert(${alert.id}); this.closest('.animate-slideIn').remove();" 
+                        class="text-xs px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                        Marcar atendida
+                    </button>
+                </div>
             </div>
             <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-gray-600">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -491,10 +525,12 @@ function showAlertPopup(alert) {
 
     container.appendChild(popup);
 
-    // Auto-remove after 10 seconds
+    // Auto-remove after 15 seconds
     setTimeout(() => {
-        popup.remove();
-    }, 10000);
+        if (popup.parentElement) {
+            popup.remove();
+        }
+    }, 15000);
 }
 
 function playAlertSound() {
@@ -502,6 +538,62 @@ function playAlertSound() {
     if (audio) {
         audio.currentTime = 0;
         audio.play().catch(() => { }); // Ignore autoplay errors
+    }
+}
+
+// ============================================
+// RECONOCER ALERTAS
+// ============================================
+
+async function acknowledgeAlert(alertId) {
+    try {
+        const formData = new FormData();
+        formData.append('alert_id', alertId);
+
+        const response = await fetch('api/psychologist/acknowledge-alert.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showToast('Alerta marcada como atendida', 'success');
+
+            // Actualizar UI - remover alerta de la lista
+            const alertItem = document.querySelector(`[data-alert-id="${alertId}"]`);
+            if (alertItem) {
+                alertItem.classList.add('opacity-50');
+                const statusBadge = alertItem.querySelector('.bg-red-100');
+                if (statusBadge) {
+                    statusBadge.className = 'text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600';
+                    statusBadge.textContent = '✓ Reconocida';
+                }
+                // Remover botón
+                const btn = alertItem.querySelector('button[onclick^="acknowledgeAlert"]');
+                if (btn) btn.remove();
+            }
+
+            // Actualizar badge
+            const badge = document.getElementById('alert-badge');
+            if (badge && !badge.classList.contains('hidden')) {
+                const count = parseInt(badge.textContent) - 1;
+                if (count <= 0) {
+                    badge.classList.add('hidden');
+                } else {
+                    badge.textContent = count > 9 ? '9+' : count;
+                }
+            }
+
+            // Recargar pacientes para actualizar badges individuales
+            loadPatients();
+
+        } else {
+            showToast('Error al marcar alerta', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('Error de conexión', 'error');
     }
 }
 
@@ -556,3 +648,14 @@ function showToast(message, type = 'info') {
         toast.remove();
     }, 3000);
 }
+
+// Animaciones CSS
+const dashboardStyles = document.createElement('style');
+dashboardStyles.textContent = `
+    @keyframes slideIn { 
+        from { transform: translateX(100%); opacity: 0; } 
+        to { transform: translateX(0); opacity: 1; } 
+    }
+    .animate-slideIn { animation: slideIn 0.3s ease-out; }
+`;
+document.head.appendChild(dashboardStyles);
