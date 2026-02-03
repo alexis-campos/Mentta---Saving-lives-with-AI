@@ -3,10 +3,20 @@
  * Main chat functionality for patient interface
  */
 
+// Debug mode based on environment (DEV-009)
+const DEBUG_MODE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+function debugLog(...args) {
+    if (DEBUG_MODE) console.log('[MENTTA Debug]', ...args);
+}
+function debugError(...args) {
+    if (DEBUG_MODE) console.error('[MENTTA Error]', ...args);
+}
+
 // State
 let conversationHistory = [];
 let isLoading = false;
 let isInitialized = false;
+let loadingTextInterval = null; // UX-005: Para rotar texto de carga
 
 // DOM Elements
 const elements = {
@@ -84,7 +94,8 @@ async function loadChatHistory() {
             scrollToBottom(false);
         }
     } catch (error) {
-        // Silent fail - don't expose internal errors
+        // DEV-009: Log en desarrollo, silencioso en producción
+        debugError('Error cargando historial:', error);
     } finally {
         elements.messageInput.focus();
     }
@@ -199,7 +210,8 @@ async function sendMessage() {
             if (lastMessage) lastMessage.remove();
         }
     } catch (error) {
-        // Silent fail - don't expose internal errors
+        // DEV-009: Log en desarrollo, silencioso en producción
+        debugError('Error enviando mensaje:', error);
         Utils.toast('No se pudo enviar el mensaje. Intenta de nuevo.');
     } finally {
         isLoading = false;
@@ -243,10 +255,10 @@ function updateSentimentIndicator(sentiment) {
         }
     }
 
-    // Hide after 5 seconds
+    // UX-004 FIX: Aumentar tiempo a 20 segundos para que el usuario lo note
     setTimeout(() => {
         elements.sentimentIndicator.classList.add('hidden');
-    }, 10000);
+    }, 20000);
 }
 
 /**

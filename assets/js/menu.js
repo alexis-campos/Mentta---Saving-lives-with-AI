@@ -198,21 +198,30 @@ const Menu = {
     /**
      * Render chat history in sidebar
      */
-    renderChatHistory() {
+    renderChatHistory(filter = '') {
         if (!this.elements.chatHistoryList) return;
 
-        if (this.state.chatHistory.length === 0) {
+        // UX-003: Filtrar por búsqueda
+        let filteredHistory = this.state.chatHistory;
+        if (filter.trim()) {
+            const lowerFilter = filter.toLowerCase();
+            filteredHistory = this.state.chatHistory.filter(session =>
+                (session.title || '').toLowerCase().includes(lowerFilter)
+            );
+        }
+
+        if (filteredHistory.length === 0) {
             this.elements.chatHistoryList.innerHTML = `
                 <div class="px-4 py-3 text-center">
                     <p style="color: var(--text-tertiary); font-size: 0.8125rem;">
-                        No hay conversaciones anteriores
+                        ${filter.trim() ? 'No se encontraron conversaciones' : 'No hay conversaciones anteriores'}
                     </p>
                 </div>
             `;
             return;
         }
 
-        this.elements.chatHistoryList.innerHTML = this.state.chatHistory.map(session => {
+        this.elements.chatHistoryList.innerHTML = filteredHistory.map(session => {
             const moodClass = this.getMoodClass(session.mood);
             const dateLabel = this.formatDateLabel(session.date);
 
@@ -224,6 +233,13 @@ const Menu = {
                 </div>
             `;
         }).join('');
+    },
+
+    /**
+     * UX-003: Filter chat history by search term
+     */
+    filterChatHistory(searchTerm) {
+        this.renderChatHistory(searchTerm);
     },
 
     /**
@@ -604,7 +620,7 @@ const Menu = {
     },
 
     /**
-     * Handle crisis option selection
+     * Handle crisis option selection - DEV-001/002 FIX
      */
     async selectCrisisOption(type) {
         try {
@@ -622,8 +638,8 @@ const Menu = {
             const data = await response.json();
 
             if (data.success) {
-                // Show confirmation
-                this.showCrisisConfirmation(type);
+                // DEV-001/002: Pasar datos de notificaciones para feedback visual
+                this.showCrisisConfirmation(type, data.data || null);
             } else {
                 if (typeof Utils !== 'undefined' && Utils.toast) {
                     Utils.toast(data.error || 'Error al procesar la solicitud');
@@ -638,9 +654,9 @@ const Menu = {
     },
 
     /**
-     * Show crisis confirmation
+     * Show crisis confirmation - DEV-001/002, UX-009 FIX: Feedback visual mejorado
      */
-    showCrisisConfirmation(type) {
+    showCrisisConfirmation(type, data = null) {
         const modal = document.getElementById('crisis-modal');
         if (!modal) return;
 
@@ -648,15 +664,39 @@ const Menu = {
         if (!body) return;
 
         let message = '';
+        let details = '';
+        let icon = '💜';
+
         switch (type) {
             case 'psychologist':
-                message = 'Tu psicólogo ha sido notificado y se pondrá en contacto contigo pronto.';
+                message = 'Tu psicólogo ha sido notificado.';
+                details = '📧 Se envió una alerta a su panel. Se pondrá en contacto contigo pronto.';
+                icon = '👨‍⚕️';
                 break;
             case 'emergency_contact':
-                message = 'Tu contacto de emergencia ha sido notificado.';
+                message = 'Tus contactos de emergencia han sido notificados.';
+                // UX-009: Mostrar qué contactos fueron notificados
+                if (data && data.notifications_sent && data.notifications_sent.emergency_contacts) {
+                    const contacts = data.notifications_sent.emergency_contacts;
+                    if (contacts.length > 0) {
+                        details = '<div style="text-align: left; margin-top: 1rem; padding: 0.75rem; border-radius: 0.5rem; background: var(--success-light);">';
+                        details += '<p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--success);">\u2705 Notificaciones enviadas:</p>';
+                        contacts.forEach(c => {
+                            details += `<p style="font-size: 0.875rem; margin: 0.25rem 0;">\u2022 ${c.contact_name} (${c.contact_relationship}) - Tel: ${c.contact_phone_masked}</p>`;
+                        });
+                        details += '</div>';
+                    } else {
+                        details = '<p style="color: var(--warning);">\u26a0\ufe0f No tienes contactos de emergencia configurados. Puedes agregarlos en tu perfil.</p>';
+                    }
+                } else {
+                    details = '📤 Se enviaron alertas SMS a tus contactos registrados.';
+                }
+                icon = '👪';
                 break;
             case 'crisis_line':
                 message = 'Te estamos conectando con la línea de crisis.';
+                details = '📞 Marca 113 para hablar con un profesional 24/7.';
+                icon = '📞de';
                 break;
             case 'calming_exercises':
                 this.closeCrisisModal();
@@ -666,14 +706,17 @@ const Menu = {
 
         body.innerHTML = `
             <div class="text-center py-6">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">💜</div>
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style="background: var(--success-light); font-size: 2rem;">
+                    ${icon}
+                </div>
                 <h3 style="color: var(--text-primary); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">
-                    Ayuda en camino
+                    ✅ Ayuda en camino
                 </h3>
-                <p style="color: var(--text-secondary); font-size: 0.9375rem; margin-bottom: 1.5rem;">
+                <p style="color: var(--text-secondary); font-size: 0.9375rem; margin-bottom: 0.5rem;">
                     ${message}
                 </p>
-                <p style="color: var(--text-tertiary); font-size: 0.8125rem;">
+                ${details}
+                <p style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 1rem;">
                     Mientras tanto, ¿quieres seguir hablando conmigo?
                 </p>
                 <button class="resource-btn" style="margin-top: 1rem;" onclick="Menu.closeCrisisModal()">
@@ -775,3 +818,169 @@ window.openResourcesModal = () => Menu.openResourcesModal();
 window.closeResourcesModal = () => Menu.closeResourcesModal();
 window.toggleResourceCard = (cardId) => Menu.toggleResourceCard(cardId);
 window.showNewPhrase = () => Menu.showNewPhrase();
+
+// ========================================
+// UX-001: Herramientas Interactivas
+// ========================================
+
+// Breathing Exercise State
+let breathingInterval = null;
+let breathingPhase = 0;
+let breathingRound = 0;
+const BREATHING_PHASES = [
+    { name: 'Inhala', duration: 4, scale: 1.3, color: '#6366F1' },
+    { name: 'Mantén', duration: 7, scale: 1.3, color: '#8B5CF6' },
+    { name: 'Exhala', duration: 8, scale: 1, color: '#10B981' }
+];
+const MAX_BREATHING_ROUNDS = 4;
+
+function startBreathingExercise() {
+    const circle = document.getElementById('breathing-circle');
+    const text = document.getElementById('breathing-text');
+    const instruction = document.getElementById('breathing-instruction');
+    const startBtn = document.getElementById('breathing-start-btn');
+    const stopBtn = document.getElementById('breathing-stop-btn');
+
+    if (!circle || !text) return;
+
+    // Hide start, show stop
+    if (startBtn) startBtn.classList.add('hidden');
+    if (stopBtn) stopBtn.classList.remove('hidden');
+
+    breathingPhase = 0;
+    breathingRound = 0;
+
+    function runPhase() {
+        const phase = BREATHING_PHASES[breathingPhase];
+        let count = phase.duration;
+
+        // Style circle
+        circle.style.transform = `scale(${phase.scale})`;
+        circle.style.background = phase.color;
+        text.textContent = phase.name;
+        if (instruction) instruction.textContent = `Ronda ${breathingRound + 1} de ${MAX_BREATHING_ROUNDS}`;
+
+        // Countdown
+        breathingInterval = setInterval(() => {
+            count--;
+            text.textContent = count > 0 ? count : phase.name;
+
+            if (count <= 0) {
+                clearInterval(breathingInterval);
+
+                // Next phase
+                breathingPhase = (breathingPhase + 1) % BREATHING_PHASES.length;
+
+                // Check if round complete
+                if (breathingPhase === 0) {
+                    breathingRound++;
+                    if (breathingRound >= MAX_BREATHING_ROUNDS) {
+                        // Exercise complete
+                        completeBreathingExercise();
+                        return;
+                    }
+                }
+
+                // Continue to next phase
+                setTimeout(runPhase, 500);
+            }
+        }, 1000);
+    }
+
+    runPhase();
+}
+
+function stopBreathingExercise() {
+    if (breathingInterval) clearInterval(breathingInterval);
+    resetBreathingUI();
+}
+
+function completeBreathingExercise() {
+    const circle = document.getElementById('breathing-circle');
+    const text = document.getElementById('breathing-text');
+    const instruction = document.getElementById('breathing-instruction');
+
+    if (circle) {
+        circle.style.transform = 'scale(1)';
+        circle.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+    }
+    if (text) text.textContent = '¡Bien hecho!';
+    if (instruction) instruction.textContent = 'Has completado 4 rondas de respiración 4-7-8';
+
+    // Reset after 3 seconds
+    setTimeout(resetBreathingUI, 3000);
+}
+
+function resetBreathingUI() {
+    const circle = document.getElementById('breathing-circle');
+    const text = document.getElementById('breathing-text');
+    const instruction = document.getElementById('breathing-instruction');
+    const startBtn = document.getElementById('breathing-start-btn');
+    const stopBtn = document.getElementById('breathing-stop-btn');
+
+    if (circle) {
+        circle.style.transform = 'scale(1)';
+        circle.style.background = 'linear-gradient(135deg, var(--accent-primary), var(--success))';
+    }
+    if (text) text.textContent = 'Iniciar';
+    if (instruction) instruction.textContent = 'Toca el círculo para comenzar la respiración 4-7-8';
+    if (startBtn) startBtn.classList.remove('hidden');
+    if (stopBtn) stopBtn.classList.add('hidden');
+
+    breathingPhase = 0;
+    breathingRound = 0;
+}
+
+// Grounding Checklist State
+let groundingCompleted = [];
+
+function toggleGroundingItem(element, step) {
+    if (groundingCompleted.includes(step)) return; // Already completed
+
+    groundingCompleted.push(step);
+
+    // Mark as complete
+    element.style.border = '2px solid var(--success)';
+    element.style.background = 'var(--success-light)';
+    const check = element.querySelector('.grounding-check');
+    if (check) {
+        check.textContent = '✅';
+        check.style.background = 'var(--success)';
+        check.style.borderColor = 'var(--success)';
+    }
+
+    // Check if all complete
+    if (groundingCompleted.length >= 5) {
+        setTimeout(() => {
+            const completeMsg = document.getElementById('grounding-complete');
+            if (completeMsg) completeMsg.classList.remove('hidden');
+        }, 500);
+    }
+}
+
+function resetGroundingChecklist() {
+    groundingCompleted = [];
+    const completeMsg = document.getElementById('grounding-complete');
+    if (completeMsg) completeMsg.classList.add('hidden');
+
+    const items = document.querySelectorAll('.grounding-item');
+    const emojis = ['5️⃣', '4️⃣', '3️⃣', '2️⃣', '1️⃣'];
+
+    items.forEach((item, index) => {
+        item.style.border = '2px solid var(--border-color)';
+        item.style.background = 'var(--bg-tertiary)';
+        const check = item.querySelector('.grounding-check');
+        if (check) {
+            check.textContent = emojis[index];
+            check.style.background = 'var(--bg-secondary)';
+            check.style.borderColor = 'var(--border-color)';
+        }
+    });
+}
+
+// Export globals
+window.startBreathingExercise = startBreathingExercise;
+window.stopBreathingExercise = stopBreathingExercise;
+window.toggleGroundingItem = toggleGroundingItem;
+window.resetGroundingChecklist = resetGroundingChecklist;
+

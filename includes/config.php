@@ -10,13 +10,15 @@ if (file_exists($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
         $line = trim($line);
-        if (empty($line) || $line[0] === '#') continue;
-        if (strpos($line, '=') === false) continue;
-        
+        if (empty($line) || $line[0] === '#')
+            continue;
+        if (strpos($line, '=') === false)
+            continue;
+
         list($key, $value) = explode('=', $line, 2);
         $key = trim($key);
         $value = trim($value);
-        
+
         if (!isset($_ENV[$key])) {
             $_ENV[$key] = $value;
             putenv("{$key}={$value}");
@@ -27,7 +29,8 @@ if (file_exists($envFile)) {
 /**
  * Get environment variable with fallback
  */
-function env($key, $default = null) {
+function env($key, $default = null)
+{
     $value = getenv($key);
     if ($value === false) {
         $value = $_ENV[$key] ?? $default;
@@ -43,13 +46,22 @@ define('DB_PASS', env('DB_PASS', ''));
 define('DB_CHARSET', 'utf8mb4');
 
 // AI Configuration (Google Gemini)
-define('AI_API_KEY', env('AI_API_KEY', 'YOUR_API_KEY_HERE'));
+$aiApiKey = env('AI_API_KEY', '');
+// DEV-008: Validar que la API key esté configurada correctamente
+if (empty($aiApiKey) || $aiApiKey === 'YOUR_API_KEY_HERE') {
+    if (APP_ENV !== 'development') {
+        throw new RuntimeException('AI_API_KEY no configurada. Verifica tu archivo .env');
+    }
+    // En desarrollo, permitir continuar pero loguear advertencia
+    error_log('[MENTTA WARNING] AI_API_KEY no configurada - algunas funciones no funcionarán');
+}
+define('AI_API_KEY', $aiApiKey);
 define('AI_API_URL', 'https://generativelanguage.googleapis.com/v1beta/models/');
-define('AI_MODEL', 'gemini-3-pro-preview');
-define('AI_TIMEOUT', 45); // Aumentado a 45s
-define('AI_TIMEOUT_CRITICAL', 60); // Aumentado a 60s para crisis
-define('AI_MAX_FAILURES', 3); // Intentos antes de abrir el circuito
-define('AI_RECOVERY_TIME', 300); // 5 minutos de enfriamiento
+define('AI_MODEL', env('AI_MODEL', 'gemini-2.0-flash'));
+define('AI_TIMEOUT', 45);
+define('AI_TIMEOUT_CRITICAL', 60);
+define('AI_MAX_FAILURES', 3);
+define('AI_RECOVERY_TIME', 300);
 
 // Security Settings
 define('SESSION_LIFETIME', 86400);
@@ -59,7 +71,7 @@ define('PASSWORD_MIN_LENGTH', 8);
 
 // Application Settings
 define('APP_NAME', 'Mentta');
-define('APP_VERSION', '0.5.2');
+define('APP_VERSION', '0.5.3');
 define('APP_URL', env('APP_URL', 'http://localhost/Mentta---Saving-lives-with-AI'));
 define('APP_ENV', env('APP_ENV', 'development'));
 define('APP_TIMEZONE', 'America/Lima');
@@ -102,7 +114,8 @@ if (APP_ENV === 'development') {
 /**
  * Set security headers
  */
-function setSecurityHeaders() {
+function setSecurityHeaders()
+{
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: DENY');
     header('X-XSS-Protection: 1; mode=block');

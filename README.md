@@ -1,52 +1,75 @@
-# Mentta - AI-Powered Mental Health Support
+# Mentta - AI-Powered Mental Health Support 💜
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.5.2-blue.svg" alt="Version 0.5.2">
+  <img src="https://img.shields.io/badge/version-0.5.3-blue.svg" alt="Version 0.5.3">
   <img src="https://img.shields.io/badge/PHP-8.0%2B-777BB4.svg" alt="PHP 8.0+">
   <img src="https://img.shields.io/badge/MySQL-8.0%2B-4479A1.svg" alt="MySQL 8.0+">
-  <img src="https://img.shields.io/badge/AI-Google%20Gemini%203-FF6F00.svg" alt="Google Gemini 3">
-  <img src="https://img.shields.io/badge/Google%20Maps-API-34A853.svg" alt="Google Maps">
+  <img src="https://img.shields.io/badge/AI-Google%20Gemini%202.0-FF6F00.svg" alt="Google Gemini 2.0">
+  <img src="https://img.shields.io/badge/Maps-Leaflet%20%2B%20Google-34A853.svg" alt="Maps">
+  <img src="https://img.shields.io/badge/License-Private-red.svg" alt="License">
 </p>
 
-A 24/7 emotional support platform combining AI-powered conversational therapy with professional psychologist supervision. Designed to prevent suicide and provide accessible mental health support.
+<p align="center">
+  <strong>A 24/7 emotional support platform combining AI-powered conversational therapy with professional psychologist supervision.</strong>
+</p>
 
-## 🆕 What's New in v0.5.2
+<p align="center">
+  Designed to prevent suicide and provide accessible mental health support.
+</p>
 
-### 🗺️ Interactive Map of Mental Health Centers
-- **Full-page map** at `map.php` with Google Maps integration
-- **Geolocation** - Automatically centers on user's location (with Lima fallback)
-- **20+ Mental Health Centers** in Lima with real data
-- **Color-coded markers:**
-  - 🔵 Blue: Your location
-  - 🟢 Green: Centers using Mentta
-  - 🟠 Orange: 24h Emergency centers
-  - 🔴 Red: Other centers
-- **Haversine distance** calculation for nearest centers
-- **Filters:** All, Mentta-only, Emergency 24h
-- **Search** by name, district, or services
-- **Responsive panel:** Side panel (desktop) / Bottom swipeable panel (mobile)
-- **Actions:** Call center, Get directions (Google Maps)
+---
 
-### 🍔 Hamburger Menu Enhancement
-- "Mapa de Centros" button now opens full map page
-- Removed placeholder modal
+## 🆕 What's New in v0.5.3
 
-### Previous (v0.5.1): Bug Fixes & Improvements
-- Fixed AI Model - Updated to `gemini-3-flash-preview`
-- Increased Response Limits - AI responses up to 4000 tokens
+### 🔧 Major Bug Fixes & Improvements
+
+| Category | Fix | Description |
+|----------|-----|-------------|
+| 🤖 **AI** | Circuit Breaker | Fallback to file storage when DB is unavailable |
+| 🗺️ **Maps** | Leaflet Fallback | Works without Google Maps API key (OpenStreetMap) |
+| ⚡ **Performance** | Rate Limiter | Probabilistic cleanup (1% of requests) |
+| 🌐 **i18n** | Translations | 50+ strings in Spanish & English |
+| 🔒 **Security** | Input Validation | Message length validation (5000 chars max) |
+| 🎨 **UX** | Search History | Filter chat conversations by title |
+| 🛡️ **Reliability** | Error Handling | Standardized error responses across API |
+
+### 🎨 UI/UX Enhancements
+
+- **🫁 Interactive Breathing Timer** - 4-7-8 technique with animated circle
+- **🧠 Grounding Checklist** - Interactive 5-4-3-2-1 technique
+- **👋 Personalized Welcome** - Time-based greeting (morning/afternoon/evening)
+- **🔍 Chat Search** - Filter previous conversations in sidebar
+- **💓 Panic Button** - Enhanced visibility with pulse animation
+- **📊 Improved Loading** - Multi-state indicator (thinking → analyzing → writing)
+- **📱 Sentiment Indicator** - Now visible for 20 seconds (was 8s)
+
+### 🛡️ Security Hardening
+
+- Session regeneration on role verification
+- SQL whitelist for dynamic inserts
+- Blocked `/test/` directory in production
+- Proper IP validation
+- Session invalidation on logout
+
+---
 
 ## ⚡ Features
 
 | Feature | Description |
 |---------|-------------|
-| 🤖 **AI Chat** | Empathetic conversations powered by Google Gemini 3 |
+| 🤖 **AI Chat** | Empathetic 24/7 conversations powered by Google Gemini 2.0 Flash |
 | 🧠 **Contextual Risk Detection** | AI understands intent, not just keywords |
 | 🔒 **Safe Life Mode** | Automatic silent alerts when crisis is detected |
-| 🚨 **Alert System** | Real-time notifications to psychologists with sound |
+| 🚨 **Real-Time Alerts** | Instant notifications to psychologists with sound |
 | 📊 **Deep Sentiment Analysis** | 5-emotion analysis (positive, negative, anxiety, sadness, anger) |
-| 💾 **Memory System** | AI extracts and remembers people, places, events |
-| 👥 **Professional Dashboard** | Psychologists monitor and respond to alerts |
+| 💾 **Memory System** | AI remembers people, places, events from conversations |
+| 🗺️ **Mental Health Map** | Find nearby centers with Leaflet/Google Maps |
+| 👥 **Professional Dashboard** | Psychologists monitor patients and respond to alerts |
 | 📱 **Mobile-First** | Beautiful responsive design for all devices |
+| 🌙 **Dark Mode** | Automatic theme based on system preference |
+| 🇪🇸🇺🇸 **Bilingual** | Full Spanish & English support |
+
+---
 
 ## 🧠 How AI Analysis Works
 
@@ -74,47 +97,64 @@ Patient sends message
    │                                     │
    │  4. Safe Life Mode Decision         │
    │     - Activate warm response?       │
+   │                                     │
+   │  5. Circuit Breaker                 │
+   │     - Fallback if AI fails          │
    └─────────────────────────────────────┘
          ↓
    Response + Alert (if needed)
 ```
 
-### Example: Contextual Understanding
+### Contextual Understanding Examples
 
 | Message | Old (Keywords) | New (AI) |
 |---------|---------------|----------|
-| "Me quiero morir de risa" | � CRITICAL | ✅ None (colloquial expression) |
+| "Me quiero morir de risa" | 🚨 CRITICAL | ✅ None (colloquial) |
 | "Todo es gris, sin sentido" | ✅ None | 🚨 High (implicit hopelessness) |
 | "Mi amigo se cortó ayer" | 🚨 HIGH | ⚠️ Low (about someone else) |
 
-## �📋 Requirements
+---
 
-- PHP 8.0+
-- MySQL 8.0+ or MariaDB 10.3+
-- Apache/Nginx with PHP support
-- Google Gemini API key (get free at [aistudio.google.com](https://aistudio.google.com))
+## 📋 Requirements
+
+| Requirement | Version | Notes |
+|-------------|---------|-------|
+| PHP | 8.0+ | 8.4 recommended |
+| MySQL | 8.0+ | Or MariaDB 10.3+ |
+| Web Server | Apache/Nginx | With mod_rewrite |
+| Node.js | 18+ | Only for Mentta Live (optional) |
+
+### API Keys (Optional)
+
+| Service | Purpose | Get Free Key |
+|---------|---------|--------------|
+| Google Gemini | AI responses | [aistudio.google.com](https://aistudio.google.com) |
+| Google Maps | Map with directions | [console.cloud.google.com](https://console.cloud.google.com) |
+
+> 💡 **Note:** Mentta works without API keys using fallback modes (AI dev mode + Leaflet maps)
+
+---
 
 ## 🚀 Installation
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/mentta.git
-cd mentta
+git clone https://github.com/alexis-campos/Mentta---Saving-lives-with-AI.git
+cd Mentta---Saving-lives-with-AI
 ```
 
-### 2. Setup environment configuration
+### 2. Setup environment
 
 ```bash
-# Copy the example environment file
+# Copy environment template
 cp .env.example .env
 
-# Edit .env with your configuration
-# - Database credentials
-# - Google Gemini API key
+# Edit with your configuration
+nano .env
 ```
 
-### 3. Create the database
+### 3. Create database
 
 ```bash
 # Using MySQL CLI
@@ -122,14 +162,30 @@ mysql -u root -p < database/schema.sql
 mysql -u root -p mentta < database/seed.sql
 ```
 
-Or via phpMyAdmin:
+Or via **phpMyAdmin**:
 1. Create database named `mentta`
 2. Import `database/schema.sql`
 3. Import `database/seed.sql` (optional - adds test data)
 
-### 4. Configure your web server
+### 4. Configure web server
 
-Point your web server to the project directory. For XAMPP/WAMP, place in `htdocs`.
+For **XAMPP/WAMP/LAMP**:
+```bash
+# Symlink or copy to htdocs
+ln -s /path/to/Mentta---Saving-lives-with-AI /opt/lampp/htdocs/mentta
+```
+
+For **Apache** (vhost):
+```apache
+<VirtualHost *:80>
+    ServerName mentta.local
+    DocumentRoot /var/www/mentta
+    <Directory /var/www/mentta>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+```
 
 ### 5. Access the application
 
@@ -137,84 +193,127 @@ Point your web server to the project directory. For XAMPP/WAMP, place in `htdocs
 http://localhost/mentta/login.php
 ```
 
+**Test Credentials:**
+| Role | Email | Password |
+|------|-------|----------|
+| Patient | carlos@test.com | password123 |
+| Psychologist | dra.martinez@mentta.com | password123 |
+
+---
+
 ## 🔐 Environment Variables
 
-Create a `.env` file in the project root (copy from `.env.example`):
+Create a `.env` file in the project root:
 
 ```env
-# Database
+# ===========================================
+# DATABASE CONFIGURATION
+# ===========================================
 DB_HOST=localhost
 DB_NAME=mentta
 DB_USER=root
 DB_PASS=your_password
 
-# Google Gemini AI
+# ===========================================
+# AI CONFIGURATION (Google Gemini)
+# ===========================================
 AI_API_KEY=your_gemini_api_key
+AI_MODEL=gemini-2.0-flash
+# Optional: AI_TIMEOUT=45
 
-# Application
+# ===========================================
+# MAPS CONFIGURATION (Optional)
+# ===========================================
+# Leave empty to use Leaflet/OpenStreetMap fallback
+GOOGLE_MAPS_API_KEY=
+
+# ===========================================
+# APPLICATION SETTINGS
+# ===========================================
 APP_ENV=development
 APP_URL=http://localhost/mentta
+
+# ===========================================
+# SECURITY (Production)
+# ===========================================
+# APP_ENV=production
+# (enables HTTPS cookies, stricter validation)
 ```
 
 > ⚠️ **Never commit your `.env` file to version control!**
+
+---
 
 ## 📁 Project Structure
 
 ```
 mentta/
 ├── api/
-│   ├── chat/                   # Chat API endpoints
-│   │   ├── send-message.php
-│   │   ├── get-history.php
-│   │   └── get-chat-list.php   # Chat sessions for sidebar
-│   ├── map/                    # 🆕 Map API endpoints (v0.5.2)
-│   │   ├── get-nearby-centers.php  # Haversine distance search
-│   │   └── search-centers.php  # Text search by name/district
-│   ├── patient/                # Patient settings API
-│   │   ├── get-preferences.php
-│   │   └── update-theme.php
-│   └── psychologist/           # Psychologist API endpoints
-│       ├── check-alerts.php
+│   ├── chat/                   # Chat API
+│   │   ├── send-message.php    # Main chat endpoint
+│   │   ├── get-history.php     # Message history
+│   │   └── get-chat-list.php   # Sessions for sidebar
+│   ├── crisis/                 # Crisis management
+│   │   └── escalate.php        # Emergency notifications
+│   ├── map/                    # Map API
+│   │   ├── get-nearby-centers.php
+│   │   └── search-centers.php
+│   ├── patient/                # Patient settings
+│   └── psychologist/           # Dashboard API
+│       ├── check-alerts.php    # Long polling for alerts
 │       └── get-patients.php
 ├── assets/
 │   ├── css/
-│   │   ├── chat.css
-│   │   ├── theme.css           # Dark/Light mode theming
-│   │   └── map.css             # 🆕 Map page styles (v0.5.2)
+│   │   ├── theme.css           # Dark/Light mode + variables
+│   │   ├── chat.css            # Chat interface
+│   │   └── map.css             # Map styles
 │   ├── js/
-│   │   ├── chat.js
-│   │   ├── menu.js             # Hamburger menu logic
-│   │   ├── theme.js            # Theme switching
-│   │   ├── map.js              # 🆕 Google Maps integration (v0.5.2)
-│   │   └── utils.js
+│   │   ├── chat.js             # Chat logic + indicators
+│   │   ├── menu.js             # Hamburger menu + modals
+│   │   ├── dashboard.js        # Psychologist dashboard
+│   │   ├── map.js              # Google Maps integration
+│   │   └── utils.js            # Shared utilities
 │   └── sounds/
+│       └── alert.mp3           # Alert notification
 ├── database/
-│   ├── schema.sql
-│   ├── seed.sql
-│   ├── migration_hamburger_menu.sql
-│   └── migration_map.sql       # 🆕 Mental health centers (v0.5.2)
+│   ├── schema.sql              # Full database schema
+│   ├── seed.sql                # Test data
+│   └── migrations/             # Migration files
 ├── includes/
-│   ├── config.php
-│   ├── db.php
-│   ├── auth.php
-│   ├── ai-client.php
-│   └── ai-analyzer.php
+│   ├── config.php              # App configuration
+│   ├── db.php                  # Database helper
+│   ├── auth.php                # Authentication
+│   ├── functions.php           # Utility functions
+│   ├── ai-client.php           # Gemini API client
+│   ├── ai-analyzer.php         # Risk/sentiment analysis
+│   ├── circuit-breaker.php     # Fault tolerance
+│   └── risk-detector.php       # Risk level mapping
+├── multimodal/                 # 🆕 Mentta Live (React/TypeScript)
+│   ├── App.tsx                 # Video call interface
+│   └── components/
+├── tests/                      # PHPUnit tests
+│   └── MenttaTest.php
 ├── chat.php                    # Patient chat interface
-├── map.php                     # 🆕 Mental health centers map (v0.5.2)
+├── map.php                     # Mental health centers map
 ├── dashboard.php               # Psychologist dashboard
-├── profile.php                 # User profile/settings
-├── login.php
-├── register.php
-├── .env.example
+├── profile.php                 # User settings
+├── login.php                   # Authentication
+├── register.php                # Registration
+├── index.php                   # Landing page
+├── .env.example                # Environment template
+├── .htaccess                   # Apache rewrite rules
+├── phpunit.xml                 # Test configuration
 └── README.md
 ```
+
+---
 
 ## 🚨 Alert System Flow
 
 ```
 Patient sends risky message
         ↓
-   AI Analysis
+   AI Analysis (Gemini)
         ↓
   Is it REAL risk?
   (not colloquial)
@@ -235,113 +334,132 @@ Psychologist   /        \
            Contacts  (113 - Peru)
 ```
 
-**Important:** The patient NEVER knows an alert was triggered. The AI simply responds with extra warmth (Safe Life Mode).
+**Important:** The patient **NEVER** knows an alert was triggered. The AI responds with extra warmth (Safe Life Mode).
 
-## 🧪 Testing
+---
 
-```bash
-# Test API connection
-http://localhost/mentta/test/test-api.php
+## 🗺️ Mental Health Map
 
-# Test AI analyzer (risk/sentiment)
-http://localhost/mentta/test/test-ai-analyzer.php
+The map page shows nearby mental health centers with two modes:
 
-# Test memory extraction
-http://localhost/mentta/test/test-ai-memory.php
+| Mode | Trigger | Features |
+|------|---------|----------|
+| **Google Maps** | `GOOGLE_MAPS_API_KEY` set | Full Google Maps, directions, search |
+| **Leaflet** | No API key | OpenStreetMap tiles, basic markers |
 
-# Test chat components
-http://localhost/mentta/test/test-chat.php
+### Marker Colors
+- 🔵 **Blue:** Your location
+- 🟢 **Green:** Centers using Mentta
+- 🟠 **Orange:** 24h Emergency centers
+- 🔴 **Red:** Other centers
 
-# Test alert system
-http://localhost/mentta/test/test-alerts.php
-```
-
-> 💡 **Note:** Google Gemini has rate limits (~15 requests/minute on free tier). Run tests one at a time.
+---
 
 ## 🔄 Changelog
 
-### v0.5.1 (Current)
-**Bug Fixes & Improvements**
-- Fixed AI model configuration (`gemini-3-flash-preview`)
-- Increased AI response token limits (300 → 4000)
-- Added `Utils` object wrapper in `utils.js` for backwards compatibility
-- Removed duplicate `timeAgo()` function declarations
-- Improved API error handling with clean JSON fallbacks
-- Added error suppression for API endpoints
-- Added `test-gemini-api.php` diagnostic tool
+### v0.5.3 (Current)
+**Major Bug Fixes & Stability**
+- Circuit breaker with file fallback for AI failures
+- Leaflet map fallback when no Google Maps API key
+- Rate limiter optimization (probabilistic cleanup)
+- 50+ translation strings for ES/EN
+- Input validation for message length
+- Chat history search functionality
+- Interactive breathing exercises (4-7-8)
+- Interactive grounding checklist (5-4-3-2-1)
+- Personalized time-based welcome message
+- Enhanced panic button visibility
+- Session security improvements
+- PHPUnit test structure
+
+### v0.5.2
+**Interactive Map of Mental Health Centers**
+- Full-page map with Google Maps
+- 20+ mental health centers in Lima
+- Haversine distance calculation
+- Filters and search functionality
+
+### v0.5.1
+**Bug Fixes**
+- Fixed AI model configuration
+- Increased AI response limits
 
 ### v0.5.0
 **Authentication & Landing Page**
-- Modern landing page with hero, stats, and features
-- Login/Register system with form validation
-- API endpoints: `login.php`, `register.php`, `check-session.php`
-- Session management with secure cookies
-- Role-based page protection
-- JavaScript utility library (`utils.js`)
-- Complete flow test (`test-complete-flow.php`)
+- Modern landing page
+- Login/Register system
+- Role-based protection
 
 ### v0.4.0
 **Psychologist Dashboard**
-- Added complete dashboard page (`dashboard.php`)
-- Patient list with real-time status indicators (stable/monitor/risk)
-- 30-day emotional evolution chart with Chart.js
-- Alert timeline with severity indicators
-- Topic word cloud from patient conversations
-- Patient metrics (messages, streak, engagement)
-- Real-time alert popup notifications
-- Responsive design with mobile support
+- Patient list with status
+- Emotional evolution charts
+- Real-time alert popup
 
-**New API Endpoints**
-- `get-patients.php` - List linked patients with status
-- `get-patient-detail.php` - Full patient analytics
-
-### v0.3.1
+### v0.3.x
 **AI-Powered Analysis**
-- Added unified AI analyzer (`ai-analyzer.php`)
-- Every message now analyzed by AI for context
-- Contextual risk detection (understands colloquial expressions)
-- Semantic memory extraction (people, relationships, events, places)
-- Updated to Gemini 3 Flash Preview model
-- API auth via `x-goog-api-key` header
+- Contextual risk detection
+- Semantic memory extraction
+- Alert notification chain
+- Safe Life Mode
 
-### v0.3.0
-- Added complete alert system with notification chain
-- Implemented Safe Life Mode in AI responses
-- Created long polling for real-time psychologist alerts
-- Added psychologist API endpoints
-- Enhanced risk detection with more patterns
-- Created alert testing tools
-- Added alerts.js for frontend notifications
-
-### v0.2.0
-- Added complete chat system with AI integration
-- Implemented sentiment analysis (5 emotions)
-- Added risk detection with Safe Life Mode
-- Created contextual memory system
-- Built mobile-first chat interface
-- Added environment-based configuration (.env)
-
-### v0.1.0
-- Initial database schema
-- User authentication system
-- Basic project structure
+---
 
 ## 🛡️ Security Notes
 
-- All API keys stored in `.env` (excluded from git)
-- Passwords hashed with bcrypt
-- PDO prepared statements for SQL injection prevention
-- Rate limiting on chat endpoints
-- XSS protection via input sanitization
-- Silent alerts protect patient privacy
-- Safety settings allow AI to analyze sensitive content
+| Feature | Implementation |
+|---------|----------------|
+| API Keys | Stored in `.env` (git-ignored) |
+| Passwords | bcrypt hashing |
+| SQL | PDO prepared statements |
+| XSS | Input sanitization |
+| CSRF | Session tokens |
+| Rate Limiting | Per-user limits with sliding window |
+| Session | Secure cookies, regeneration on login |
+| Alerts | Silent (patient never knows) |
+| Test Directory | Blocked in production via `.htaccess` |
+
+---
+
+## 🧪 Testing
+
+### Test API Connection
+```
+http://localhost/mentta/test/test-api.php
+```
+
+### PHPUnit Tests
+```bash
+# Install PHPUnit
+composer require --dev phpunit/phpunit:^10
+
+# Run tests
+./vendor/bin/phpunit tests/
+```
+
+> 💡 **Note:** Tests require `php-xml` extension (`sudo apt install php8.4-xml`)
+
+---
+
+## 🤝 Contributing
+
+This is a private project for academic purposes. For inquiries, contact the development team.
+
+---
 
 ## 📄 License
 
 Private project - All rights reserved.
 
+**Universidad Nacional Mayor de San Marcos**  
+Facultad de Ingeniería de Sistemas e Informática
+
 ---
 
 <p align="center">
   <strong>Mentta</strong> - Saving lives with AI 💜
+</p>
+
+<p align="center">
+  <sub>Built with ❤️ by the Mentta Team</sub>
 </p>

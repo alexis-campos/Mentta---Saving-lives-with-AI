@@ -56,6 +56,21 @@ if ($weekMood !== null) {
     else
         $moodEmoji = '😔';
 }
+
+// UX-002: Determinar saludo según hora del día
+$hour = (int) date('H');
+$greeting = 'Hola';
+$contextMessage = '¿Cómo te sientes hoy?';
+if ($hour >= 5 && $hour < 12) {
+    $greeting = 'Buenos días';
+    $contextMessage = '¿Cómo amaneciste hoy?';
+} elseif ($hour >= 12 && $hour < 18) {
+    $greeting = 'Buenas tardes';
+    $contextMessage = '¿Cómo va tu día?';
+} elseif ($hour >= 18 || $hour < 5) {
+    $greeting = 'Buenas noches';
+    $contextMessage = '¿Cómo te encuentras esta noche?';
+}
 ?>
 <!DOCTYPE html>
 <html lang="es" data-theme="<?= htmlspecialchars($theme) ?>">
@@ -159,9 +174,15 @@ if ($weekMood !== null) {
                 </div>
             <?php endif; ?>
 
-            <!-- Chat History -->
+            <!-- Chat History - UX-003 FIXED: Búsqueda agregada -->
             <div class="sidebar-section">
                 <div class="sidebar-section-title">Conversaciones Anteriores</div>
+                <!-- UX-003: Campo de búsqueda -->
+                <div class="px-3 mb-2">
+                    <input type="text" id="chat-search" placeholder="🔍 Buscar conversación..."
+                        oninput="Menu.filterChatHistory(this.value)" class="w-full px-3 py-2 rounded-lg text-sm"
+                        style="background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                </div>
                 <div id="chat-history-list" class="chat-history-list">
                     <!-- Populated by JS -->
                     <div class="px-4 py-3 text-center">
@@ -229,17 +250,23 @@ if ($weekMood !== null) {
         <div class="max-w-2xl mx-auto">
             <!-- Messages Container -->
             <div id="messagesContainer" class="min-h-[calc(100vh-13rem)] px-4 py-6 space-y-4">
-                <!-- Welcome message -->
+                <!-- Welcome message - UX-002 FIXED -->
                 <div id="welcomeMessage" class="text-center py-8">
                     <div
                         class="w-20 h-20 bg-gradient-to-br from-mentta-500 to-purple-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-xl shadow-mentta-500/30">
                         <span class="text-white font-bold text-3xl">M</span>
                     </div>
-                    <h2 class="text-xl font-semibold mb-2" style="color: var(--text-primary);">Hola,
+                    <h2 class="text-xl font-semibold mb-2" style="color: var(--text-primary);">
+                        <?= htmlspecialchars($greeting) ?>,
                         <?= htmlspecialchars(explode(' ', $user['name'])[0]) ?> 👋
                     </h2>
                     <p style="color: var(--text-secondary);" class="max-w-sm mx-auto">Estoy aquí para escucharte.
-                        Cuéntame, ¿cómo te sientes hoy?</p>
+                        <?= htmlspecialchars($contextMessage) ?>
+                    </p>
+                    <?php if ($weekMood !== null && $weekMood < 0.4): ?>
+                        <p class="mt-3 text-sm" style="color: var(--text-tertiary);">Vi que has tenido días difíciles esta
+                            semana. Estoy aquí para ti. 💜</p>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Messages will be rendered here -->
@@ -267,7 +294,7 @@ if ($weekMood !== null) {
         </div>
     </div>
 
-    <!-- Loading Indicator -->
+    <!-- Loading Indicator - UX-005 FIXED: Más descriptivo -->
     <div id="loadingIndicator" class="fixed bottom-32 left-1/2 transform -translate-x-1/2 hidden">
         <div class="rounded-full px-5 py-3 shadow-lg flex items-center gap-3"
             style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
@@ -276,7 +303,8 @@ if ($weekMood !== null) {
                 <div class="w-2 h-2 rounded-full bg-mentta-500 animate-bounce" style="animation-delay: 150ms"></div>
                 <div class="w-2 h-2 rounded-full bg-mentta-500 animate-bounce" style="animation-delay: 300ms"></div>
             </div>
-            <span class="text-sm" style="color: var(--text-secondary);">Mentta está escribiendo...</span>
+            <span id="loadingText" class="text-sm" style="color: var(--text-secondary);">Mentta está
+                analizando...</span>
         </div>
     </div>
 
@@ -401,7 +429,7 @@ if ($weekMood !== null) {
             </div>
             <div class="modal-body" style="overflow-y: auto;">
 
-                <!-- Breathing Exercises -->
+                <!-- Breathing Exercises - UX-001 FIXED: Herramienta interactiva -->
                 <div id="resource-breathing" class="resource-card">
                     <div class="resource-card-header" onclick="toggleResourceCard('resource-breathing')">
                         <span class="resource-card-title">
@@ -411,28 +439,34 @@ if ($weekMood !== null) {
                         <span class="resource-card-chevron">▼</span>
                     </div>
                     <div class="resource-card-content">
-                        <h4 style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">Respiración
-                            4-7-8 (Calma rápida)</h4>
-                        <p>Esta técnica ayuda a reducir la ansiedad y promover la relajación:</p>
+                        <!-- Timer de Respiración Interactivo -->
+                        <div id="breathing-timer" class="mb-6 p-6 rounded-2xl text-center"
+                            style="background: linear-gradient(135deg, var(--accent-light), var(--success-light));">
+                            <div id="breathing-circle"
+                                class="w-32 h-32 mx-auto mb-4 rounded-full flex items-center justify-center transition-all duration-1000"
+                                style="background: linear-gradient(135deg, var(--accent-primary), var(--success)); box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);">
+                                <span id="breathing-text" class="text-white font-bold text-lg">Iniciar</span>
+                            </div>
+                            <p id="breathing-instruction" class="text-sm mb-3" style="color: var(--text-secondary);">
+                                Toca el círculo para comenzar la respiración 4-7-8</p>
+                            <button id="breathing-start-btn" onclick="startBreathingExercise()"
+                                class="resource-btn">Comenzar Ejercicio</button>
+                            <button id="breathing-stop-btn" onclick="stopBreathingExercise()"
+                                class="resource-btn resource-btn-secondary hidden">Detener</button>
+                        </div>
+
+                        <h4 style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">Cómo funciona:
+                        </h4>
                         <ol>
                             <li><strong>Inhala</strong> por la nariz contando hasta <strong>4</strong></li>
                             <li><strong>Mantén</strong> el aire contando hasta <strong>7</strong></li>
                             <li><strong>Exhala</strong> por la boca contando hasta <strong>8</strong></li>
                             <li>Repite <strong>4 veces</strong></li>
                         </ol>
-                        <h4 style="color: var(--text-primary); font-weight: 600; margin: 1rem 0 0.5rem 0;">Box Breathing
-                            (Respiración cuadrada)</h4>
-                        <ol>
-                            <li>Inhala contando hasta 4</li>
-                            <li>Mantén contando hasta 4</li>
-                            <li>Exhala contando hasta 4</li>
-                            <li>Mantén vacío contando hasta 4</li>
-                            <li>Repite 4 rondas</li>
-                        </ol>
                     </div>
                 </div>
 
-                <!-- Grounding 5-4-3-2-1 -->
+                <!-- Grounding 5-4-3-2-1 - UX-001 FIXED: Checklist interactivo -->
                 <div id="resource-grounding" class="resource-card">
                     <div class="resource-card-header" onclick="toggleResourceCard('resource-grounding')">
                         <span class="resource-card-title">
@@ -442,17 +476,94 @@ if ($weekMood !== null) {
                         <span class="resource-card-chevron">▼</span>
                     </div>
                     <div class="resource-card-content">
-                        <p>Esta técnica te ayuda a volver al presente cuando sientes ansiedad o pánico.</p>
-                        <p style="color: var(--text-primary); font-weight: 500;">Nombra en voz alta:</p>
-                        <ol>
-                            <li><strong>5 cosas</strong> que PUEDES VER</li>
-                            <li><strong>4 cosas</strong> que PUEDES TOCAR</li>
-                            <li><strong>3 cosas</strong> que PUEDES ESCUCHAR</li>
-                            <li><strong>2 cosas</strong> que PUEDES OLER</li>
-                            <li><strong>1 cosa</strong> que PUEDES SABOREAR</li>
-                        </ol>
-                        <p style="font-style: italic; margin-top: 0.75rem;">Tómate tu tiempo con cada paso. No hay
-                            prisa.</p>
+                        <p>Esta técnica te ayuda a volver al presente. <strong>Toca cada ítem cuando lo
+                                completes:</strong></p>
+
+                        <!-- Checklist interactivo -->
+                        <div id="grounding-checklist" class="mt-4 space-y-3">
+                            <div class="grounding-item p-3 rounded-xl cursor-pointer transition-all"
+                                onclick="toggleGroundingItem(this, 1)"
+                                style="border: 2px solid var(--border-color); background: var(--bg-tertiary);">
+                                <div class="flex items-center gap-3">
+                                    <div class="grounding-check w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                                        style="background: var(--bg-secondary); border: 2px solid var(--border-color);">
+                                        5️⃣</div>
+                                    <div>
+                                        <strong style="color: var(--text-primary);">5 cosas que VES</strong>
+                                        <p class="text-xs" style="color: var(--text-tertiary);">Mira a tu alrededor y
+                                            nombra 5 objetos</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grounding-item p-3 rounded-xl cursor-pointer transition-all"
+                                onclick="toggleGroundingItem(this, 2)"
+                                style="border: 2px solid var(--border-color); background: var(--bg-tertiary);">
+                                <div class="flex items-center gap-3">
+                                    <div class="grounding-check w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                                        style="background: var(--bg-secondary); border: 2px solid var(--border-color);">
+                                        4️⃣</div>
+                                    <div>
+                                        <strong style="color: var(--text-primary);">4 cosas que TOCAS</strong>
+                                        <p class="text-xs" style="color: var(--text-tertiary);">Siente la textura de
+                                            objetos cercanos</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grounding-item p-3 rounded-xl cursor-pointer transition-all"
+                                onclick="toggleGroundingItem(this, 3)"
+                                style="border: 2px solid var(--border-color); background: var(--bg-tertiary);">
+                                <div class="flex items-center gap-3">
+                                    <div class="grounding-check w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                                        style="background: var(--bg-secondary); border: 2px solid var(--border-color);">
+                                        3️⃣</div>
+                                    <div>
+                                        <strong style="color: var(--text-primary);">3 cosas que ESCUCHAS</strong>
+                                        <p class="text-xs" style="color: var(--text-tertiary);">Presta atención a los
+                                            sonidos</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grounding-item p-3 rounded-xl cursor-pointer transition-all"
+                                onclick="toggleGroundingItem(this, 4)"
+                                style="border: 2px solid var(--border-color); background: var(--bg-tertiary);">
+                                <div class="flex items-center gap-3">
+                                    <div class="grounding-check w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                                        style="background: var(--bg-secondary); border: 2px solid var(--border-color);">
+                                        2️⃣</div>
+                                    <div>
+                                        <strong style="color: var(--text-primary);">2 cosas que HUELES</strong>
+                                        <p class="text-xs" style="color: var(--text-tertiary);">Identifica olores a tu
+                                            alrededor</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grounding-item p-3 rounded-xl cursor-pointer transition-all"
+                                onclick="toggleGroundingItem(this, 5)"
+                                style="border: 2px solid var(--border-color); background: var(--bg-tertiary);">
+                                <div class="flex items-center gap-3">
+                                    <div class="grounding-check w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                                        style="background: var(--bg-secondary); border: 2px solid var(--border-color);">
+                                        1️⃣</div>
+                                    <div>
+                                        <strong style="color: var(--text-primary);">1 cosa que SABOREAS</strong>
+                                        <p class="text-xs" style="color: var(--text-tertiary);">Noté el sabor en tu boca
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="grounding-complete" class="hidden mt-4 p-4 rounded-xl text-center"
+                            style="background: var(--success-light);">
+                            <span class="text-2xl">🌟</span>
+                            <p class="font-medium mt-2" style="color: var(--success);">!¡Excelente! Completaste el
+                                ejercicio</p>
+                            <button onclick="resetGroundingChecklist()" class="mt-2 text-sm underline"
+                                style="color: var(--text-secondary);">Reiniciar</button>
+                        </div>
+
+                        <p style="font-style: italic; margin-top: 0.75rem; color: var(--text-tertiary);">Tómate tu
+                            tiempo con cada paso. No hay prisa.</p>
                     </div>
                 </div>
 
@@ -581,7 +692,7 @@ if ($weekMood !== null) {
     <!-- Live Call Fullscreen Overlay -->
     <div id="live-overlay" class="fixed inset-0 z-[100] bg-slate-900 hidden">
         <!-- Close button floating -->
-        <button onclick="closeLiveOverlay()" 
+        <button onclick="closeLiveOverlay()"
             class="absolute top-4 right-4 z-20 text-slate-400 hover:text-white transition-colors p-3 bg-slate-800/80 hover:bg-slate-700 rounded-full backdrop-blur-sm shadow-lg"
             title="Cerrar llamada">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

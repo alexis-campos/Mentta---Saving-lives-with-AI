@@ -825,3 +825,72 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--text-tertiary);
 }
+
+/* ============================================
+   UX-008: Botón de Pánico Mejorado
+   ============================================ */
+.panic-button {
+    animation: panicPulse 2s ease-in-out infinite;
+}
+
+@keyframes panicPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+    }
+}
+
+.panic-button-fullscreen {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: calc(100% - 40px) !important;
+    max-width: 400px !important;
+    padding: 1rem 2rem !important;
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    z-index: 999 !important;
+}
+
+/* ============================================
+   UX-001: Herramientas Interactivas
+   ============================================ */
+.grounding-item.completed {
+    border-color: var(--success) !important;
+    background: var(--success-light) !important;
+}
+
+#breathing-circle {
+    transition: transform 0.5s ease-in-out, background 0.5s ease-in-out;
+}
+
+.resource-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.resource-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.resource-btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.resource-btn-secondary:hover {
+    background: var(--bg-secondary);
+}
+

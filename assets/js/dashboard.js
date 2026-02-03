@@ -4,10 +4,20 @@
  * CORREGIDO: Sistema de alertas unificado
  */
 
+// Debug mode (DEV-021)
+const DEBUG_MODE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+function debugLog(...args) {
+    if (DEBUG_MODE) console.log('[Dashboard Debug]', ...args);
+}
+function debugError(...args) {
+    if (DEBUG_MODE) console.error('[Dashboard Error]', ...args);
+}
+
 let selectedPatientId = null;
 let emotionChart = null;
 let allPatients = [];
 let lastAlertTimestamp = null;
+let alertPollingDelay = 5000; // DEV-015: Base delay para exponential backoff
 
 // ============================================
 // INICIALIZACIÓN
@@ -56,7 +66,7 @@ async function loadPatients() {
             container.innerHTML = `<p class="text-red-500 text-center py-4">${data.error || 'Error al cargar'}</p>`;
         }
     } catch (error) {
-        console.error('Error cargando pacientes:', error);
+        debugError('Error cargando pacientes:', error);
         container.innerHTML = `<p class="text-red-500 text-center py-4">Error de conexión</p>`;
     }
 }
@@ -75,12 +85,17 @@ function renderPatientsList(patients) {
     container.innerHTML = '';
 
     if (patients.length === 0) {
+        // UX-006: Estado vacío mejorado y atractivo
         container.innerHTML = `
-            <div class="text-center py-8 text-gray-500">
-                <svg class="w-12 h-12 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                </svg>
-                <p>No hay pacientes vinculados</p>
+            <div class="text-center py-10">
+                <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
+                    <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">¡Bienvenido al Panel!</h3>
+                <p class="text-gray-500 text-sm mb-4">Aún no tienes pacientes vinculados.</p>
+                <p class="text-gray-400 text-xs">Los pacientes pueden vincularse desde su perfil.</p>
             </div>
         `;
         return;
@@ -173,7 +188,7 @@ async function loadPatientDetail(patientId) {
             showToast('Error al cargar detalles', 'error');
         }
     } catch (error) {
-        console.error('Error cargando detalle:', error);
+        debugError('Error cargando detalle:', error);
         document.getElementById('patient-loading').classList.add('hidden');
         document.getElementById('no-patient-selected').classList.remove('hidden');
         showToast('Error de conexión', 'error');
@@ -249,6 +264,9 @@ function renderEmotionChart(emotionHistory) {
 
     const labels = emotionHistory.map(item => formatDateShort(item.date));
 
+    // DEV-016: Null safety - convertir valores null a 0
+    const safeValue = (val) => (val === null || val === undefined || isNaN(val)) ? 0 : parseFloat(val);
+
     emotionChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -256,7 +274,7 @@ function renderEmotionChart(emotionHistory) {
             datasets: [
                 {
                     label: 'Positividad',
-                    data: emotionHistory.map(item => item.positive),
+                    data: emotionHistory.map(item => safeValue(item.positive)),
                     borderColor: '#10B981',
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
                     borderWidth: 2,
@@ -265,7 +283,7 @@ function renderEmotionChart(emotionHistory) {
                 },
                 {
                     label: 'Ansiedad',
-                    data: emotionHistory.map(item => item.anxiety),
+                    data: emotionHistory.map(item => safeValue(item.anxiety)),
                     borderColor: '#F59E0B',
                     backgroundColor: 'rgba(245, 158, 11, 0.1)',
                     borderWidth: 2,
@@ -274,7 +292,7 @@ function renderEmotionChart(emotionHistory) {
                 },
                 {
                     label: 'Tristeza',
-                    data: emotionHistory.map(item => item.sadness),
+                    data: emotionHistory.map(item => safeValue(item.sadness)),
                     borderColor: '#3B82F6',
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',
                     borderWidth: 2,
@@ -283,7 +301,7 @@ function renderEmotionChart(emotionHistory) {
                 },
                 {
                     label: 'Negatividad',
-                    data: emotionHistory.map(item => item.negative),
+                    data: emotionHistory.map(item => safeValue(item.negative)),
                     borderColor: '#EF4444',
                     backgroundColor: 'rgba(239, 68, 68, 0.1)',
                     borderWidth: 2,
@@ -447,10 +465,18 @@ function renderTopTopics(topics) {
 let alertPollingInterval = null;
 
 function startAlertPolling() {
-    console.log('🛡️ Sistema de alertas iniciado');
+    debugLog('🛡️ Sistema de alertas iniciado');
     checkForAlerts();
-    // Polling cada 5 segundos para alertas críticas
-    alertPollingInterval = setInterval(checkForAlerts, 5000);
+    // DEV-015: Usar exponential backoff en lugar de intervalo fijo
+    scheduleNextPoll();
+}
+
+// DEV-015: Exponential backoff para polling
+function scheduleNextPoll() {
+    setTimeout(async () => {
+        await checkForAlerts();
+        scheduleNextPoll();
+    }, alertPollingDelay);
 }
 
 async function checkForAlerts() {
@@ -466,19 +492,27 @@ async function checkForAlerts() {
             // Guardar timestamp
             lastAlertTimestamp = data.data.timestamp;
 
-            // Si hay nuevas alertas, mostrar notificación
+            // Si hay nuevas alertas, mostrar notificación y reducir delay
             if (data.data.new_alerts && data.data.new_alerts.length > 0) {
                 data.data.new_alerts.forEach(alert => {
                     showAlertPopup(alert);
                 });
                 playAlertSound();
 
+                // DEV-015: Reducir delay cuando hay actividad
+                alertPollingDelay = 5000;
+
                 // Recargar lista de pacientes para actualizar badges
                 loadPatients();
+            } else {
+                // DEV-015: Aumentar delay gradualmente si no hay alertas (max 30s)
+                alertPollingDelay = Math.min(alertPollingDelay * 1.2, 30000);
             }
         }
     } catch (error) {
-        console.error('Error checking alerts:', error);
+        debugError('Error checking alerts:', error);
+        // DEV-015: En error, usar delay máximo
+        alertPollingDelay = 30000;
     }
 }
 
@@ -592,7 +626,7 @@ async function acknowledgeAlert(alertId) {
             showToast('Error al marcar alerta', 'error');
         }
     } catch (error) {
-        console.error('Error:', error);
+        debugError('Error:', error);
         showToast('Error de conexión', 'error');
     }
 }

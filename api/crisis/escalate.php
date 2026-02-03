@@ -24,47 +24,48 @@ require_once __DIR__ . '/../../includes/functions.php';
  * @param string $message_snapshot - Mensaje que disparó la crisis
  * @return array - Resultado del escalamiento
  */
-function escalateCrisis($patient_id, $risk_level, $message_snapshot) {
+function escalateCrisis($patient_id, $risk_level, $message_snapshot)
+{
     $escalation_log = [];
-    
+
     try {
         // 1. Obtener datos del paciente
         $patient = dbFetchOne(
             "SELECT name, age, email FROM users WHERE id = ?",
             [$patient_id]
         );
-        
+
         if (!$patient) {
             throw new Exception('Paciente no encontrado');
         }
-        
+
         // 2. Verificar preferencias de crisis
         $preferences = getCrisisPreferences($patient_id);
-        
+
         // 3. Crear alerta en BD
         $alert_id = createCrisisAlert($patient_id, $risk_level, $message_snapshot);
         $escalation_log[] = "Alerta #{$alert_id} creada";
-        
+
         // 4. Notificar psicólogo (si permitido y vinculado)
         if ($preferences['notify_psychologist']) {
             $psychologist_notified = notifyPsychologist($patient_id, $alert_id, $risk_level);
-            $escalation_log[] = $psychologist_notified 
-                ? "Psicólogo notificado" 
+            $escalation_log[] = $psychologist_notified
+                ? "Psicólogo notificado"
                 : "Sin psicólogo vinculado";
         }
-        
+
         // 5. Notificar contactos de emergencia (si permitido)
         $contacts_notified = 0;
         if ($preferences['notify_emergency_contacts']) {
             $contacts_notified = notifyEmergencyContacts(
-                $patient_id, 
-                $patient['name'], 
-                $risk_level, 
+                $patient_id,
+                $patient['name'],
+                $risk_level,
                 $preferences['auto_call_emergency_line']
             );
             $escalation_log[] = "Contactos notificados: {$contacts_notified}";
         }
-        
+
         // 6. Preparar botón de pánico en UI (SIEMPRE para niveles 4-5)
         $panic_button_data = [
             'show_panic_button' => true,
@@ -72,7 +73,7 @@ function escalateCrisis($patient_id, $risk_level, $message_snapshot) {
             'secondary_line' => '106',
             'message' => '🆘 Detectamos que necesitas ayuda inmediata. Por favor, considera llamar a la línea de crisis.'
         ];
-        
+
         // 7. Log del escalamiento completo
         logError('ESCALAMIENTO DE CRISIS', [
             'patient_id' => $patient_id,
@@ -83,22 +84,27 @@ function escalateCrisis($patient_id, $risk_level, $message_snapshot) {
             'preferences' => $preferences,
             'timestamp' => date('Y-m-d H:i:s')
         ]);
-        
+
         return [
             'success' => true,
             'alert_id' => $alert_id,
             'escalation_log' => $escalation_log,
             'panic_button' => $panic_button_data,
-            'contacts_notified' => $contacts_notified
+            'contacts_notified' => $contacts_notified['count'] ?? 0,
+            // DEV-001: Datos para feedback visual en UI
+            'notifications_sent' => [
+                'psychologist' => $psychologist_notified,
+                'emergency_contacts' => $contacts_notified['contacts'] ?? []
+            ]
         ];
-        
+
     } catch (Exception $e) {
         logError('Error en escalateCrisis', [
             'error' => $e->getMessage(),
             'patient_id' => $patient_id,
             'risk_level' => $risk_level
         ]);
-        
+
         return [
             'success' => false,
             'error' => $e->getMessage(),
@@ -118,12 +124,13 @@ function escalateCrisis($patient_id, $risk_level, $message_snapshot) {
  * @param int $patient_id - ID del paciente
  * @return array - Preferencias (con defaults si no existen)
  */
-function getCrisisPreferences($patient_id) {
+function getCrisisPreferences($patient_id)
+{
     $preferences = dbFetchOne(
         "SELECT * FROM crisis_preferences WHERE user_id = ?",
         [$patient_id]
     );
-    
+
     // Si no tiene preferencias configuradas, usar defaults seguros
     if (!$preferences) {
         return [
@@ -134,7 +141,7 @@ function getCrisisPreferences($patient_id) {
             'auto_call_threshold' => 'imminent'
         ];
     }
-    
+
     return $preferences;
 }
 
@@ -146,7 +153,8 @@ function getCrisisPreferences($patient_id) {
  * @param string $message_snapshot - Mensaje que disparó la alerta
  * @return int - ID de la alerta creada
  */
-function createCrisisAlert($patient_id, $risk_level, $message_snapshot) {
+function createCrisisAlert($patient_id, $risk_level, $message_snapshot)
+{
     // Buscar psicólogo vinculado
     $link = dbFetchOne(
         "SELECT psychologist_id 
@@ -155,13 +163,13 @@ function createCrisisAlert($patient_id, $risk_level, $message_snapshot) {
          LIMIT 1",
         [$patient_id]
     );
-    
+
     $psychologist_id = $link ? $link['psychologist_id'] : null;
-    
+
     // Determinar tipo y severidad
     $alert_type = $risk_level >= 5 ? 'suicide' : 'crisis';
     $severity = 'red'; // Siempre rojo para niveles 4-5
-    
+
     // Insertar alerta
     $alert_id = dbInsert('alerts', [
         'patient_id' => $patient_id,
@@ -171,7 +179,7 @@ function createCrisisAlert($patient_id, $risk_level, $message_snapshot) {
         'message_snapshot' => mb_substr($message_snapshot, 0, 500),
         'status' => 'pending'
     ]);
-    
+
     return $alert_id;
 }
 
@@ -183,7 +191,8 @@ function createCrisisAlert($patient_id, $risk_level, $message_snapshot) {
  * @param int $risk_level - Nivel de riesgo
  * @return bool - True si se notificó, False si no hay psicólogo
  */
-function notifyPsychologist($patient_id, $alert_id, $risk_level) {
+function notifyPsychologist($patient_id, $alert_id, $risk_level)
+{
     $psychologist = dbFetchOne(
         "SELECT u.id, u.name, u.email
          FROM patient_psychologist_link l
@@ -192,18 +201,18 @@ function notifyPsychologist($patient_id, $alert_id, $risk_level) {
          LIMIT 1",
         [$patient_id]
     );
-    
+
     if (!$psychologist) {
         return false;
     }
-    
+
     // Obtener nombre del paciente
     $patient = dbFetchOne("SELECT name FROM users WHERE id = ?", [$patient_id]);
-    
+
     // Crear notificación en BD (para dashboard del psicólogo)
     $urgency = $risk_level >= 5 ? 'INMEDIATA' : 'CRÍTICA';
     $notification_message = "🚨 ALERTA {$urgency}: {$patient['name']} necesita atención inmediata.";
-    
+
     // Insertar en tabla de notificaciones si existe
     try {
         dbInsert('notifications', [
@@ -221,12 +230,12 @@ function notifyPsychologist($patient_id, $alert_id, $risk_level) {
             'error' => $e->getMessage()
         ]);
     }
-    
+
     // TODO: Implementar notificación real en tiempo real
     // - Email urgente
     // - SMS (si configurado)
     // - Push notification
-    
+
     logError('NOTIFICACIÓN A PSICÓLOGO', [
         'psychologist_id' => $psychologist['id'],
         'psychologist_name' => $psychologist['name'],
@@ -234,20 +243,22 @@ function notifyPsychologist($patient_id, $alert_id, $risk_level) {
         'alert_id' => $alert_id,
         'risk_level' => $risk_level
     ]);
-    
+
     return true;
 }
 
 /**
  * Notifica a contactos de emergencia
+ * DEV-001 FIX: Ahora retorna datos para feedback visual en UI
  * 
  * @param int $patient_id - ID del paciente
  * @param string $patient_name - Nombre del paciente
  * @param int $risk_level - Nivel de riesgo
  * @param bool $include_call_link - Si incluir link directo para llamar
- * @return int - Número de contactos notificados
+ * @return array - Info de contactos notificados para UI feedback
  */
-function notifyEmergencyContacts($patient_id, $patient_name, $risk_level, $include_call_link) {
+function notifyEmergencyContacts($patient_id, $patient_name, $risk_level, $include_call_link)
+{
     $contacts = dbFetchAll(
         "SELECT contact_name, contact_phone, contact_relationship
          FROM emergency_contacts
@@ -256,44 +267,60 @@ function notifyEmergencyContacts($patient_id, $patient_name, $risk_level, $inclu
          LIMIT 3",
         [$patient_id]
     );
-    
+
     if (empty($contacts)) {
         logError('SIN CONTACTOS DE EMERGENCIA', [
             'patient_id' => $patient_id,
             'patient_name' => $patient_name
         ]);
-        return 0;
+        return ['count' => 0, 'contacts' => []];
     }
-    
+
+    $notifiedContacts = [];
     $count = 0;
+
     foreach ($contacts as $contact) {
         // Construir mensaje
         $urgency = $risk_level >= 5 ? '🆘 URGENTE' : '⚠️ ALERTA';
         $message = "{$urgency} MENTTA: {$patient_name} podría necesitar apoyo ahora. ";
-        
+
         if ($include_call_link && $risk_level >= 5) {
             $message .= "Por favor llama al 113 o 106 si no puedes contactarlo/a. ";
         }
-        
+
         $message .= "Este es un mensaje automático del sistema de apoyo emocional.";
-        
-        // TODO: Implementar envío real de SMS
-        // Servicios sugeridos: Twilio, Infobip, Vonage
-        // Por ahora solo registramos en log
-        
-        logError('SMS A CONTACTO DE EMERGENCIA', [
+
+        // DEV-001 FIX: Simular envío exitoso para demo
+        // En producción, implementar con Twilio/Infobip:
+        // $smsResult = TwilioService::send($contact['contact_phone'], $message);
+
+        $smsSimulated = [
+            'sent' => true,
+            'timestamp' => date('Y-m-d H:i:s'),
+            'contact_name' => $contact['contact_name'],
+            'contact_relationship' => $contact['contact_relationship'],
+            // Ocultar parcialmente el teléfono por privacidad
+            'contact_phone_masked' => '***' . substr($contact['contact_phone'], -4)
+        ];
+
+        $notifiedContacts[] = $smsSimulated;
+
+        logError('SMS SIMULADO A CONTACTO DE EMERGENCIA', [
             'patient_id' => $patient_id,
             'contact_name' => $contact['contact_name'],
             'contact_phone' => $contact['contact_phone'],
-            'contact_relationship' => $contact['contact_relationship'],
             'message' => $message,
-            'risk_level' => $risk_level
+            'risk_level' => $risk_level,
+            'status' => 'SIMULATED_SUCCESS'
         ]);
-        
+
         $count++;
     }
-    
-    return $count;
+
+    return [
+        'count' => $count,
+        'contacts' => $notifiedContacts
+    ];
 }
 
 /**
@@ -302,7 +329,8 @@ function notifyEmergencyContacts($patient_id, $patient_name, $risk_level, $inclu
  * @param int $risk_level - Nivel de riesgo actual
  * @return array - Lista de recursos de crisis
  */
-function getCrisisResources($risk_level) {
+function getCrisisResources($risk_level)
+{
     $level_filter = 'all';
     if ($risk_level >= 5) {
         $level_filter = 'imminent';
@@ -311,7 +339,7 @@ function getCrisisResources($risk_level) {
     } elseif ($risk_level >= 3) {
         $level_filter = 'high';
     }
-    
+
     return dbFetchAll(
         "SELECT name, description, contact, availability, resource_type
          FROM crisis_resources

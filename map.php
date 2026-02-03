@@ -21,13 +21,14 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
 ?>
 <!DOCTYPE html>
 <html lang="es" data-theme="<?= htmlspecialchars($theme) ?>">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#6366F1">
     <meta name="description" content="Encuentra centros de salud mental cercanos a ti">
     <title>Mapa de Centros - Mentta</title>
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -52,11 +53,17 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             }
         }
     </script>
-    
+
     <!-- Theme & Map Styles -->
     <link rel="stylesheet" href="assets/css/theme.css">
     <link rel="stylesheet" href="assets/css/map.css">
-    
+
+    <!-- DEV-004: Leaflet CSS (fallback when no Google Maps API) -->
+    <?php if (empty($mapsApiKey)): ?>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <?php endif; ?>
+
     <style>
         /* Critical CSS inline for fast render */
         body {
@@ -65,11 +72,11 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        
+
         .loading-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(255,255,255,0.9);
+            background: rgba(255, 255, 255, 0.9);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -77,7 +84,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             gap: 1rem;
             z-index: 9999;
         }
-        
+
         .spinner {
             width: 48px;
             height: 48px;
@@ -86,14 +93,17 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body class="antialiased bg-gray-100">
-    
+
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="loading-overlay">
         <div class="spinner"></div>
@@ -110,39 +120,41 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                 </svg>
                 <span class="font-medium hidden sm:inline">Volver</span>
             </button>
-            
+
             <!-- Title -->
             <h1 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
                 <span>🗺️</span>
                 <span class="hidden sm:inline">Centros de Salud Mental</span>
                 <span class="sm:hidden">Centros</span>
             </h1>
-            
+
             <!-- Search Toggle -->
-            <button id="search-toggle-btn" onclick="toggleSearch()" class="p-2 hover:bg-gray-100 rounded-full transition" title="Buscar">
+            <button id="search-toggle-btn" onclick="toggleSearch()"
+                class="p-2 hover:bg-gray-100 rounded-full transition" title="Buscar">
                 <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
             </button>
         </div>
-        
+
         <!-- Search Bar (hidden by default) -->
         <div id="search-bar" class="hidden px-4 pb-3 animate-slideDown">
             <div class="relative">
-                <input 
-                    type="text" 
-                    id="search-input" 
-                    placeholder="Buscar por nombre, distrito o servicio..." 
+                <input type="text" id="search-input" placeholder="Buscar por nombre, distrito o servicio..."
                     class="w-full px-4 py-2.5 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800"
-                    oninput="searchCenters(this.value)"
-                    autocomplete="off"
-                >
-                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    oninput="searchCenters(this.value)" autocomplete="off">
+                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
-                <button onclick="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden" id="clear-search-btn">
+                <button onclick="clearSearch()"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden"
+                    id="clear-search-btn">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
             </div>
@@ -151,41 +163,45 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
 
     <!-- Main Container -->
     <div class="flex flex-col md:flex-row h-screen pt-[60px]">
-        
+
         <!-- Side Panel (Desktop: Left | Mobile: Bottom) -->
         <aside id="centers-panel" class="panel-sidebar">
             <!-- Swipe Handle (Mobile only) -->
             <div class="swipe-handle md:hidden" id="swipe-handle">
                 <div class="handle-bar"></div>
             </div>
-            
+
             <!-- Location Info -->
             <div class="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
                         <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                            <path fill-rule="evenodd"
+                                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                clip-rule="evenodd"></path>
                         </svg>
                     </div>
                     <div>
-                        <p class="text-sm font-semibold text-indigo-900" id="user-location-text">Detectando ubicación...</p>
+                        <p class="text-sm font-semibold text-indigo-900" id="user-location-text">Detectando ubicación...
+                        </p>
                         <p class="text-xs text-indigo-700" id="user-city-text">Obteniendo ciudad...</p>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Filters -->
             <div class="p-4 border-b bg-white">
                 <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Filtrar por</p>
                 <div class="space-y-2">
                     <label class="flex items-center gap-3 cursor-pointer group">
-                        <input type="radio" name="filter" value="all" checked onchange="applyFilter(this.value)" 
-                               class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
-                        <span class="text-sm text-gray-700 group-hover:text-indigo-600 transition">Todos los centros</span>
+                        <input type="radio" name="filter" value="all" checked onchange="applyFilter(this.value)"
+                            class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                        <span class="text-sm text-gray-700 group-hover:text-indigo-600 transition">Todos los
+                            centros</span>
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer group">
-                        <input type="radio" name="filter" value="mentta" onchange="applyFilter(this.value)" 
-                               class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                        <input type="radio" name="filter" value="mentta" onchange="applyFilter(this.value)"
+                            class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
                         <span class="text-sm text-gray-700 group-hover:text-indigo-600 transition">
                             <span class="inline-flex items-center gap-1">
                                 <span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span>
@@ -194,8 +210,8 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                         </span>
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer group">
-                        <input type="radio" name="filter" value="emergency" onchange="applyFilter(this.value)" 
-                               class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                        <input type="radio" name="filter" value="emergency" onchange="applyFilter(this.value)"
+                            class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
                         <span class="text-sm text-gray-700 group-hover:text-indigo-600 transition">
                             <span class="inline-flex items-center gap-1">
                                 <span class="w-2.5 h-2.5 bg-orange-500 rounded-full animate-pulse"></span>
@@ -205,7 +221,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                     </label>
                 </div>
             </div>
-            
+
             <!-- Centers List -->
             <div class="flex-1 overflow-y-auto bg-gray-50">
                 <div class="p-4">
@@ -221,7 +237,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                     </div>
                 </div>
             </div>
-            
+
             <!-- Legend -->
             <div class="p-3 bg-white border-t text-xs">
                 <div class="flex flex-wrap gap-3 justify-center text-gray-600">
@@ -244,65 +260,122 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
         <!-- Map Container -->
         <main class="flex-1 relative">
             <div id="map" class="w-full h-full"></div>
-            
+
             <!-- Re-center Button (positioned above Google Maps controls) -->
-            <button 
-                id="recenter-btn" 
-                onclick="recenterMap()" 
+            <button id="recenter-btn" onclick="recenterMap()"
                 class="absolute bottom-24 right-3 bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 z-10"
-                title="Volver a mi ubicación"
-            >
+                title="Volver a mi ubicación">
                 <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 </svg>
             </button>
-            
-            <!-- No API Key Warning -->
+
+            <!-- DEV-004 FIXED: Leaflet fallback when no Google Maps API key -->
             <?php if (empty($mapsApiKey)): ?>
-            <div class="absolute inset-0 flex items-center justify-center bg-gray-100 z-20">
-                <div class="text-center p-8 max-w-md">
-                    <div class="text-6xl mb-4">🗺️</div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-2">API Key no configurada</h2>
-                    <p class="text-gray-600 mb-4">
-                        Para usar el mapa, necesitas configurar una API Key de Google Maps en el archivo <code class="bg-gray-200 px-1 rounded">.env</code>
-                    </p>
-                    <code class="block bg-gray-800 text-green-400 p-3 rounded text-sm text-left">
-                        GOOGLE_MAPS_API_KEY=tu_api_key_aqui
-                    </code>
-                    <a href="chat.php" class="inline-block mt-6 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                        ← Volver al Chat
-                    </a>
-                </div>
-            </div>
+                <div id="leaflet-map" class="w-full h-full z-10"></div>
             <?php endif; ?>
         </main>
     </div>
 
     <!-- Google Maps API -->
     <?php if (!empty($mapsApiKey)): ?>
-    <script>
-        // Pass PHP variables to JavaScript
-        window.MENTTA_MAP_CONFIG = {
-            apiKey: '<?= htmlspecialchars($mapsApiKey) ?>',
-            defaultLocation: { lat: -12.0464, lng: -77.0428 }, // Lima
-            defaultZoom: 13
-        };
-    </script>
-    <script 
-        src="https://maps.googleapis.com/maps/api/js?key=<?= htmlspecialchars($mapsApiKey) ?>&callback=initMap&loading=async" 
-        async 
-        defer
-    ></script>
+        <script>
+            // Pass PHP variables to JavaScript
+            window.MENTTA_MAP_CONFIG = {
+                apiKey: '<?= htmlspecialchars($mapsApiKey) ?>',
+                defaultLocation: { lat: -12.0464, lng: -77.0428 }, // Lima
+                defaultZoom: 13
+            };
+        </script>
+        <script
+            src="https://maps.googleapis.com/maps/api/js?key=<?= htmlspecialchars($mapsApiKey) ?>&callback=initMap&loading=async"
+            async defer></script>
     <?php else: ?>
-    <script>
-        // Hide loading overlay if no API key
-        document.getElementById('loading-overlay').style.display = 'none';
-    </script>
+        <!-- DEV-004: Leaflet fallback script -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <script>
+            // Leaflet fallback map
+            document.getElementById('loading-overlay').style.display = 'none';
+
+            const map = L.map('leaflet-map').setView([-12.0464, -77.0428], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            // Sample mental health centers in Lima
+            const centers = [
+                { name: 'Hospital Larco Herrera', lat: -12.0970, lng: -77.0486, type: 'hospital', emergency: true },
+                { name: 'Instituto Nacional de Salud Mental Noguchi', lat: -12.0389, lng: -77.0581, type: 'hospital', mentta: true },
+                { name: 'Centro de Salud Mental Comunitario Jesús María', lat: -12.0757, lng: -77.0454, type: 'csmc', mentta: true },
+                { name: 'Centro de Salud Mental Lince', lat: -12.0842, lng: -77.0336, type: 'csmc' },
+                { name: 'Hospital Hermilio Valdízan', lat: -12.0559, lng: -76.9644, type: 'hospital', emergency: true }
+            ];
+
+            // Custom icons
+            const createIcon = (color) => L.divIcon({
+                className: 'custom-marker',
+                html: `<div style="background:${color};width:24px;height:24px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            // Add markers
+            centers.forEach(center => {
+                let color = '#EF4444'; // Red default
+                if (center.mentta) color = '#10B981'; // Green for Mentta
+                else if (center.emergency) color = '#F97316'; // Orange for 24h
+
+                const marker = L.marker([center.lat, center.lng], { icon: createIcon(color) }).addTo(map);
+                marker.bindPopup(`
+                <div style="min-width:200px">
+                    <h3 style="font-weight:600;margin-bottom:8px;">${center.name}</h3>
+                    <p style="color:#666;font-size:12px;margin-bottom:12px;">
+                        ${center.emergency ? '🏥 Emergencias 24h' : ''}
+                        ${center.mentta ? '✅ Usa Mentta' : ''}
+                    </p>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
+                       target="_blank" 
+                       style="display:inline-block;padding:8px 16px;background:#6366F1;color:white;border-radius:8px;text-decoration:none;font-size:13px;">
+                        Cómo llegar
+                    </a>
+                </div>
+            `);
+            });
+
+            // Update location text
+            document.getElementById('user-location-text').textContent = 'Lima, Perú';
+            document.getElementById('user-city-text').textContent = 'Usando ubicación aproximada';
+            document.getElementById('centers-count').textContent = centers.length;
+
+            // Populate centers list
+            document.getElementById('centers-list').innerHTML = centers.map(c => `
+            <div class="p-3 bg-white rounded-lg shadow-sm border cursor-pointer hover:shadow-md transition" 
+                 onclick="map.setView([${c.lat}, ${c.lng}], 16)">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full" style="background:${c.mentta ? '#10B981' : c.emergency ? '#F97316' : '#EF4444'}"></span>
+                    <span class="font-medium text-sm text-gray-800">${c.name}</span>
+                </div>
+            </div>
+        `).join('');
+
+            // Functions
+            window.goBack = () => history.back() || (location.href = 'chat.php');
+            window.recenterMap = () => map.setView([-12.0464, -77.0428], 13);
+            window.toggleSearch = () => document.getElementById('search-bar').classList.toggle('hidden');
+            window.applyFilter = (filter) => console.log('Filter:', filter);
+            window.searchCenters = (q) => console.log('Search:', q);
+            window.clearSearch = () => { document.getElementById('search-input').value = ''; };
+        </script>
     <?php endif; ?>
-    
+
     <!-- Utility Scripts -->
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/map.js"></script>
 </body>
+
 </html>

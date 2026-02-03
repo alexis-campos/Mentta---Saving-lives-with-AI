@@ -199,12 +199,23 @@ try {
     ]);
 
     // 11. Preparar respuesta JSON
+    // DEV-014 FIX: Incluir sentiment score para el frontend
+    $sentimentData = null;
+    if (isset($aiAnalysis['sentiment_scores'])) {
+        $sentimentData = [
+            'positive' => $aiAnalysis['sentiment_scores']['positive'] ?? 0.5,
+            'negative' => $aiAnalysis['sentiment_scores']['negative'] ?? 0.3,
+            'anxiety' => $aiAnalysis['sentiment_scores']['anxiety'] ?? 0.2
+        ];
+    }
+
     $responseData = [
         'message' => $aiMessage,
         'message_id' => $userMessageId,
         'final_risk_level' => $finalRiskLevel,
         'pap_phase' => $papPhase,
-        'response_source' => $source // Para debugging (ai vs safe_mode)
+        'response_source' => $source, // Para debugging (ai vs safe_mode)
+        'sentiment' => $sentimentData // DEV-014: Nuevo campo para frontend
     ];
 
     if ($panicButton) {
