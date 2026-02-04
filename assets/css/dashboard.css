@@ -3,22 +3,209 @@
  * Estilos adicionales para el panel de psicólogo
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --mentta-bg: #F9F9F7;
+    --mentta-white: #FFFFFF;
+    --mentta-charcoal: #2A2A2A;
+    --mentta-terracotta: #C8553D;
+    --mentta-soft-gray: #666666;
+    --shadow-premium: 0 10px 40px rgba(0, 0, 0, 0.03);
+    --shadow-glow: 0 0 20px rgba(200, 85, 61, 0.15), 0 10px 30px rgba(200, 85, 61, 0.1);
+}
+
+.font-serif {
+    font-family: 'Playfair Display', serif;
+}
+
+.font-sans {
+    font-family: 'Inter', sans-serif;
+}
+
 /* ============================================
    PATIENT CARD ANIMATIONS
    ============================================ */
 
 .patient-card {
-    transition: all 0.2s ease;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    background-color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .patient-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+    z-index: 10;
 }
 
 .patient-card.selected {
-    background-color: #EFF6FF;
-    border-color: #3B82F6;
+    background-color: #FDF8F3 !important;
+    box-shadow: 0 15px 40px rgba(196, 164, 132, 0.15);
+    transform: translateY(-2px);
+}
+
+.patient-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2A2A2A;
+}
+
+.patient-meta {
+    font-family: 'Inter', sans-serif;
+    color: #888888;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.patient-card .avatar-ring {
+    padding: 2px;
+    border: 1.5px solid rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+}
+
+.selected .avatar-ring {
+    border-color: var(--mentta-terracotta);
+}
+
+.avatar-soft-gradient {
+    background: linear-gradient(135deg, #F3E7E9 0%, #E3EEFF 100%);
+    color: #8E9AAF;
+    box-shadow: inset 0 -2px 10px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* ============================================
+   METRIC CARDS & CONTENT
+   ============================================ */
+
+.metric-card {
+    background-color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 32px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+}
+
+.content-panel {
+    background-color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 32px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+    padding: 2.5rem;
+}
+
+/* ============================================
+   ALERTS REFINED
+   ============================================ */
+
+.alert-item {
+    background-color: #F9F9F7 !important;
+    border: 1px solid rgba(0, 0, 0, 0.02) !important;
+    border-radius: 24px;
+    padding: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.alert-item:hover {
+    background-color: #FFFFFF !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+    transform: translateX(4px);
+}
+
+/* ============================================
+   TOPICS REFINED
+   ============================================ */
+
+.topic-tag {
+    background: #FFFFFF !important;
+    border: 1px solid #E8DED1 !important;
+    border-radius: 99px;
+    padding: 8px 18px;
+    color: #4A4A4A;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+.topic-tag:hover {
+    background: #FDF8F3 !important;
+    border-color: #C4A484 !important;
+    transform: scale(1.05);
+}
+
+/* ============================================
+   CHART CUSTOMIZATION
+   ============================================ */
+
+#emotion-chart {
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.05));
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #2A2A2A;
+    letter-spacing: -0.01em;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(196, 164, 132, 0.2);
+    border-radius: 10px;
+}
+
+.avatar-pastel-1 {
+    background: linear-gradient(135deg, #E0C3FC 0%, #8EC5FC 100%);
+    color: white;
+}
+
+.avatar-pastel-2 {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.avatar-pastel-3 {
+    background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+    color: white;
+}
+
+.avatar-pastel-4 {
+    background: linear-gradient(135deg, #c3cfe2 0%, #c3cfe2 100%);
+    color: #666;
+}
+
+.patient-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: #2A2A2A;
+}
+
+.patient-meta {
+    color: #999590;
+    /* Warm gray */
+    font-size: 0.75rem;
 }
 
 /* ============================================
@@ -60,27 +247,37 @@
 }
 
 @keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+    }
 
-    0%,
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+    }
+
     100% {
-        opacity: 1;
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
     }
+}
 
-    50% {
-        opacity: 0.5;
-    }
+.status-pulse {
+    animation: pulse 2s infinite;
+    border-radius: 50%;
 }
 
 .animate-slideIn {
-    animation: slideIn 0.3s ease-out;
+    animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .animate-slideUp {
-    animation: slideUp 0.3s ease-out;
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .animate-fadeIn {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.8s ease-out;
 }
 
 /* ============================================
@@ -128,6 +325,69 @@ aside::-webkit-scrollbar-thumb:hover,
 /* ============================================
    LOADING STATES
    ============================================ */
+
+.search-capsule {
+    background: var(--mentta-white);
+    border-radius: 99px;
+    box-shadow: var(--shadow-premium);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
+}
+
+.search-capsule:focus-within {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.nav-capsule {
+    background: var(--mentta-white);
+    border-radius: 99px;
+    padding: 6px 18px;
+    box-shadow: var(--shadow-premium);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.logout-pill {
+    background-color: #FFFFFF !important;
+    border: 1px solid #C4A484 !important;
+    border-radius: 50px;
+    padding: 10px 24px;
+    box-shadow: 0 4px 15px rgba(196, 164, 132, 0.1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #4A4A4A;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+}
+
+.logout-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(196, 164, 132, 0.2);
+    background-color: #FDF8F3 !important;
+    border-color: #C4A484 !important;
+}
+
+.logout-pill svg {
+    color: #4A4A4A;
+}
+
+.stroke-icon-fine {
+    stroke-width: 1.5;
+    stroke: currentColor;
+    fill: none;
+}
+
+.stroke-icon {
+    stroke-width: 1.5;
+    stroke: currentColor;
+    fill: none;
+}
 
 .skeleton {
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);

@@ -101,40 +101,51 @@ function renderPatientsList(patients) {
         return;
     }
 
-    patients.forEach(patient => {
+    patients.forEach((patient, index) => {
         const card = document.createElement('div');
-        card.className = `patient-card p-4 rounded-xl border cursor-pointer transition-all duration-200 ${selectedPatientId === patient.id ? 'bg-blue-50 border-blue-500 shadow-md' : 'bg-white hover:bg-gray-50 border-gray-200'
-            }`;
+        card.className = `patient-card p-6 group ${selectedPatientId === patient.id ? 'selected' : ''}`;
         card.dataset.patientId = patient.id;
         card.onclick = () => selectPatient(patient.id, card);
 
         const statusConfig = {
-            'stable': { emoji: '🟢', text: 'Estable', class: 'bg-green-100 text-green-800' },
-            'monitor': { emoji: '🟡', text: 'Monitorear', class: 'bg-yellow-100 text-yellow-800' },
-            'risk': { emoji: '🔴', text: 'Riesgo', class: 'bg-red-100 text-red-800' }
+            'stable': { color: '#B5C9B5', label: 'Estable' }, // Soft Sage
+            'monitor': { color: '#E8C07D', label: 'Monitorear' }, // Soft Amber
+            'risk': { color: '#C8553D', label: 'En Riesgo' }   // Terracotta
         };
 
         const status = statusConfig[patient.status] || statusConfig['stable'];
         const initial = patient.name.charAt(0).toUpperCase();
 
+        // Cycle through 4 soft premium gradients
+        const gradientClass = `avatar-pastel-${(index % 4) + 1}`;
+
         card.innerHTML = `
-            <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+            <div class="flex items-center gap-5">
+                <div class="${gradientClass} w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xl flex-shrink-0 shadow-sm">
                     ${initial}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                        <span class="font-medium text-gray-800 truncate">${patient.name}</span>
-                        <span class="text-lg">${status.emoji}</span>
+                    <div class="flex items-center justify-between gap-3 mb-1.5">
+                        <span class="patient-name truncate text-lg">${patient.name}</span>
+                        <div class="w-2.5 h-2.5 rounded-full status-pulse flex-shrink-0" style="background-color: ${status.color};"></div>
                     </div>
-                    <div class="text-sm text-gray-500">${patient.age} años</div>
-                    <div class="text-xs text-gray-400 mt-1">${patient.last_activity_formatted}</div>
+                    <div class="flex items-center gap-2">
+                        <span class="patient-meta font-bold uppercase tracking-[0.15em] text-[9px]">${patient.age} Años</span>
+                        <span class="text-[8px] opacity-10 text-black">•</span>
+                        <span class="patient-meta font-medium text-[9px] uppercase tracking-[0.1em] opacity-60">${patient.last_activity_formatted}</span>
+                    </div>
                 </div>
                 ${patient.unread_alerts > 0 ? `
-                    <div class="bg-red-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold animate-pulse">
+                    <div class="bg-red-500 text-white text-[10px] font-black rounded-full h-7 w-7 flex items-center justify-center shadow-lg animate-pulse ring-4 ring-red-500/5">
                         ${patient.unread_alerts}
                     </div>
-                ` : ''}
+                ` : `
+                    <div class="opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                        <svg class="w-5 h-5 text-black/20 stroke-icon-fine" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                `}
             </div>
         `;
 
@@ -151,13 +162,11 @@ async function selectPatient(patientId, cardElement) {
 
     // Actualizar UI de selección
     document.querySelectorAll('.patient-card').forEach(card => {
-        card.classList.remove('bg-blue-50', 'border-blue-500', 'shadow-md');
-        card.classList.add('bg-white', 'border-gray-200');
+        card.classList.remove('selected');
     });
 
     if (cardElement) {
-        cardElement.classList.remove('bg-white', 'border-gray-200');
-        cardElement.classList.add('bg-blue-50', 'border-blue-500', 'shadow-md');
+        cardElement.classList.add('selected');
     }
 
     // Mostrar loading
@@ -201,26 +210,33 @@ function renderPatientDetail(detail) {
     const patient = detail.patient;
     const metrics = detail.metrics;
 
-    // Avatar
+    // Avatar with pastel gradient based on ID
     const initial = patient.name.charAt(0).toUpperCase();
-    document.getElementById('patient-avatar').textContent = initial;
+    const avatarEl = document.getElementById('patient-avatar');
+    avatarEl.textContent = initial;
+
+    // Cycle through 4 soft premium gradients
+    const gradientId = (parseInt(patient.id) % 4) + 1;
+    avatarEl.className = `avatar-pastel-${gradientId} w-20 h-20 rounded-[1.8rem] flex items-center justify-center text-white text-3xl font-bold shadow-lg transition-all duration-500`;
 
     // Header info
     document.getElementById('patient-name-detail').textContent = patient.name;
     document.getElementById('patient-age-detail').textContent = `${patient.age} años`;
-    document.getElementById('patient-since-detail').textContent = `Paciente desde ${formatDate(patient.linked_since)}`;
+    document.getElementById('patient-since-detail').textContent = `Desde ${formatDate(patient.linked_since)}`;
 
     // Status
     const statusConfig = {
-        'stable': { emoji: '🟢', text: 'Estable', class: 'bg-green-100 text-green-800' },
-        'monitor': { emoji: '🟡', text: 'Monitorear', class: 'bg-yellow-100 text-yellow-800' },
-        'risk': { emoji: '🔴', text: 'En Riesgo', class: 'bg-red-100 text-red-800' }
+        'stable': { emoji: '🟢', text: 'Estable', color: '#B5C9B5' },
+        'monitor': { emoji: '🟡', text: 'Monitorear', color: '#E8C07D' },
+        'risk': { emoji: '🔴', text: 'En Riesgo', color: '#C8553D' }
     };
     const status = statusConfig[patient.status] || statusConfig['stable'];
 
     document.getElementById('patient-status-emoji').textContent = status.emoji;
     document.getElementById('patient-status-badge').textContent = status.text;
-    document.getElementById('patient-status-badge').className = `px-3 py-1 rounded-full text-xs font-medium ${status.class}`;
+
+    const pulseDot = document.querySelector('.status-pulse');
+    if (pulseDot) pulseDot.style.backgroundColor = status.color;
 
     // Métricas
     document.getElementById('metric-conversations').textContent = metrics.total_conversations;
@@ -380,13 +396,8 @@ function renderAlertsTimeline(alerts) {
 
     alerts.forEach(alert => {
         const item = document.createElement('div');
-        item.className = 'alert-item flex gap-3 p-3 rounded-lg bg-gray-50 border-l-4 ' +
-            (alert.severity === 'red' ? 'border-red-500' : 'border-orange-500');
+        item.className = 'alert-item p-4 rounded-2xl bg-[#FCFCFA] mb-3 border border-black/5 transition-all hover:bg-white hover:shadow-soft';
         item.dataset.alertId = alert.id;
-
-        const severityIcon = alert.severity === 'red' ? '🚨' : '⚠️';
-        const severityText = alert.severity === 'red' ? 'Crítica' : 'Alerta';
-        const severityColor = alert.severity === 'red' ? 'text-red-600' : 'text-orange-600';
 
         const messagePreview = alert.message_snapshot
             ? (alert.message_snapshot.length > 80
@@ -394,27 +405,33 @@ function renderAlertsTimeline(alerts) {
                 : alert.message_snapshot)
             : 'Sin mensaje';
 
+        const severityLabel = alert.severity === 'red' ? 'Crítica' : 'Prioritaria';
+        const severityClass = alert.severity === 'red' ? 'text-red-500 bg-red-50' : 'text-orange-500 bg-orange-50';
+
         item.innerHTML = `
-            <div class="text-2xl">${severityIcon}</div>
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 flex-wrap">
-                    <span class="font-semibold ${severityColor}">${severityText}</span>
-                    <span class="text-xs text-gray-400">${formatDateTime(alert.created_at)}</span>
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl ${severityClass} flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 stroke-icon" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
                 </div>
-                <p class="text-sm text-gray-700 mt-1 break-words">"${messagePreview}"</p>
-                <div class="mt-2 flex items-center gap-2">
-                    <span class="text-xs px-2 py-1 rounded-full ${alert.status === 'pending'
-                ? 'bg-red-100 text-red-700'
-                : 'bg-gray-100 text-gray-600'
-            }">
-                        ${alert.status === 'pending' ? '● Pendiente' : '✓ Reconocida'}
-                    </span>
-                    ${alert.status === 'pending' ? `
-                        <button onclick="acknowledgeAlert(${alert.id})" 
-                            class="text-xs px-3 py-1 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
-                            Marcar atendida
-                        </button>
-                    ` : ''}
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] ${alert.severity === 'red' ? 'text-red-400' : 'text-orange-400'}">${severityLabel}</span>
+                        <span class="text-[9px] font-bold text-gray-300 uppercase tracking-widest">${formatDateTime(alert.created_at)}</span>
+                    </div>
+                    <p class="text-sm font-medium text-[#4A4A4A] leading-relaxed mb-3">"${messagePreview}"</p>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${alert.status === 'pending' ? 'bg-red-50 text-red-500' : 'bg-gray-50 text-gray-400'}">
+                            ${alert.status === 'pending' ? '● Pendiente' : '✓ Atendida'}
+                        </span>
+                        ${alert.status === 'pending' ? `
+                            <button onclick="acknowledgeAlert(${alert.id})" 
+                                class="text-[9px] font-bold uppercase tracking-widest text-indigo-500 hover:text-indigo-700 transition-colors">
+                                Marcar atendida
+                            </button>
+                        ` : ''}
+                    </div>
                 </div>
             </div>
         `;
@@ -433,33 +450,29 @@ function renderTopTopics(topics) {
 
     if (!topics || topics.length === 0) {
         container.innerHTML = `
-            <p class="text-gray-500 text-sm py-4">No hay suficientes datos para analizar temas</p>
+            <p class="text-gray-400 text-xs font-medium uppercase tracking-widest py-8">Análisis insuficiente</p>
         `;
         return;
     }
 
-    // Colores para los tags
     const colors = [
-        'bg-blue-100 text-blue-700',
-        'bg-green-100 text-green-700',
-        'bg-purple-100 text-purple-700',
-        'bg-pink-100 text-pink-700',
-        'bg-indigo-100 text-indigo-700',
-        'bg-teal-100 text-teal-700',
-        'bg-orange-100 text-orange-700',
-        'bg-cyan-100 text-cyan-700'
+        'bg-blue-50 text-blue-600',
+        'bg-green-50 text-green-600',
+        'bg-purple-50 text-purple-600',
+        'bg-pink-50 text-pink-600',
+        'bg-indigo-50 text-indigo-600'
     ];
 
     topics.forEach((topic, index) => {
         const tag = document.createElement('span');
-        tag.className = `px-3 py-2 rounded-full text-sm font-medium ${colors[index % colors.length]}`;
+        tag.className = `px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest ${colors[index % colors.length]} border border-black/[0.03]`;
         tag.textContent = `${topic.word} (${topic.frequency})`;
         container.appendChild(tag);
     });
 }
 
 // ============================================
-// SISTEMA DE ALERTAS EN TIEMPO REAL (UNIFICADO)
+// SISTEMA DE ALERTAS EN TIEMPO REAL
 // ============================================
 
 let alertPollingInterval = null;
@@ -467,7 +480,6 @@ let alertPollingInterval = null;
 function startAlertPolling() {
     debugLog('🛡️ Sistema de alertas iniciado');
     checkForAlerts();
-    // DEV-015: Usar exponential backoff en lugar de intervalo fijo
     scheduleNextPoll();
 }
 
@@ -486,38 +498,29 @@ async function checkForAlerts() {
         const data = await response.json();
 
         if (data.success && data.data) {
-            // Actualizar badge
             updateAlertBadge(data.data.pending_count);
-
-            // Guardar timestamp
             lastAlertTimestamp = data.data.timestamp;
 
-            // Si hay nuevas alertas, mostrar notificación y reducir delay
             if (data.data.new_alerts && data.data.new_alerts.length > 0) {
                 data.data.new_alerts.forEach(alert => {
                     showAlertPopup(alert);
                 });
                 playAlertSound();
-
-                // DEV-015: Reducir delay cuando hay actividad
                 alertPollingDelay = 5000;
-
-                // Recargar lista de pacientes para actualizar badges
                 loadPatients();
             } else {
-                // DEV-015: Aumentar delay gradualmente si no hay alertas (max 30s)
                 alertPollingDelay = Math.min(alertPollingDelay * 1.2, 30000);
             }
         }
     } catch (error) {
         debugError('Error checking alerts:', error);
-        // DEV-015: En error, usar delay máximo
         alertPollingDelay = 30000;
     }
 }
 
 function updateAlertBadge(count) {
     const badge = document.getElementById('alert-badge');
+    if (!badge) return;
     if (count > 0) {
         badge.textContent = count > 9 ? '9+' : count;
         badge.classList.remove('hidden');
@@ -528,50 +531,45 @@ function updateAlertBadge(count) {
 
 function showAlertPopup(alert) {
     const container = document.getElementById('alert-popup-container');
+    if (!container) return;
 
     const popup = document.createElement('div');
-    popup.className = 'bg-white rounded-lg shadow-xl border-l-4 border-red-500 p-4 max-w-sm animate-slideIn';
+    popup.className = 'bg-white rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.1)] border border-black/5 p-6 max-w-sm animate-slideIn relative overflow-hidden mb-3';
     popup.innerHTML = `
-        <div class="flex items-start gap-3">
-            <div class="text-2xl animate-pulse">🚨</div>
+        <div class="absolute top-0 left-0 w-1.5 h-full bg-red-500"></div>
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center flex-shrink-0 animate-pulse">
+                <svg class="w-6 h-6 text-red-500 stroke-icon" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
             <div class="flex-1">
-                <div class="font-semibold text-red-600">Nueva Alerta de Crisis</div>
-                <div class="text-sm font-medium text-gray-800 mt-1">${alert.patient_name || 'Paciente'}</div>
-                <div class="text-xs text-gray-500 mt-1">${alert.message_snapshot ? alert.message_snapshot.substring(0, 60) + '...' : ''}</div>
-                <div class="flex gap-2 mt-3">
+                <div class="text-[10px] font-black uppercase tracking-[0.2em] text-red-400 mb-1">Alerta Crítica</div>
+                <div class="text-base font-bold text-[#2A2A2A] mb-1">${alert.patient_name || 'Paciente'}</div>
+                <p class="text-[10px] font-medium text-gray-400 leading-relaxed truncate">${alert.message_snapshot || ''}</p>
+                <div class="flex gap-4 mt-5">
                     <button onclick="viewPatient(${alert.patient_id}); this.closest('.animate-slideIn').remove();" 
-                        class="text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
-                        Ver paciente
+                        class="text-[9px] font-bold uppercase tracking-widest text-indigo-500 hover:text-indigo-700 transition-colors">
+                        Ver Sesión
                     </button>
                     <button onclick="acknowledgeAlert(${alert.id}); this.closest('.animate-slideIn').remove();" 
-                        class="text-xs px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
-                        Marcar atendida
+                        class="text-[9px] font-bold uppercase tracking-widest text-[#AAA] hover:text-red-500 transition-all">
+                        Ignorar
                     </button>
                 </div>
             </div>
-            <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-gray-600">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
         </div>
     `;
 
     container.appendChild(popup);
-
-    // Auto-remove after 15 seconds
-    setTimeout(() => {
-        if (popup.parentElement) {
-            popup.remove();
-        }
-    }, 15000);
+    setTimeout(() => { if (popup.parentElement) popup.remove(); }, 15000);
 }
 
 function playAlertSound() {
     const audio = document.getElementById('alert-sound');
     if (audio) {
         audio.currentTime = 0;
-        audio.play().catch(() => { }); // Ignore autoplay errors
+        audio.play().catch(() => { });
     }
 }
 
@@ -593,35 +591,19 @@ async function acknowledgeAlert(alertId) {
 
         if (data.success) {
             showToast('Alerta marcada como atendida', 'success');
-
-            // Actualizar UI - remover alerta de la lista
             const alertItem = document.querySelector(`[data-alert-id="${alertId}"]`);
             if (alertItem) {
                 alertItem.classList.add('opacity-50');
-                const statusBadge = alertItem.querySelector('.bg-red-100');
-                if (statusBadge) {
-                    statusBadge.className = 'text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600';
-                    statusBadge.textContent = '✓ Reconocida';
+                const badge = alertItem.querySelector('.bg-red-50');
+                if (badge) {
+                    badge.className = 'text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-gray-50 text-gray-400';
+                    badge.textContent = '✓ Atendida';
                 }
-                // Remover botón
                 const btn = alertItem.querySelector('button[onclick^="acknowledgeAlert"]');
                 if (btn) btn.remove();
             }
-
-            // Actualizar badge
-            const badge = document.getElementById('alert-badge');
-            if (badge && !badge.classList.contains('hidden')) {
-                const count = parseInt(badge.textContent) - 1;
-                if (count <= 0) {
-                    badge.classList.add('hidden');
-                } else {
-                    badge.textContent = count > 9 ? '9+' : count;
-                }
-            }
-
-            // Recargar pacientes para actualizar badges individuales
+            checkForAlerts();
             loadPatients();
-
         } else {
             showToast('Error al marcar alerta', 'error');
         }
@@ -638,58 +620,47 @@ async function acknowledgeAlert(alertId) {
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-PE', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    });
+    return date.toLocaleDateString('es-PE', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function formatDateShort(dateString) {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-PE', {
-        day: 'numeric',
-        month: 'short'
-    });
+    return date.toLocaleDateString('es-PE', { day: 'numeric', month: 'short' });
 }
 
 function formatDateTime(dateString) {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-PE', {
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    return date.toLocaleDateString('es-PE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 }
 
 function showToast(message, type = 'info') {
-    const colors = {
-        success: 'bg-green-500',
-        error: 'bg-red-500',
-        info: 'bg-blue-500'
-    };
-
+    const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-indigo-500' };
     const toast = document.createElement('div');
-    toast.className = `fixed bottom-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slideIn`;
+    toast.className = `fixed bottom-8 right-8 ${colors[type]} text-white px-8 py-4 rounded-2xl shadow-premium z-50 animate-slideUp font-bold text-xs uppercase tracking-widest`;
     toast.textContent = message;
-
     document.body.appendChild(toast);
-
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
+    setTimeout(() => { toast.remove(); }, 3000);
 }
 
 // Animaciones CSS
 const dashboardStyles = document.createElement('style');
 dashboardStyles.textContent = `
-    @keyframes slideIn { 
-        from { transform: translateX(100%); opacity: 0; } 
-        to { transform: translateX(0); opacity: 1; } 
-    }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     .animate-slideIn { animation: slideIn 0.3s ease-out; }
-`;
+        `;
 document.head.appendChild(dashboardStyles);
+
+const dashboardStylesFix = document.createElement('style');
+dashboardStylesFix.textContent = `
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .animate-slideIn { animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .animate-slideUp { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .shadow-soft { box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.05); border-radius: 10px; }
+`;
+document.head.appendChild(dashboardStylesFix);
