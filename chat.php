@@ -793,12 +793,6 @@ if ($hour >= 5 && $hour < 12) {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
-        <!-- Timer floating -->
-        <div
-            class="absolute top-6 left-6 z-20 bg-mentta-primary/10 backdrop-blur-xl px-5 py-2.5 rounded-full border border-mentta-primary/30">
-            <span class="text-mentta-primary text-sm font-bold tracking-widest"><span
-                    id="live-timer">00:00</span></span>
-        </div>
         <!-- iframe container -->
         <iframe id="live-iframe" class="w-full h-full border-0" allow="camera; microphone; autoplay"></iframe>
     </div>
