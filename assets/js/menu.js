@@ -828,22 +828,25 @@ let breathingInterval = null;
 let breathingPhase = 0;
 let breathingRound = 0;
 const BREATHING_PHASES = [
-    { name: 'Inhala', duration: 4, scale: 1.3, color: '#6366F1' },
-    { name: 'Mantén', duration: 7, scale: 1.3, color: '#8B5CF6' },
-    { name: 'Exhala', duration: 8, scale: 1, color: '#10B981' }
+    { name: 'Inhala', subtext: 'Nariz', duration: 4, scale: 1.25, color: '#2d3a2d', ring: '#cbaa8e' },
+    { name: 'Mantén', subtext: 'Pausa', duration: 7, scale: 1.25, color: '#1e261e', ring: '#8b9d8b' },
+    { name: 'Exhala', subtext: 'Boca', duration: 8, scale: 1.0, color: '#cbaa8e', ring: '#2d3a2d' }
 ];
 const MAX_BREATHING_ROUNDS = 4;
+const RING_CIRCUMFERENCE = 553; // 2 * PI * r (r=88)
 
 function startBreathingExercise() {
     const circle = document.getElementById('breathing-circle');
+    const ring = document.getElementById('breathing-progress-ring');
     const text = document.getElementById('breathing-text');
+    const subtext = document.getElementById('breathing-subtext');
     const instruction = document.getElementById('breathing-instruction');
     const startBtn = document.getElementById('breathing-start-btn');
     const stopBtn = document.getElementById('breathing-stop-btn');
 
-    if (!circle || !text) return;
+    if (!circle || !text || !ring) return;
 
-    // Hide start, show stop
+    // UI Toggle
     if (startBtn) startBtn.classList.add('hidden');
     if (stopBtn) stopBtn.classList.remove('hidden');
 
@@ -851,40 +854,51 @@ function startBreathingExercise() {
     breathingRound = 0;
 
     function runPhase() {
-        const phase = BREATHING_PHASES[breathingPhase];
-        let count = phase.duration;
+        if (!startBtn.classList.contains('hidden')) return; // Stopped
 
-        // Style circle
+        const phase = BREATHING_PHASES[breathingPhase];
+        let totalMs = phase.duration * 1000;
+        let start = Date.now();
+
+        // Update visuals
         circle.style.transform = `scale(${phase.scale})`;
-        circle.style.background = phase.color;
+        circle.style.backgroundColor = phase.color;
+        ring.style.stroke = phase.ring;
         text.textContent = phase.name;
+        subtext.textContent = phase.subtext;
         if (instruction) instruction.textContent = `Ronda ${breathingRound + 1} de ${MAX_BREATHING_ROUNDS}`;
 
-        // Countdown
+        // High precision animation for the ring
         breathingInterval = setInterval(() => {
-            count--;
-            text.textContent = count > 0 ? count : phase.name;
+            let elapsed = Date.now() - start;
+            let progress = Math.min(elapsed / totalMs, 1);
+            let offset = RING_CIRCUMFERENCE - (progress * RING_CIRCUMFERENCE);
 
-            if (count <= 0) {
+            ring.style.strokeDashoffset = offset;
+
+            // Decimal countdown on text if needed, or just phase name
+            let remainingSecs = Math.ceil((totalMs - elapsed) / 1000);
+            if (remainingSecs > 0) {
+                text.textContent = remainingSecs;
+            }
+
+            if (progress >= 1) {
                 clearInterval(breathingInterval);
 
-                // Next phase
+                // Next phase logic
                 breathingPhase = (breathingPhase + 1) % BREATHING_PHASES.length;
-
-                // Check if round complete
                 if (breathingPhase === 0) {
                     breathingRound++;
                     if (breathingRound >= MAX_BREATHING_ROUNDS) {
-                        // Exercise complete
                         completeBreathingExercise();
                         return;
                     }
                 }
 
-                // Continue to next phase
-                setTimeout(runPhase, 500);
+                // Short pause between phases for smoothness
+                setTimeout(runPhase, 100);
             }
-        }, 1000);
+        }, 16); // ~60fps
     }
 
     runPhase();
@@ -898,32 +912,45 @@ function stopBreathingExercise() {
 function completeBreathingExercise() {
     const circle = document.getElementById('breathing-circle');
     const text = document.getElementById('breathing-text');
+    const subtext = document.getElementById('breathing-subtext');
     const instruction = document.getElementById('breathing-instruction');
+    const ring = document.getElementById('breathing-progress-ring');
 
     if (circle) {
         circle.style.transform = 'scale(1)';
-        circle.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+        circle.style.backgroundColor = '#2d3a2d';
     }
-    if (text) text.textContent = '¡Bien hecho!';
-    if (instruction) instruction.textContent = 'Has completado 4 rondas de respiración 4-7-8';
+    if (ring) ring.style.strokeDashoffset = 0;
+    if (text) text.textContent = 'HECHO';
+    if (subtext) subtext.textContent = 'Paz';
+    if (instruction) instruction.textContent = 'Sesión completada con éxito 🌿';
 
-    // Reset after 3 seconds
-    setTimeout(resetBreathingUI, 3000);
+    setTimeout(resetBreathingUI, 4000);
 }
 
 function resetBreathingUI() {
     const circle = document.getElementById('breathing-circle');
     const text = document.getElementById('breathing-text');
+    const subtext = document.getElementById('breathing-subtext');
     const instruction = document.getElementById('breathing-instruction');
     const startBtn = document.getElementById('breathing-start-btn');
     const stopBtn = document.getElementById('breathing-stop-btn');
+    const ring = document.getElementById('breathing-progress-ring');
+
+    if (breathingInterval) clearInterval(breathingInterval);
 
     if (circle) {
         circle.style.transform = 'scale(1)';
-        circle.style.background = 'linear-gradient(135deg, var(--accent-primary), var(--success))';
+        circle.style.backgroundColor = '#2d3a2d';
+    }
+    if (ring) {
+        ring.style.transition = 'none';
+        ring.style.strokeDashoffset = RING_CIRCUMFERENCE;
+        setTimeout(() => ring.style.transition = '', 50);
     }
     if (text) text.textContent = 'Iniciar';
-    if (instruction) instruction.textContent = 'Toca el círculo para comenzar la respiración 4-7-8';
+    if (subtext) subtext.textContent = 'Preparado?';
+    if (instruction) instruction.textContent = 'Encuentra una postura cómoda';
     if (startBtn) startBtn.classList.remove('hidden');
     if (stopBtn) stopBtn.classList.add('hidden');
 

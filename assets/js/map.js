@@ -199,21 +199,20 @@ function createMap(location) {
  */
 function getMapStyles() {
     return [
-        {
-            featureType: "poi",
-            elementType: "labels",
-            stylers: [{ visibility: "off" }]
-        },
-        {
-            featureType: "poi.medical",
-            elementType: "all",
-            stylers: [{ visibility: "on" }]
-        },
-        {
-            featureType: "transit",
-            elementType: "labels.icon",
-            stylers: [{ visibility: "off" }]
-        }
+        { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#e9e9e9" }, { "lightness": 17 }] },
+        { "featureType": "landscape", "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }, { "lightness": 20 }] },
+        { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [{ "color": "#ffffff" }, { "lightness": 17 }] },
+        { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#ffffff" }, { "lightness": 29 }, { "weight": 0.2 }] },
+        { "featureType": "road.arterial", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }, { "lightness": 18 }] },
+        { "featureType": "road.local", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }, { "lightness": 16 }] },
+        { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }, { "lightness": 21 }] },
+        { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#dedede" }, { "lightness": 21 }] },
+        { "elementType": "labels.text.stroke", "stylers": [{ "visibility": "on" }, { "color": "#ffffff" }, { "lightness": 16 }] },
+        { "elementType": "labels.text.fill", "stylers": [{ "saturation": 36 }, { "color": "#333333" }, { "lightness": 40 }] },
+        { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },
+        { "featureType": "transit", "elementType": "geometry", "stylers": [{ "color": "#f2f2f2" }, { "lightness": 19 }] },
+        { "featureType": "administrative", "elementType": "geometry.fill", "stylers": [{ "color": "#fefefe" }, { "lightness": 20 }] },
+        { "featureType": "administrative", "elementType": "geometry.stroke", "stylers": [{ "color": "#fefefe" }, { "lightness": 17 }, { "weight": 1.2 }] }
     ];
 }
 
@@ -227,7 +226,7 @@ function addUserMarker(location) {
     if (userMarker) userMarker.setMap(null);
     if (userCircle) userCircle.setMap(null);
 
-    // Create user marker (simple circle)
+    // Create user marker (brand green)
     userMarker = new google.maps.Marker({
         position: location,
         map: map,
@@ -235,21 +234,21 @@ function addUserMarker(location) {
         icon: {
             path: google.maps.SymbolPath.CIRCLE,
             scale: 10,
-            fillColor: "#3B82F6",
+            fillColor: "#2d3a2d",
             fillOpacity: 1,
             strokeColor: "#FFFFFF",
-            strokeWeight: 3
+            strokeWeight: 4
         },
         zIndex: 1000
     });
 
-    // Add pulsing effect using a circle overlay
+    // Add pulsing effect (brand green)
     userCircle = new google.maps.Circle({
-        strokeColor: "#3B82F6",
-        strokeOpacity: 0.4,
+        strokeColor: "#2d3a2d",
+        strokeOpacity: 0.3,
         strokeWeight: 2,
-        fillColor: "#3B82F6",
-        fillOpacity: 0.15,
+        fillColor: "#2d3a2d",
+        fillOpacity: 0.1,
         map: map,
         center: location,
         radius: 150
@@ -327,13 +326,15 @@ function renderCentersOnMap(centers) {
 
         bounds.extend(position);
 
-        // Determine marker color based on type
-        let pinColor = "#EF4444"; // Default: Red
+        // Determine marker style based on brand palette
+        let pinColor = "#8b9d8b"; // Default: Sage
+        let pinScale = 14;
 
         if (center.has_mentta) {
-            pinColor = "#10B981"; // Green for Mentta centers
+            pinColor = "#cbaa8e"; // Gold/Sand for Mentta centers
+            pinScale = 16;
         } else if (center.emergency_24h) {
-            pinColor = "#F59E0B"; // Orange for emergency
+            pinColor = "#ef4444"; // Red for emergency
         }
 
         const marker = new google.maps.Marker({
@@ -344,15 +345,15 @@ function renderCentersOnMap(centers) {
                 text: String(index + 1),
                 color: "#FFFFFF",
                 fontSize: "11px",
-                fontWeight: "bold"
+                fontWeight: "900"
             },
             icon: {
                 path: google.maps.SymbolPath.CIRCLE,
-                scale: 14,
+                scale: pinScale,
                 fillColor: pinColor,
                 fillOpacity: 1,
                 strokeColor: "#FFFFFF",
-                strokeWeight: 2
+                strokeWeight: 3
             },
             animation: center.emergency_24h ? google.maps.Animation.BOUNCE : null
         });
@@ -397,13 +398,13 @@ function showCenterInfo(center, marker) {
         ? `${center.distance} km`
         : '';
 
-    // Build badges
+    // Build badges with brand colors
     let badges = '';
     if (center.has_mentta) {
-        badges += '<span style="display:inline-block;background:#D1FAE5;color:#065F46;padding:2px 8px;border-radius:4px;font-size:11px;margin-right:4px;">⭐ Mentta</span>';
+        badges += '<span style="display:inline-block;background:#2d3a2d;color:#cbaa8e;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;margin-right:6px;">✨ Sistema Mentta</span>';
     }
     if (center.emergency_24h) {
-        badges += '<span style="display:inline-block;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:4px;font-size:11px;">🚨 24h</span>';
+        badges += '<span style="display:inline-block;background:#fef3c7;color:#92400E;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;">🚨 Emergencias 24h</span>';
     }
 
     // Build rating stars
@@ -411,45 +412,57 @@ function showCenterInfo(center, marker) {
     if (center.rating > 0) {
         const fullStars = Math.floor(center.rating);
         const hasHalfStar = center.rating % 1 >= 0.5;
-        for (let i = 0; i < fullStars; i++) ratingStars += '⭐';
-        if (hasHalfStar) ratingStars += '½';
-        ratingStars = `<span style="font-size:12px;">${ratingStars} (${center.rating})</span>`;
+        let stars = '';
+        for (let i = 0; i < 5; i++) {
+            if (i < fullStars) stars += '★';
+            else if (i === fullStars && hasHalfStar) stars += '½';
+            else stars += '☆';
+        }
+        ratingStars = `<span style="color:#cbaa8e;font-size:14px;letter-spacing:2px;">${stars}</span> <span style="font-size:11px;font-weight:700;color:#8b9d8b;margin-left:4px;">${center.rating}</span>`;
     }
 
     const content = `
-        <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:300px;">
-            <h3 style="font-weight:700;font-size:15px;margin:0 0 6px 0;color:#1F2937;line-height:1.3;">
+        <div style="font-family:'Inter',sans-serif;padding:8px 4px;max-width:280px;">
+            <h3 style="font-family:'Playfair Display',serif;font-weight:700;font-size:18px;margin:0 0 8px 0;color:#2d3a2d;line-height:1.2;">
                 ${escapeHtml(center.name)}
             </h3>
             
-            ${badges ? `<div style="margin-bottom:8px;">${badges}</div>` : ''}
+            ${badges ? `<div style="margin-bottom:12px;">${badges}</div>` : ''}
             
-            <p style="margin:0 0 6px 0;font-size:13px;color:#4B5563;line-height:1.4;">
-                📍 ${escapeHtml(center.address)}<br>
-                ${center.district ? escapeHtml(center.district) + ', ' : ''}${center.city || 'Lima'}
-            </p>
+            <div style="margin-bottom:12px;display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;gap:8px;font-size:12px;color:#4B5563;line-height:1.4;">
+                    <span style="color:#8b9d8b;">📍</span>
+                    <span>${escapeHtml(center.address)}<br>${center.district ? escapeHtml(center.district) + ', ' : ''}${center.city || 'Lima'}</span>
+                </div>
+                
+                ${center.phone ? `
+                <div style="display:flex;gap:8px;font-size:12px;color:#4B5563;">
+                    <span style="color:#8b9d8b;">📞</span>
+                    <span>${escapeHtml(center.phone)}</span>
+                </div>` : ''}
+                
+                <div style="display:flex;gap:8px;font-size:11px;color:#8b9d8b;font-weight:500;">
+                    <span>🏥</span>
+                    <span>${escapeHtml(services)}</span>
+                </div>
+            </div>
             
-            ${center.phone ? `<p style="margin:0 0 6px 0;font-size:13px;color:#4B5563;">📞 ${escapeHtml(center.phone)}</p>` : ''}
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                ${ratingStars ? `<div>${ratingStars}</div>` : '<div></div>'}
+                ${distanceText ? `<div style="font-size:12px;color:#2d3a2d;font-weight:800;background:#f0f2f0;padding:4px 8px;border-radius:8px;">${distanceText}</div>` : ''}
+            </div>
             
-            <p style="margin:0 0 6px 0;font-size:12px;color:#6B7280;">
-                🏥 ${escapeHtml(services)}
-            </p>
-            
-            ${ratingStars ? `<p style="margin:0 0 6px 0;">${ratingStars}</p>` : ''}
-            
-            ${distanceText ? `<p style="margin:0 0 12px 0;font-size:14px;color:#6366F1;font-weight:600;">📏 ${distanceText}</p>` : ''}
-            
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <div style="display:flex;gap:8px;">
                 ${center.phone ? `
                     <a href="tel:${center.phone}" 
-                       style="display:inline-flex;align-items:center;gap:4px;background:#3B82F6;color:white;padding:8px 12px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:500;">
-                        📞 Llamar
+                       style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#2d3a2d;color:white;padding:12px;border-radius:12px;text-decoration:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;transition:all 0.2s;">
+                        Llamar
                     </a>
                 ` : ''}
                 <a href="https://www.google.com/maps/dir/?api=1&destination=${center.latitude},${center.longitude}" 
                    target="_blank"
-                   style="display:inline-flex;align-items:center;gap:4px;background:#6B7280;color:white;padding:8px 12px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:500;">
-                    🚗 Cómo llegar
+                   style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#cbaa8e;color:white;padding:12px;border-radius:12px;text-decoration:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;transition:all 0.2s;">
+                    Ruta
                 </a>
             </div>
         </div>

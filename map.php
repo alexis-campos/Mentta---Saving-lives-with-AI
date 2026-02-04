@@ -36,23 +36,32 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             theme: {
                 extend: {
                     colors: {
+                        'mentta-primary': '#2d3a2d',
+                        'mentta-secondary': '#cbaa8e',
+                        'mentta-accent': '#8b9d8b',
+                        'mentta-light': '#f5f5f0',
                         mentta: {
-                            50: '#EEF2FF',
-                            100: '#E0E7FF',
-                            200: '#C7D2FE',
-                            300: '#A5B4FC',
-                            400: '#818CF8',
-                            500: '#6366F1',
-                            600: '#4F46E5',
-                            700: '#4338CA',
-                            800: '#3730A3',
-                            900: '#312E81'
+                            50: '#f0f2f0',
+                            100: '#e8f0e8',
+                            200: '#d1dbd1',
+                            300: '#b4c2b4',
+                            400: '#8b9d8b',
+                            500: '#2d3a2d',
+                            600: '#1e261e',
+                            700: '#151a15',
+                            800: '#0c0f0c',
+                            900: '#000000'
                         }
                     }
                 }
             }
         }
     </script>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
+        rel="stylesheet">
 
     <!-- Theme & Map Styles -->
     <link rel="stylesheet" href="assets/css/theme.css">
@@ -65,39 +74,67 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
     <?php endif; ?>
 
     <style>
-        /* Critical CSS inline for fast render */
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f0;
         }
 
         .loading-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.9);
+            background: #fbfbf9;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.5rem;
             z-index: 9999;
         }
 
         .spinner {
             width: 48px;
             height: 48px;
-            border: 4px solid #E5E7EB;
-            border-top-color: #6366F1;
+            border: 3px solid #eef2ee;
+            border-top-color: #2d3a2d;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
         @keyframes spin {
             to {
                 transform: rotate(360deg);
             }
+        }
+
+        .panel-sidebar {
+            background-color: #fbfbf9;
+            border-right: 1px solid rgba(45, 58, 45, 0.08);
+            box-shadow: 10px 0 30px rgba(45, 58, 45, 0.03);
+            z-index: 20;
+        }
+
+        .center-card {
+            background: white;
+            border: 1px solid rgba(45, 58, 45, 0.05);
+            border-radius: 1.25rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .center-card:hover {
+            transform: translateY(-2px);
+            border-color: #cbaa8e;
+            box-shadow: 0 10px 20px rgba(45, 58, 45, 0.05);
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(45, 58, 45, 0.05) !important;
         }
     </style>
 </head>
@@ -111,28 +148,36 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
     </div>
 
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-30 bg-white border-b shadow-sm">
-        <div class="px-4 py-3 flex items-center justify-between">
+    <header class="fixed top-0 left-0 right-0 z-30 shadow-sm transition-all duration-300">
+        <div class="px-6 py-4 flex items-center justify-between max-w-[1440px] mx-auto">
             <!-- Back Button -->
-            <button onclick="goBack()" class="flex items-center gap-2 text-gray-700 hover:text-indigo-600 transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-                <span class="font-medium hidden sm:inline">Volver</span>
+            <button onclick="goBack()"
+                class="flex items-center gap-2 text-mentta-primary hover:text-black transition-all group">
+                <div
+                    class="w-8 h-8 rounded-full flex items-center justify-center bg-mentta-50 group-hover:bg-mentta-100 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </div>
+                <span class="font-bold text-[10px] uppercase tracking-widest hidden sm:inline">Volver</span>
             </button>
 
             <!-- Title -->
-            <h1 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                <span>🗺️</span>
-                <span class="hidden sm:inline">Centros de Salud Mental</span>
-                <span class="sm:hidden">Centros</span>
-            </h1>
+            <div class="flex items-center gap-3">
+                <span class="font-serif italic text-xl text-mentta-primary"
+                    style="font-family: 'Playfair Display', serif; font-weight: 700;">Mentta</span>
+                <span class="w-1 h-1 bg-mentta-secondary rounded-full"></span>
+                <span
+                    class="text-[10px] font-black text-mentta-primary uppercase tracking-[0.25em] hidden sm:inline">Localizador
+                    de Centros</span>
+            </div>
 
             <!-- Search Toggle -->
             <button id="search-toggle-btn" onclick="toggleSearch()"
-                class="p-2 hover:bg-gray-100 rounded-full transition" title="Buscar">
-                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                class="w-10 h-10 flex items-center justify-center bg-mentta-primary text-white rounded-xl shadow-lg shadow-mentta-900/10 hover:scale-105 active:scale-95 transition-all"
+                title="Buscar">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
             </button>
@@ -172,51 +217,53 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             </div>
 
             <!-- Location Info -->
-            <div class="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                        <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+            <div class="p-6 bg-[#2d3a2d] text-white border-b border-white/10">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20">
+                        <svg class="w-6 h-6 text-mentta-secondary" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
                                 clip-rule="evenodd"></path>
                         </svg>
                     </div>
                     <div>
-                        <p class="text-sm font-semibold text-indigo-900" id="user-location-text">Detectando ubicación...
-                        </p>
-                        <p class="text-xs text-indigo-700" id="user-city-text">Obteniendo ciudad...</p>
+                        <p class="text-xs font-bold text-white/50 uppercase tracking-widest mb-0.5">Tu área actual</p>
+                        <p class="text-sm font-bold" id="user-location-text">Detectando...</p>
+                        <p class="text-[10px] text-white/60 font-medium" id="user-city-text">Actualizando base de
+                            datos...</p>
                     </div>
                 </div>
             </div>
 
             <!-- Filters -->
-            <div class="p-4 border-b bg-white">
-                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Filtrar por</p>
-                <div class="space-y-2">
+            <div class="p-6 border-b bg-white">
+                <p class="text-[10px] font-black text-mentta-accent uppercase tracking-[0.2em] mb-4">Filtrar por
+                    categoría</p>
+                <div class="space-y-3">
                     <label class="flex items-center gap-3 cursor-pointer group">
                         <input type="radio" name="filter" value="all" checked onchange="applyFilter(this.value)"
-                            class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
-                        <span class="text-sm text-gray-700 group-hover:text-indigo-600 transition">Todos los
-                            centros</span>
+                            class="w-4 h-4 text-mentta-primary focus:ring-mentta-primary border-mentta-accent/30">
+                        <span
+                            class="text-xs font-bold text-mentta-primary/70 group-hover:text-black transition-all">Todos
+                            los centros</span>
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer group">
                         <input type="radio" name="filter" value="mentta" onchange="applyFilter(this.value)"
-                            class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
-                        <span class="text-sm text-gray-700 group-hover:text-indigo-600 transition">
-                            <span class="inline-flex items-center gap-1">
-                                <span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span>
-                                Centros con Mentta
-                            </span>
+                            class="w-4 h-4 text-mentta-primary focus:ring-mentta-primary border-mentta-accent/30">
+                        <span
+                            class="text-xs font-bold text-mentta-primary/70 group-hover:text-black transition-all flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 bg-mentta-secondary rounded-full"></span>
+                            Red Mentta
                         </span>
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer group">
                         <input type="radio" name="filter" value="emergency" onchange="applyFilter(this.value)"
-                            class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
-                        <span class="text-sm text-gray-700 group-hover:text-indigo-600 transition">
-                            <span class="inline-flex items-center gap-1">
-                                <span class="w-2.5 h-2.5 bg-orange-500 rounded-full animate-pulse"></span>
-                                Emergencias 24h
-                            </span>
+                            class="w-4 h-4 text-mentta-primary focus:ring-mentta-primary border-mentta-accent/30">
+                        <span
+                            class="text-xs font-bold text-mentta-primary/70 group-hover:text-black transition-all flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
+                            Emergencias 24h
                         </span>
                     </label>
                 </div>
@@ -261,15 +308,18 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
         <main class="flex-1 relative">
             <div id="map" class="w-full h-full"></div>
 
-            <!-- Re-center Button (positioned above Google Maps controls) -->
+            <!-- Re-center Button -->
             <button id="recenter-btn" onclick="recenterMap()"
-                class="absolute bottom-24 right-3 bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 z-10"
+                class="absolute bottom-24 right-3 bg-[#2d3a2d] p-4 rounded-2xl shadow-2xl hover:scale-110 active:scale-95 transition-all z-10 border border-white/20 overflow-hidden group"
                 title="Volver a mi ubicación">
-                <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                <div
+                    class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <svg class="w-6 h-6 text-mentta-secondary relative z-10" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
                         d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 </svg>
             </button>
 
@@ -333,16 +383,16 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                 const marker = L.marker([center.lat, center.lng], { icon: createIcon(color) }).addTo(map);
                 marker.bindPopup(`
                 <div style="min-width:200px">
-                    <h3 style="font-weight:600;margin-bottom:8px;">${center.name}</h3>
-                    <p style="color:#666;font-size:12px;margin-bottom:12px;">
-                        ${center.emergency ? '🏥 Emergencias 24h' : ''}
-                        ${center.mentta ? '✅ Usa Mentta' : ''}
-                    </p>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
-                       target="_blank" 
-                       style="display:inline-block;padding:8px 16px;background:#6366F1;color:white;border-radius:8px;text-decoration:none;font-size:13px;">
-                        Cómo llegar
-                    </a>
+                        <h3 style="font-family:'Playfair Display',serif;font-weight:700;margin-bottom:4px;color:#2d3a2d;">${center.name}</h3>
+                        <p style="color:#8b9d8b;font-size:11px;margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+                            ${center.emergency ? '🏥 Emergencias 24h' : ''}
+                            ${center.mentta ? '✅ Sistema Mentta' : ''}
+                        </p>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
+                           target="_blank" 
+                           style="display:block;text-align:center;padding:10px;background:#2d3a2d;color:white;border-radius:12px;text-decoration:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">
+                            Cómo llegar
+                        </a>
                 </div>
             `);
             });
@@ -352,13 +402,16 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             document.getElementById('user-city-text').textContent = 'Usando ubicación aproximada';
             document.getElementById('centers-count').textContent = centers.length;
 
-            // Populate centers list
             document.getElementById('centers-list').innerHTML = centers.map(c => `
-            <div class="p-3 bg-white rounded-lg shadow-sm border cursor-pointer hover:shadow-md transition" 
-                 onclick="map.setView([${c.lat}, ${c.lng}], 16)">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full" style="background:${c.mentta ? '#10B981' : c.emergency ? '#F97316' : '#EF4444'}"></span>
-                    <span class="font-medium text-sm text-gray-800">${c.name}</span>
+            <div class="center-card group" onclick="map.setView([${c.lat}, ${c.lng}], 16)">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2.5 h-2.5 rounded-full ring-4 ring-opacity-20" style="background:${c.mentta ? '#cbaa8e' : c.emergency ? '#ef4444' : '#8b9d8b'}; ring-color:${c.mentta ? '#cbaa8e33' : c.emergency ? '#ef444433' : '#8b9d8b33'}"></div>
+                        <span class="font-bold text-sm text-mentta-primary group-hover:text-black transition-colors">${c.name}</span>
+                    </div>
+                    <svg class="w-4 h-4 text-mentta-accent opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
                 </div>
             </div>
         `).join('');
