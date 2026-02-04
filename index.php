@@ -4,25 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mentta - Tu Espacio de Bienestar Mental</title>
+    <title>MENTTA | Sophisticated Mental Clarity</title>
     <meta name="description"
-        content="Un espacio seguro para tu bienestar emocional. Apoyo profesional, conversaciones con IA terapéutica y recursos de salud mental.">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        content="Support for your mind, anytime. A serene and intuitive space for mental well-being and personal growth.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --color-bg: #FAFAF8;
-            --color-bg-subtle: #F5F4F1;
-            --color-text: #3D3D3D;
-            --color-text-soft: #6B6B6B;
-            --color-text-muted: #9A9A9A;
-            --color-accent: #7C9A8E;
-            --color-accent-soft: #A8C4B8;
-            --color-accent-muted: rgba(124, 154, 142, 0.15);
-            --color-border: rgba(61, 61, 61, 0.08);
-            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            --transition-slow: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            --transition-medium: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --bg: #ffffff;
+            --fg: #111111;
+            --accent: #222222;
+            --muted: #888888;
+            --soft-bg: #f5f5f5;
+            --border: rgba(0, 0, 0, 0.08);
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Playfair Display', serif;
         }
 
         * {
@@ -31,762 +28,967 @@
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
             font-family: var(--font-main);
-            background: var(--color-bg);
-            color: var(--color-text);
+            background-color: var(--bg);
+            color: var(--fg);
             line-height: 1.6;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Scroll Container */
-        .scroll-container {
-            height: 180vh;
-            position: relative;
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--fg);
+            text-transform: none;
+            /* Serifs usually look better in Title Case */
         }
 
-        /* Cinematic Section */
-        .cinematic-section {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
             height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 10;
-            transition: opacity 0.8s ease;
-        }
-
-        .cinematic-section.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .cinematic-frame {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .cinematic-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom,
-                    rgba(250, 250, 248, 0.2) 0%,
-                    rgba(250, 250, 248, 0) 40%,
-                    rgba(250, 250, 248, 0.6) 80%,
-                    rgba(250, 250, 248, 1) 100%);
-            pointer-events: none;
-        }
-
-        .hero-cta.hidden {
-            opacity: 0;
-            transform: translateY(30px);
-            pointer-events: none;
-        }
-
-        .branding-header {
-            position: fixed;
-            top: 2.5rem;
-            right: 2.5rem;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            opacity: 0;
-            animation: fadeIn 1.2s ease forwards;
-            animation-delay: 0.8s;
-        }
-
-        .brand-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.125rem;
-        }
-
-        .brand-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--color-text);
-            letter-spacing: -0.02em;
-            text-align: right;
-        }
-
-        .brand-summary {
-            font-size: 0.75rem;
-            color: var(--color-text-soft);
-            max-width: 180px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            line-height: 1.4;
-            text-align: right;
-            /* Aligned to right */
-        }
-
-        .hero-headline {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 600;
-            color: var(--color-text);
-            margin-bottom: 1rem;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-        }
-
-        .hero-subtext {
-            font-size: 1.125rem;
-            color: var(--color-text-soft);
-            max-width: 480px;
-            margin-bottom: 2.5rem;
-            font-weight: 400;
-        }
-
-        /* Primary Button */
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.625rem;
-            background: var(--color-accent);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 100px;
-            font-size: 1rem;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all var(--transition-medium);
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            background: #6B8A7E;
-            transform: translateY(-2px);
-        }
-
-        .btn-primary svg {
-            width: 18px;
-            height: 18px;
-            transition: transform 0.3s ease;
-        }
-
-        .btn-primary:hover svg {
-            transform: translateX(3px);
-        }
-
-        /* Scroll Indicator */
-        .scroll-indicator {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 40;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            opacity: 1;
-            transition: opacity 0.5s ease;
-        }
-
-        .scroll-indicator.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .scroll-indicator span {
-            font-size: 0.75rem;
-            color: var(--color-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            font-weight: 500;
-        }
-
-        .scroll-indicator .line {
-            width: 1px;
-            height: 40px;
-            background: linear-gradient(to bottom, var(--color-text-muted), transparent);
-            animation: scrollLine 2s ease-in-out infinite;
-        }
-
-        @keyframes scrollLine {
-
-            0%,
-            100% {
-                opacity: 0.3;
-                transform: scaleY(1);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scaleY(1.2);
-            }
-        }
-
-        /* ========== CONTENT SECTIONS ========== */
-        .content-wrapper {
+            text-align: center;
             position: relative;
-            z-index: 50;
-            /* Above fixed hero */
-            margin-top: 180vh;
-            background: var(--color-bg);
-            box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Section Base */
-        .section {
-            padding: 8rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-narrow {
-            max-width: 800px;
-        }
-
-        /* Fade-in Animation */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* About Section */
-        .about-section {
-            text-align: center;
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .about-section h2 {
-            font-size: clamp(1.75rem, 3vw, 2.5rem);
-            font-weight: 600;
-            color: var(--color-text);
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        .about-section p {
-            font-size: 1.125rem;
-            color: var(--color-text-soft);
-            line-height: 1.8;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Services Section */
-        .services-section h2 {
-            font-size: clamp(1.75rem, 3vw, 2.5rem);
-            font-weight: 600;
-            color: var(--color-text);
-            text-align: center;
-            margin-bottom: 4rem;
-            letter-spacing: -0.02em;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .service-card {
-            background: var(--color-bg-subtle);
-            border-radius: 16px;
-            padding: 2.5rem 2rem;
-            transition: all var(--transition-medium);
-            border: 1px solid transparent;
-        }
-
-        .service-card:hover {
-            background: white;
-            border-color: var(--color-border);
-            transform: translateY(-4px);
-        }
-
-        .service-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--color-text);
-            margin-bottom: 0.75rem;
-        }
-
-        .service-card p {
-            font-size: 0.9375rem;
-            color: var(--color-text-soft);
-            line-height: 1.7;
-        }
-
-        .service-card .service-tag {
-            display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--color-accent);
-            background: var(--color-accent-muted);
-            padding: 0.375rem 0.875rem;
-            border-radius: 100px;
-            margin-bottom: 1.25rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .service-illustration {
-            width: 100%;
-            height: 160px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--color-accent-muted) 0%, rgba(168, 196, 184, 0.05) 100%);
-            border-radius: 12px;
+            background: #fff;
+            padding: 2rem;
             overflow: hidden;
         }
 
-        .service-illustration svg {
+        .hero-bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            opacity: 0.9;
+            z-index: 1;
+            background-image: url('images/menta.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            /* Base opacity */
+            transition: opacity 0.1s ease-out;
+            pointer-events: none;
         }
 
-        /* Why Section */
-        .why-section {
-            text-align: center;
-            background: var(--color-bg-subtle);
-            border-radius: 24px;
-            padding: 5rem 3rem;
-            margin: 0 2rem;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
+        .hero-bg-svg {
+            display: none;
+            /* Hide the old SVG mountain background */
         }
 
-        .why-section h2 {
-            font-size: clamp(1.75rem, 3vw, 2.5rem);
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+        }
+
+        .hero-top-text {
+            font-size: 0.75rem;
+            letter-spacing: 0.5em;
+            color: var(--muted);
+            margin-bottom: 2.5rem;
             font-weight: 600;
-            color: var(--color-text);
+            text-transform: uppercase;
+            animation: fadeInDown 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        .hero-title {
+            font-size: clamp(3.5rem, 15vw, 10rem);
+            line-height: 0.9;
+            letter-spacing: -0.02em;
+            margin-bottom: 2.5rem;
+            font-weight: 900;
+            color: var(--fg);
+            animation: fadeInUp 1.2s cubic-bezier(0.19, 1, 0.22, 1) 0.2s forwards;
+            opacity: 0;
+            text-transform: uppercase;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--muted);
+            max-width: 550px;
+            margin: 0 auto 4rem;
+            font-weight: 400;
+            animation: fadeInUp 1.2s cubic-bezier(0.19, 1, 0.22, 1) 0.4s forwards;
+            opacity: 0;
+            line-height: 1.5;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            animation: fadeInUp 1.2s cubic-bezier(0.19, 1, 0.22, 1) 0.6s forwards;
+            opacity: 0;
+        }
+
+        .btn {
+            padding: 1.2rem 3.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translate(-50%, -50%) rotate(45deg) scale(0);
+            transition: transform 0.5s ease;
+        }
+
+        .btn:hover::after {
+            transform: translate(-50%, -50%) rotate(45deg) scale(1);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--fg);
+            color: var(--fg);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--fg);
+            color: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-solid {
+            background-color: var(--fg);
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-solid:hover {
+            opacity: 0.9;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- ELEVATED EXPERIENCE --- */
+        .experience {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+            border-top: 1px solid var(--border);
+        }
+
+        .exp-left {
+            background-color: var(--soft-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem;
+            position: relative;
+        }
+
+        .mockup {
+            width: 100%;
+            max-width: 380px;
+            background: white;
+            border-radius: 48px;
+            padding: 12px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .mockup-inner {
+            background: white;
+            border-radius: 38px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #f0f0f0;
+        }
+
+        .ig-header {
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ig-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            padding: 2px;
+        }
+
+        .ig-avatar-inner {
+            width: 100%;
+            height: 100%;
+            background-image: url('images/Menta icono.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .ig-user-info {
+            flex: 1;
+        }
+
+        .ig-username {
+            font-size: 13px;
+            font-weight: 700;
+            color: #262626;
+        }
+
+        .ig-location {
+            font-size: 11px;
+            color: #8e8e8e;
+        }
+
+        .ig-media {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ig-media-content {
+            width: 100%;
+            height: 100%;
+            background-image: url('images/Mentta post.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ig-icons {
+            padding: 12px 14px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .ig-icon {
+            width: 24px;
+            height: 24px;
+            color: #262626;
+        }
+
+        .ig-caption-area {
+            padding: 0 14px 20px;
+        }
+
+        .ig-likes {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .ig-caption {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .ig-caption b {
+            margin-right: 6px;
+        }
+
+        .ig-comments-link {
+            font-size: 13px;
+            color: #8e8e8e;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .ig-date {
+            font-size: 10px;
+            color: #8e8e8e;
+            text-transform: uppercase;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .exp-right {
+            padding: 6rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .section-title {
+            font-size: 4rem;
             margin-bottom: 2rem;
+            max-width: 600px;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+            font-style: italic;
+            /* Adding an elegant serif touch */
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--muted);
+            margin-bottom: 4rem;
+            max-width: 500px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            border-top: 1px solid var(--border);
+            padding-top: 3rem;
+        }
+
+        .feature-num {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .feature-text {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        /* --- SHOWCASE SECTION --- */
+        .showcase {
+            padding: 10rem 2rem;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .showcase-header {
+            max-width: 800px;
+            margin: 0 auto 5rem;
+        }
+
+        .showcase-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .showcase-desc {
+            font-size: 1.1rem;
+            color: var(--muted);
+        }
+
+        .video-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 60px 120px rgba(0, 0, 0, 0.15);
+            background: var(--soft-bg);
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background-image: url('images/MENTTA VId.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            position: relative;
+        }
+
+        .play-button {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 5;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
+        }
+
+        .play-button svg {
+            width: 32px;
+            height: 32px;
+            fill: #fff;
+            margin-left: 6px;
+        }
+
+        .video-ui {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            right: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0.6;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* --- EXPERT CURATION --- */
+        .curation {
+            padding: 8rem 2rem;
+            background-color: var(--bg);
+        }
+
+        .curation-header {
+            max-width: 1200px;
+            margin: 0 auto 6rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: end;
+        }
+
+        .curation-title {
+            font-size: 5rem;
+            line-height: 1;
             letter-spacing: -0.02em;
         }
 
-        .why-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2.5rem;
-            margin-top: 3rem;
+        .curation-desc {
+            font-size: 1.2rem;
+            color: var(--muted);
+            max-width: 500px;
         }
 
-        .why-item h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--color-text);
+        .team-track {
+            display: flex;
+            gap: 4rem;
+            animation: scroll-left 30s linear infinite;
+            width: max-content;
+        }
+
+        .team-grid {
+            max-width: 100%;
+            overflow: hidden;
+            margin: 0 auto;
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        .team-card {
+            text-align: center;
+            width: 350px;
+            /* Fixed width for consistent scrolling */
+            flex-shrink: 0;
+        }
+
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(calc(-350px * 3 - 4rem * 3));
+            }
+
+            /* Adjust based on original member count */
+        }
+
+        .team-grid:hover .team-track {
+            animation-play-state: paused;
+        }
+
+        .team-img-wrapper {
+            margin-bottom: 2rem;
+            border-radius: 50%;
+            overflow: hidden;
+            aspect-ratio: 1/1;
+            background-color: #f0f0f0;
+            position: relative;
+        }
+
+        .team-img-placeholder {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1);
+            transition: transform 0.6s ease;
+        }
+
+        .team-card:hover .team-img-placeholder {
+            transform: scale(1.05);
+            filter: grayscale(0.5);
+        }
+
+        .member-name {
+            font-size: 1.5rem;
             margin-bottom: 0.5rem;
         }
 
-        .why-item p {
-            font-size: 0.9375rem;
-            color: var(--color-text-soft);
+        .member-role {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
         }
 
-        /* Final CTA */
-        .final-cta {
-            text-align: center;
-            padding: 8rem 2rem;
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            opacity: 0.3;
         }
 
-        .final-cta h2 {
-            font-size: clamp(1.75rem, 3vw, 2.5rem);
-            font-weight: 600;
-            color: var(--color-text);
-            margin-bottom: 1rem;
-            letter-spacing: -0.02em;
-        }
-
-        .final-cta p {
-            font-size: 1.125rem;
-            color: var(--color-text-soft);
-            max-width: 500px;
-            margin: 0 auto 2.5rem;
-        }
-
-        /* Footer */
+        /* --- FOOTER --- */
         .footer {
-            padding: 3rem 2rem;
-            text-align: center;
-            border-top: 1px solid var(--color-border);
+            padding: 6rem 4rem 2rem;
+            border-top: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
         }
 
-        .footer p {
-            font-size: 0.875rem;
-            color: var(--color-text-muted);
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
         }
 
-        .footer a {
-            color: var(--color-text-soft);
-            text-decoration: none;
-            transition: color 0.3s ease;
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .footer a:hover {
-            color: var(--color-accent);
+        .footer-logo::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--fg);
+            border-radius: 50%;
+        }
+
+        .footer-address {
+            font-size: 0.8rem;
+            color: var(--muted);
+            max-width: 200px;
+        }
+
+        .footer-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+        }
+
+        .footer-bottom {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            padding-top: 4rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .footer-utility {
+            display: flex;
+            gap: 2rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            .section {
-                padding: 5rem 1.5rem;
+        @media (max-width: 992px) {
+            .experience {
+                grid-template-columns: 1fr;
             }
 
-            .why-section {
-                margin: 0 1rem;
-                padding: 3rem 1.5rem;
+            .curation-header {
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
 
-            .services-grid {
-                gap: 1.5rem;
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-right {
+                align-items: flex-start;
+            }
+
+            .hero-title {
+                font-size: 5rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Branding Header -->
-    <header class="branding-header">
-        <div class="brand-info">
-            <span class="brand-name">Mentta</span>
-            <p class="brand-summary">Apoyo emocional e IA profesional</p>
-        </div>
-    </header>
-
-    <!-- Progress Bar -->
-    <div class="progress-bar" id="progress-bar"></div>
 
     <!-- Hero Section -->
-    <div class="scroll-container" id="scroll-container">
-        <!-- Hero Visual Section -->
-        <section class="cinematic-section" id="cinematic-section">
-            <!-- SVG Hero Illustration -->
-            <svg class="cinematic-frame" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice"
-                xmlns="http://www.w3.org/2000/svg">
-                <!-- Background -->
-                <rect width="1920" height="1080" fill="#FAFAF8" />
+    <section class="hero">
+        <div class="hero-bg-img"></div>
 
-                <!-- Subtle gradient overlay -->
-                <defs>
-                    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#F5F4F1;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#FAFAF8;stop-opacity:1" />
-                    </linearGradient>
-                    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#A8C4B8;stop-opacity:0.4" />
-                        <stop offset="100%" style="stop-color:#7C9A8E;stop-opacity:0.2" />
-                    </linearGradient>
-                    <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" style="stop-color:#A8C4B8;stop-opacity:0.3" />
-                        <stop offset="100%" style="stop-color:#A8C4B8;stop-opacity:0" />
-                    </radialGradient>
-                </defs>
-
-                <rect width="1920" height="1080" fill="url(#bgGradient)" />
-
-                <!-- Background organic shapes - right layer only -->
-                <ellipse cx="1600" cy="200" rx="400" ry="300" fill="#A8C4B8" opacity="0.08" />
-                <circle cx="960" cy="540" r="450" fill="url(#glowGradient)" />
-
-                <!-- Flowing abstract lines -->
-                <path d="M0 600 Q400 450 800 550 T1600 480 T1920 520" stroke="#A8C4B8" stroke-width="2" fill="none"
-                    opacity="0.3" />
-                <path d="M0 650 Q500 500 900 600 T1500 530 T1920 580" stroke="#7C9A8E" stroke-width="1.5" fill="none"
-                    opacity="0.2" />
-                <path d="M0 700 Q300 600 700 680 T1400 600 T1920 650" stroke="#A8C4B8" stroke-width="1" fill="none"
-                    opacity="0.15" />
-
-                <!-- Central composition - abstract human forms -->
-                <g transform="translate(960, 480)">
-                    <!-- Outer glow ring -->
-                    <circle cx="0" cy="0" r="200" fill="none" stroke="#A8C4B8" stroke-width="1" opacity="0.2" />
-                    <circle cx="0" cy="0" r="280" fill="none" stroke="#7C9A8E" stroke-width="0.5" opacity="0.1" />
-
-                    <!-- Abstract figure - main -->
-                    <g transform="translate(0, 0)">
-                        <ellipse cx="0" cy="-60" rx="35" ry="40" fill="#A8C4B8" opacity="0.25" />
-                        <ellipse cx="0" cy="30" rx="45" ry="70" fill="#7C9A8E" opacity="0.2" />
-                        <circle cx="0" cy="-80" r="25" fill="#A8C4B8" opacity="0.3" />
-                    </g>
-
-                    <!-- Subtle connection detail -->
-                    <ellipse cx="0" cy="0" rx="60" ry="40" fill="#7C9A8E" opacity="0.1" />
-                </g>
-
-                <!-- Decorative elements - floating shapes -->
-                <circle cx="300" cy="300" r="8" fill="#7C9A8E" opacity="0.3" />
-                <circle cx="350" cy="250" r="5" fill="#A8C4B8" opacity="0.4" />
-                <circle cx="280" cy="350" r="6" fill="#7C9A8E" opacity="0.25" />
-
-                <circle cx="1600" cy="700" r="10" fill="#A8C4B8" opacity="0.3" />
-                <circle cx="1650" cy="750" r="6" fill="#7C9A8E" opacity="0.35" />
-                <circle cx="1550" cy="680" r="4" fill="#A8C4B8" opacity="0.4" />
-
-                <circle cx="1700" cy="350" r="7" fill="#7C9A8E" opacity="0.25" />
-                <circle cx="1750" cy="400" r="5" fill="#A8C4B8" opacity="0.3" />
-
-                <circle cx="150" cy="500" r="6" fill="#A8C4B8" opacity="0.3" />
-                <circle cx="100" cy="550" r="4" fill="#7C9A8E" opacity="0.35" />
-
-                <!-- Subtle leaf/organic shapes -->
-                <path d="M1500 150 Q1530 120 1560 150 Q1530 180 1500 150" fill="#A8C4B8" opacity="0.2" />
-                <path d="M1750 550 Q1780 520 1810 550 Q1780 580 1750 550" fill="#A8C4B8" opacity="0.18" />
-
-                <!-- Bottom fade -->
-                <rect x="0" y="900" width="1920" height="180" fill="url(#bgGradient)" opacity="0.8" />
-            </svg>
-
-            <div class="cinematic-overlay" style="z-index: 25;"></div>
-
-            <!-- New Center Content (Visible Immediately) -->
-            <div class="hero-center-content"
-                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 30; text-align: center; width: 100%; max-width: 800px; padding: 0 2rem;">
-                <h2
-                    style="font-size: 0.875rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 2rem; font-weight: 600;">
-                    Mentta</h2>
-                <h1
-                    style="font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 600; line-height: 1.1; margin-bottom: 2.5rem; color: var(--color-text);">
-                    Tu viaje hacia el bienestar <br><span
-                        style="color: var(--color-text-soft); font-weight: 400; font-style: italic;">comienza
-                        aquí.</span></h1>
-
-                <a href="login.php" class="btn-primary" style="opacity: 1; pointer-events: auto;">
-                    Comenzar
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                </a>
-            </div>
-        </section>
-    </div>
-
-    <!-- Scroll Indicator -->
-    <div class="scroll-indicator" id="scroll-indicator">
-        <span>Explora</span>
-        <div class="line"></div>
-    </div>
-
-    <!-- Content Wrapper -->
-    <div class="content-wrapper">
-
-        <!-- About Section -->
-        <section class="section section-narrow about-section fade-in">
-            <h2>Un enfoque centrado en ti</h2>
-            <p>
-                Creemos que el bienestar mental es un camino personal. Por eso, combinamos tecnología empática
-                con atención profesional para ofrecerte un espacio donde puedas expresarte sin juicios,
-                encontrar apoyo cuando lo necesites y avanzar a tu propio ritmo.
+        <div class="hero-content">
+            <p class="hero-top-text">SOPHISTICATED MENTAL CLARITY</p>
+            <h1 class="hero-title">MENTTA</h1>
+            <p class="hero-subtitle">
+                Support for your mind, anytime. A serene and intuitive space for mental well-being and personal growth.
             </p>
-        </section>
+            <div class="hero-btns">
+                <a href="login.php" class="btn btn-outline">LOGIN</a>
+                <a href="register.php" class="btn btn-solid">REGISTER</a>
+            </div>
+        </div>
+    </section>
 
-        <!-- Services Section -->
-        <section class="section services-section">
-            <h2 class="fade-in">Cómo podemos ayudarte</h2>
-            <div class="services-grid">
-                <div class="service-card fade-in">
-                    <div class="service-illustration">
-                        <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- AI Chat Illustration -->
-                            <rect x="30" y="20" width="80" height="60" rx="8" fill="#A8C4B8" opacity="0.3" />
-                            <rect x="35" y="25" width="50" height="6" rx="3" fill="#7C9A8E" opacity="0.6" />
-                            <rect x="35" y="35" width="65" height="6" rx="3" fill="#7C9A8E" opacity="0.4" />
-                            <rect x="35" y="45" width="40" height="6" rx="3" fill="#7C9A8E" opacity="0.4" />
-                            <circle cx="145" cy="50" r="25" fill="#7C9A8E" opacity="0.2" />
-                            <circle cx="145" cy="50" r="15" fill="#7C9A8E" opacity="0.4" />
-                            <path d="M140 45 L145 50 L150 45" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round"
-                                fill="none" />
-                            <path d="M140 50 L145 55 L150 50" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round"
-                                fill="none" />
-                            <circle cx="60" cy="95" r="4" fill="#A8C4B8" />
-                            <circle cx="75" cy="95" r="4" fill="#7C9A8E" opacity="0.6" />
-                            <circle cx="90" cy="95" r="4" fill="#7C9A8E" opacity="0.3" />
+    <!-- Elevated Experience Section -->
+    <section class="experience">
+        <div class="exp-left">
+            <div class="mockup">
+                <div class="mockup-inner">
+                    <!-- Header -->
+                    <div class="ig-header">
+                        <div class="ig-avatar">
+                            <div class="ig-avatar-inner"></div>
+                        </div>
+                        <div class="ig-user-info">
+                            <div class="ig-username">Mentta</div>
+                            <div class="ig-location">Mind Ally</div>
+                        </div>
+                        <svg class="ig-icon" viewBox="0 0 24 24" fill="currentColor" style="width:18px;">
+                            <circle cx="5" cy="12" r="1.5" />
+                            <circle cx="12" cy="12" r="1.5" />
+                            <circle cx="19" cy="12" r="1.5" />
                         </svg>
                     </div>
-                    <span class="service-tag">Disponible 24/7</span>
-                    <h3>Conversación con IA</h3>
-                    <p>Un asistente terapéutico que te escucha sin juzgar. Técnicas de respiración, reflexión guiada y
-                        apoyo emocional inmediato.</p>
-                </div>
-                <div class="service-card fade-in">
-                    <div class="service-illustration">
-                        <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Map Illustration -->
-                            <rect x="25" y="15" width="150" height="90" rx="8" fill="#A8C4B8" opacity="0.15" />
-                            <path d="M40 85 L60 55 L80 70 L110 35 L140 60 L160 40" stroke="#7C9A8E" stroke-width="2"
-                                stroke-linecap="round" fill="none" opacity="0.4" />
-                            <circle cx="85" cy="50" r="20" fill="#7C9A8E" opacity="0.15" />
-                            <circle cx="85" cy="50" r="10" fill="#7C9A8E" opacity="0.3" />
-                            <circle cx="85" cy="50" r="4" fill="#7C9A8E" />
-                            <path d="M85 30 L85 25" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round" />
-                            <path d="M105 50 L110 50" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round" />
-                            <path d="M85 70 L85 75" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round" />
-                            <path d="M65 50 L60 50" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round" />
-                            <circle cx="140" cy="75" r="12" fill="#A8C4B8" opacity="0.4" />
-                            <path d="M140 69 L140 75 L145 75" stroke="#7C9A8E" stroke-width="1.5"
-                                stroke-linecap="round" />
+
+                    <!-- Media -->
+                    <div class="ig-media">
+                        <div class="ig-media-content">
+                        </div>
+                    </div>
+
+                    <!-- Icons -->
+                    <div class="ig-icons">
+                        <svg class="ig-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
+                        <svg class="ig-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                        </svg>
+                        <svg class="ig-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13" />
+                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                        </svg>
+                        <div style="flex:1;"></div>
+                        <svg class="ig-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                         </svg>
                     </div>
-                    <span class="service-tag">Geolocalización</span>
-                    <h3>Recursos cercanos</h3>
-                    <p>Encuentra centros de atención, líneas de ayuda y profesionales cerca de ti. En momentos
-                        difíciles, la ayuda está a un toque.</p>
-                </div>
-                <div class="service-card fade-in">
-                    <div class="service-illustration">
-                        <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Video Call Illustration -->
-                            <rect x="30" y="25" width="90" height="70" rx="8" fill="#A8C4B8" opacity="0.25" />
-                            <rect x="35" y="30" width="80" height="50" rx="4" fill="#7C9A8E" opacity="0.15" />
-                            <circle cx="75" cy="50" r="15" fill="#7C9A8E" opacity="0.3" />
-                            <circle cx="75" cy="47" r="5" fill="#7C9A8E" opacity="0.5" />
-                            <path d="M67 58 Q75 62 83 58" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round"
-                                fill="none" opacity="0.5" />
-                            <polygon points="130,40 160,55 130,70" fill="#7C9A8E" opacity="0.4" />
-                            <rect x="125" y="38" width="10" height="34" rx="2" fill="#A8C4B8" opacity="0.3" />
-                            <circle cx="55" cy="85" r="6" fill="#7C9A8E" opacity="0.3" />
-                            <rect x="70" y="82" width="30" height="6" rx="3" fill="#A8C4B8" opacity="0.4" />
-                        </svg>
+
+                    <!-- Caption Area -->
+                    <div class="ig-caption-area">
+                        <div class="ig-likes">Liked by <b>alex_rivera</b> and <b>12,482 others</b></div>
+                        <div class="ig-caption">
+                            <b>mentta_wellness</b>Your journey to well-being begins with a single mindful step. #Mentta
+                        </div>
+                        <span class="ig-comments-link">View all 42 comments</span>
+                        <span class="ig-date">8 HOURS AGO</span>
                     </div>
-                    <span class="service-tag">Profesionales</span>
-                    <h3>Videollamadas</h3>
-                    <p>Conecta con psicólogos certificados desde la comodidad de tu hogar. Sesiones seguras, privadas y
-                        a tu horario.</p>
                 </div>
             </div>
-        </section>
-
-        <!-- Why Section -->
-        <section class="why-section fade-in">
-            <h2>¿Por qué elegir este espacio?</h2>
-            <div class="why-grid">
-                <div class="why-item">
-                    <h4>Confidencial</h4>
-                    <p>Tu privacidad es sagrada. Encriptación total.</p>
+        </div>
+        <div class="exp-right">
+            <h2 class="section-title">ELEVATED EXPERIENCE</h2>
+            <p class="section-desc">
+                Mentta brings technology and mental well-being together. A seamless, thoughtful assistant guides you
+                toward clarity, calm, and personal growth.
+            </p>
+            <div class="features">
+                <div class="feature">
+                    <p class="feature-num">01. EMPATHY</p>
+                    <h3 class="feature-title">Advanced Intelligence</h3>
+                    <p class="feature-text">Advanced language models trained on clinical psychology protocols.</p>
                 </div>
-                <div class="why-item">
-                    <h4>Sin presiones</h4>
-                    <p>Avanza a tu ritmo, sin compromisos.</p>
-                </div>
-                <div class="why-item">
-                    <h4>Siempre disponible</h4>
-                    <p>Apoyo las 24 horas, cada día del año.</p>
-                </div>
-                <div class="why-item">
-                    <h4>Humano + IA</h4>
-                    <p>Lo mejor de ambos mundos, cuando lo necesites.</p>
+                <div class="feature">
+                    <p class="feature-num">02. DISCRETION</p>
+                    <h3 class="feature-title">Total Privacy</h3>
+                    <p class="feature-text">Tier-one encryption ensuring your private thoughts remain private.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Final CTA -->
-        <section class="final-cta fade-in">
-            <h2>Tu bienestar importa</h2>
-            <p>El primer paso siempre es el más difícil. Estamos aquí para acompañarte.</p>
-            <a href="login.php" class="btn-primary">
-                Dar el primer paso
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-            </a>
-        </section>
+    <!-- Video Showcase Section -->
+    <section class="showcase">
+        <div class="showcase-header">
+            <h2 class="showcase-title">A Journey Through Mentta.</h2>
+            <p class="showcase-desc">Discover the premium experience of mental clarity. Watch how our assistant scales
+                with your personal growth in real-time.</p>
+        </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>© 2026 Mentta · <a href="#">Privacidad</a> · <a href="#">Términos</a></p>
-        </footer>
+        <div class="video-container">
+            <div class="video-placeholder">
+                <!-- In a real scenario, replace this div with an <video> or <iframe> -->
+                <div class="play-button">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                </div>
+                <div class="video-ui">
+                    <span>Product Tour 2026</span>
+                    <span>04:12 / 12:00</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    </div>
+    <!-- Expert Curation Section -->
+    <section class="curation">
+        <div class="curation-header">
+            <h2 class="curation-title">EXPERT<br>CURATION.</h2>
+            <p class="curation-desc">Our team bridges the gap between digital innovation and clinical excellence.</p>
+        </div>
+
+        <div class="team-grid">
+            <div class="team-track">
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <svg viewBox="0 0 200 200" class="team-img-placeholder">
+                            <circle cx="100" cy="80" r="40" fill="#444" />
+                            <path d="M60 160 Q100 120 140 160" stroke="#444" stroke-width="20" fill="none" />
+                        </svg>
+                    </div>
+                    <h3 class="member-name">DR. ALEX RIVERA</h3>
+                    <p class="member-role">LEAD CLINICAL PSYCHOLOGIST</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <svg viewBox="0 0 200 200" class="team-img-placeholder">
+                            <circle cx="100" cy="80" r="40" fill="#444" />
+                            <path d="M60 160 Q100 120 140 160" stroke="#444" stroke-width="20" fill="none" />
+                        </svg>
+                    </div>
+                    <h3 class="member-name">ELENA VANCE</h3>
+                    <p class="member-role">ALETHEIA SPECIALIST</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <svg viewBox="0 0 200 200" class="team-img-placeholder">
+                            <circle cx="100" cy="80" r="40" fill="#444" />
+                            <path d="M60 160 Q100 120 140 160" stroke="#444" stroke-width="20" fill="none" />
+                        </svg>
+                    </div>
+                    <h3 class="member-name">MARCUS THORNE</h3>
+                    <p class="member-role">AI ETHICS LEAD</p>
+                </div>
+
+                <!-- Duplicate for seamless scroll -->
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <svg viewBox="0 0 200 200" class="team-img-placeholder">
+                            <circle cx="100" cy="80" r="40" fill="#444" />
+                            <path d="M60 160 Q100 120 140 160" stroke="#444" stroke-width="20" fill="none" />
+                        </svg>
+                    </div>
+                    <h3 class="member-name">DR. ALEX RIVERA</h3>
+                    <p class="member-role">LEAD CLINICAL PSYCHOLOGIST</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <svg viewBox="0 0 200 200" class="team-img-placeholder">
+                            <circle cx="100" cy="80" r="40" fill="#444" />
+                            <path d="M60 160 Q100 120 140 160" stroke="#444" stroke-width="20" fill="none" />
+                        </svg>
+                    </div>
+                    <h3 class="member-name">ELENA VANCE</h3>
+                    <p class="member-role">ALETHEIA SPECIALIST</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <svg viewBox="0 0 200 200" class="team-img-placeholder">
+                            <circle cx="100" cy="80" r="40" fill="#444" />
+                            <path d="M60 160 Q100 120 140 160" stroke="#444" stroke-width="20" fill="none" />
+                        </svg>
+                    </div>
+                    <h3 class="member-name">MARCUS THORNE</h3>
+                    <p class="member-role">AI ETHICS LEAD</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-left">
+            <div class="footer-logo">MENTTA</div>
+            <div class="footer-address">
+                GLOBAL HEADQUARTERS<br>
+                Lima, Lima<br>
+                Peru
+            </div>
+        </div>
+        <div class="footer-right">
+            <div class="footer-socials">
+                <a href="#">TWITTER</a>
+                <a href="#">LINKEDIN</a>
+                <a href="#">INSTAGRAM</a>
+            </div>
+            <p style="font-size: 0.7rem; color: #ccc;">hello@mentta.ai</p>
+        </div>
+        <div class="footer-bottom">
+            <div>© 2026 MENTTA SYSTEMS</div>
+            <div class="footer-utility">
+                <a href="#">LEGAL</a>
+                <a href="#">SECURITY</a>
+                <a href="#">PRIVACY POLICY</a>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // Configuration
-        const frameCount = 80;
-        const folderPath = 'images/Smooth_cinematic_transition_202602032027_smq_000/';
-        const baseFileName = 'Smooth_cinematic_transition_202602032027_smq_';
+        // Parallax and mouse effect for hero
+        const hero = document.querySelector('.hero');
+        const bgImg = document.querySelector('.hero-bg-img');
 
-        // Elements
-        const cinematicSection = document.getElementById('cinematic-section');
-        const scrollIndicator = document.getElementById('scroll-indicator');
-        const scrollContainer = document.getElementById('scroll-container');
+        hero.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 30;
+            const y = (e.clientY / window.innerHeight - 0.5) * 30;
+            bgImg.style.transform = `scale(1.05) translate(${x}px, ${y}px)`;
+        });
 
-        // Preload images
-        const images = [];
-        let loadedCount = 0;
+        // Fade out on scroll for hero
+        const heroContent = document.querySelector('.hero-content');
 
-        function preloadImages() {
-            // No images to preload as requested
-        }
+        window.addEventListener('scroll', () => {
+            const scrollPos = window.scrollY;
+            const heroHeight = hero.offsetHeight;
 
-        // Update frame based on scroll
-        function updateFrame() {
-            const scrollTop = window.scrollY;
-            const maxScroll = scrollContainer.offsetHeight - window.innerHeight;
-            const scrollProgress = Math.min(scrollTop / maxScroll, 1);
+            // Calculate opacity: starts at 1, reaches 0 at 70% of the hero height
+            const opacity = 1 - (scrollPos / (heroHeight * 0.7));
 
-            const frameIndex = Math.min(
-                Math.floor(scrollProgress * frameCount),
-                frameCount - 1
-            );
-
-            // Hide scroll indicator
-            if (scrollProgress > 0.6) {
-                scrollIndicator.classList.add('hidden');
+            if (opacity >= 0) {
+                heroContent.style.opacity = opacity;
+                bgImg.style.opacity = opacity * 0.15; // Maintain proportional base opacity
+                heroContent.style.transform = `translateY(${scrollPos * 0.3}px)`;
             } else {
-                scrollIndicator.classList.remove('hidden');
+                heroContent.style.opacity = 0;
+                bgImg.style.opacity = 0;
             }
+        });
 
-            // Fade out hero content as user scrolls down
-            const fadeThreshold = 0.7;
-            if (scrollProgress > fadeThreshold) {
-                const heroOpacity = 1 - ((scrollProgress - fadeThreshold) / (1 - fadeThreshold));
-                cinematicSection.style.opacity = Math.max(0, heroOpacity).toString();
-                if (heroOpacity <= 0) {
-                    cinematicSection.style.pointerEvents = "none";
-                } else {
-                    cinematicSection.style.pointerEvents = "auto";
-                }
-            } else {
-                cinematicSection.style.opacity = "1";
-                cinematicSection.style.pointerEvents = "auto";
-            }
-        }
-
-        // Intersection Observer for fade-in animations
+        // Smooth reveal on scroll
         const observerOptions = {
-            root: null,
-            rootMargin: '0px 0px -20px 0px',
-            threshold: 0.01
+            threshold: 0.1
         };
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
                 }
             });
         }, observerOptions);
 
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-        // Initialize
-        preloadImages();
-        window.addEventListener('scroll', updateFrame);
-        updateFrame();
+        document.querySelectorAll('.experience, .curation, .team-card, .feature').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(40px)";
+            el.style.transition = "all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1)";
+            observer.observe(el);
+        });
     </script>
 </body>
 
