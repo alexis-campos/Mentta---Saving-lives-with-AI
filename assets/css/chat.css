@@ -176,6 +176,31 @@ body {
     }
 }
 
+/* Mobile Optimizations - Reduced saturation */
+@media (max-width: 639px) {
+    .message-bubble {
+        max-width: 90%;
+        font-size: 0.95rem;
+    }
+
+    .message-user,
+    .message-ai {
+        padding: 0.85rem 1.15rem;
+        /* Reduced padding for mobile */
+        border-radius: 1.5rem 1.5rem 0.5rem 1.5rem;
+        /* Slightly tighter border radius */
+    }
+
+    .message-ai {
+        border-radius: 1.5rem 1.5rem 1.5rem 0.5rem;
+    }
+
+    #messagesContainer {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}
+
 /* Focus styles */
 #messageInput:focus {
     outline: none;

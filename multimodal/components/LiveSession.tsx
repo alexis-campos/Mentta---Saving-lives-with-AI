@@ -460,14 +460,8 @@ NUNCA:
       {/* Main Content */}
       <div className="flex-1 flex flex-col md:flex-row relative overflow-hidden p-10 gap-8">
 
-        {/* LEFT: Avatar Area */}
-        <div className="flex-[2] relative card-elevated overflow-hidden">
-          <Avatar3D aiStatus={aiStatus} className="w-full h-full" />
-        </div>
-
-        {/* RIGHT: User Camera + Analysis Panel */}
+        {/* LEFT: User Camera Area (Now on Left/Secondary spot) */}
         <div className="flex-1 flex flex-col gap-6">
-          {/* Camera feed */}
           <div className="flex-[2] relative card-elevated overflow-hidden">
             <video
               ref={videoRef}
@@ -527,6 +521,27 @@ NUNCA:
             </div>
           </div>
         </div>
+
+        {/* RIGHT: Avatar Area (Now Main Focus) */}
+        <div className="flex-[2] relative card-elevated overflow-hidden">
+          <Avatar3D aiStatus={aiStatus} className="w-full h-full" />
+
+          {/* Label for Mentta */}
+          <div className="absolute top-5 left-5 z-20">
+            <span
+              className="px-4 py-2 rounded-full text-[10px] font-sans font-medium uppercase"
+              style={{
+                background: 'rgba(255, 255, 255, 0.95)',
+                color: '#2d3a2d',
+                letterSpacing: '0.15em',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)'
+              }}
+            >
+              Mentta AI
+            </span>
+          </div>
+        </div>
+
       </div>
 
       {/* Controls - Perfectly Centered */}

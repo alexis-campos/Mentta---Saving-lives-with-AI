@@ -159,8 +159,9 @@ if ($hour >= 5 && $hour < 12) {
                         Vitality</span>
                 </div>
             </div>
-            <button class="sidebar-close absolute top-4 right-4" onclick="closeMenu()" aria-label="Cerrar menú"
-                style="color:#aaa;">&times;</button>
+            <button
+                class="sidebar-close absolute top-4 right-4 text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/5 transition-colors"
+                onclick="closeMenu()" aria-label="Cerrar menú" style="color:#aaa;">&times;</button>
         </div>
 
         <!-- Content -->
@@ -253,7 +254,7 @@ if ($hour >= 5 && $hour < 12) {
     <!-- Header -->
     <header class="fixed top-0 left-0 right-0 z-50 bg-[#F9F9F7]/95 initial-reveal-container"
         style="border-bottom: 1px solid rgba(0,0,0,0.05); transition-delay: 0.1s;">
-        <div class="max-w-xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="max-w-xl mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
             <div class="flex items-center gap-4">
                 <!-- Hamburger Button -->
                 <!-- Floating Hamburger Trigger -->
@@ -278,14 +279,15 @@ if ($hour >= 5 && $hour < 12) {
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button onclick="confirmLogout()"
-                    class="w-10 h-10 rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center hover:bg-red-50 transition-colors group">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-black group-hover:text-red-500"
+                <a href="login.php"
+                    class="w-5 h-8 rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center hover:bg-gray-50 transition-colors group"
+                    title="Regresar al Login">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-black group-hover:text-gray-600"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 16l4-4m0 0l-4-4m4 4H7" />
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                </button>
+                </a>
             </div>
         </div>
     </header>
@@ -297,9 +299,9 @@ if ($hour >= 5 && $hour < 12) {
             <div id="messagesContainer" class="min-h-[calc(100vh-14rem)] px-4 py-6 space-y-6">
                 <!-- Welcome message - UX-002 FIXED -->
                 <!-- Welcome message - ANTIGRAVITY CENTRAL CARD -->
-                <div id="welcomeMessage" class="py-20 animate-fade">
+                <div id="welcomeMessage" class="py-10 md:py-20 animate-fade">
                     <div
-                        class="bg-white rounded-[3rem] p-12 shadow-xl border border-black/5 max-w-lg mx-auto relative overflow-hidden">
+                        class="bg-white rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 shadow-xl border border-black/5 max-w-lg mx-auto relative overflow-hidden">
                         <!-- Abstract glow -->
                         <div
                             class="absolute -top-24 -right-24 w-64 h-64 bg-mentta-light rounded-full opacity-30 blur-3xl">
@@ -307,17 +309,18 @@ if ($hour >= 5 && $hour < 12) {
 
                         <div class="relative z-10 text-center">
                             <div
-                                class="w-16 h-16 mx-auto mb-10 rounded-full overflow-hidden border border-white p-0.5 bg-white shadow-xl">
+                                class="w-12 h-12 md:w-16 md:h-16 mx-auto mb-6 md:mb-10 rounded-full overflow-hidden border border-white p-0.5 bg-white shadow-xl">
                                 <img src="Images/Menta icono.jpg" alt="Mentta Logo"
                                     class="w-full h-full object-cover rounded-full">
                             </div>
-                            <h2 class="text-4xl font-bold mb-6"
+                            <h2 class="text-2xl md:text-4xl font-bold mb-4 md:mb-6"
                                 style="color: #111; font-family: 'Playfair Display', serif; letter-spacing: -0.02em; line-height: 1.2;">
                                 <?= htmlspecialchars($greeting) ?>,<br>
                                 <span
                                     class="italic font-normal"><?= htmlspecialchars(explode(' ', $user['name'])[0]) ?></span>
                             </h2>
-                            <p style="color: #666;" class="text-lg leading-relaxed font-sans font-light mb-10">
+                            <p style="color: #666;"
+                                class="text-base md:text-lg leading-relaxed font-sans font-light mb-6 md:mb-10">
                                 <?= htmlspecialchars($contextMessage) ?> Tómate tu tiempo, este es tu refugio de
                                 claridad.
                             </p>
@@ -371,48 +374,33 @@ if ($hour >= 5 && $hour < 12) {
 
     <!-- Input Area -->
     <div class="fixed bottom-0 left-0 right-0 z-50"
-        style="background: linear-gradient(to top, #F9F9F7 80%, rgba(249, 249, 247, 0));">
-        <div class="max-w-xl mx-auto px-6 py-10">
-            <div class="rounded-[2.5rem] shadow-2xl transition-all overflow-hidden border border-black/5 initial-reveal-container"
-                style="background-color: white; box-shadow: 0 20px 50px -15px rgba(0,0,0,0.1); transition-delay: 0.3s;">
-                <div class="flex items-center gap-4 p-4">
-                    <textarea id="messageInput" placeholder="Write your thoughts..."
-                        class="flex-1 bg-transparent resize-none focus:outline-none px-4 py-3 min-h-[56px] max-h-[160px] text-base leading-relaxed"
+        style="background: linear-gradient(to top, #F9F9F7 85%, rgba(249, 249, 247, 0));">
+        <div class="max-w-xl mx-auto px-2 md:px-6 py-2 md:py-10">
+            <div class="rounded-[2rem] md:rounded-[2.5rem] shadow-xl md:shadow-2xl transition-all overflow-hidden border border-black/5 initial-reveal-container"
+                style="background-color: white; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); transition-delay: 0.3s;">
+                <div class="flex items-center gap-2 md:gap-4 p-2 md:p-4">
+                    <textarea id="messageInput" placeholder="Escribe aquí..."
+                        class="flex-1 bg-transparent resize-none focus:outline-none px-3 py-3 md:px-4 min-h-[48px] md:min-h-[56px] max-h-[140px] text-sm md:text-base leading-relaxed"
                         style="color: #111;" rows="1" onkeydown="handleKeyDown(event)"
                         oninput="autoResize(this)"></textarea>
                     <button id="sendButton" onclick="sendMessage()"
-                        class="w-14 h-14 bg-black text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-10 disabled:cursor-not-allowed btn-bloom"
+                        class="w-10 h-10 md:w-14 md:h-14 bg-black text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-10 disabled:cursor-not-allowed btn-bloom"
                         disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
                         </svg>
                     </button>
                 </div>
             </div>
-            <p class="text-center text-[9px] font-bold uppercase tracking-[0.5em] mt-8 text-black/20">
+            <p
+                class="hidden md:block text-center text-[8px] font-bold uppercase tracking-[0.4em] mt-3 md:mt-6 text-black/20">
                 ESPACIO PRIVADO • ENCRIPTADO • SEGURO
             </p>
         </div>
     </div>
 
-    <!-- Live Call FAB Button with Ambient Glow -->
-    <div class="fixed right-8 bottom-44 z-40">
-        <!-- The Glow layer -->
-        <div class="absolute inset-0 rounded-full blur-[50px] opacity-40 animate-pulse"
-            style="background-color: #AF8A6B; transform: scale(1.5);"></div>
-
-        <!-- The Button -->
-        <button id="liveCallFab" onclick="openLiveCallModal()"
-            class="relative w-16 h-16 rounded-[1.8rem] flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group overflow-hidden border border-white/20 shadow-xl btn-bloom"
-            style="background-color: #AF8A6B;" title="Sesión Mentta Live">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 relative z-10" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-        </button>
-    </div>
+    <!-- Live Call FAB Button removed as per request -->
 
     <!-- ========================================
          MODALS
@@ -528,7 +516,7 @@ if ($hour >= 5 && $hour < 12) {
                             <p class="text-[10px] text-white/70 uppercase tracking-[0.2em] font-bold">Urgencia Inmediata
                             </p>
                         </div>
-                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                        <div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
@@ -724,23 +712,24 @@ if ($hour >= 5 && $hour < 12) {
     <div id="live-call-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 28rem;">
             <div class="modal-header" style="background: var(--bg-tertiary);">
-                <h3 class="modal-title" style="color: var(--text-primary); font-family: 'Playfair Display', serif;">📽️
+                <h3 class="modal-title text-base"
+                    style="color: var(--text-primary); font-family: 'Playfair Display', serif;">📽️
                     Mentta Live</h3>
-                <button class="modal-close" onclick="closeLiveCallModal()">&times;</button>
+                <button class="modal-close text-lg" onclick="closeLiveCallModal()">&times;</button>
             </div>
-            <div class="modal-body text-center py-8">
-                <div class="w-24 h-24 rounded-[2rem] mx-auto mb-8 flex items-center justify-center shadow-2xl rotate-3"
+            <div class="modal-body text-center py-4">
+                <div class="w-12 h-12 rounded-[1rem] mx-auto mb-4 flex items-center justify-center shadow-lg rotate-3"
                     style="background-color: #2d3a2d;">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24"
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                 </div>
-                <h2 class="text-2xl font-bold mb-3"
+                <h2 class="text-lg font-bold mb-2"
                     style="color: var(--text-primary); font-family: 'Playfair Display', serif;">Sesión en Tiempo Real
                 </h2>
-                <p style="color: var(--text-secondary);" class="mb-6 text-base leading-relaxed">
+                <p style="color: var(--text-secondary);" class="mb-4 text-xs leading-relaxed">
                     Conéctate con nuestra IA de apoyo emocional a través de voz y video para una experiencia más humana
                     y profunda.
                 </p>
@@ -785,11 +774,11 @@ if ($hour >= 5 && $hour < 12) {
 
     <!-- Live Call Fullscreen Overlay -->
     <div id="live-overlay" class="fixed inset-0 z-[100] bg-zinc-950 hidden">
-        <!-- Close button floating -->
+        <!-- Close button floating -- Reduced by ~50% -->
         <button onclick="closeLiveOverlay()"
-            class="absolute top-6 right-6 z-20 text-white/50 hover:text-white transition-colors p-4 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-xl border border-white/10"
+            class="absolute top-4 right-4 z-20 text-white/50 hover:text-white transition-colors p-2 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-xl border border-white/10"
             title="Terminar sesión">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
