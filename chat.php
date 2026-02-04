@@ -121,27 +121,46 @@ if ($hour >= 5 && $hour < 12) {
 </head>
 
 <body class="antialiased" style="background-color: var(--bg-primary);">
+    <script>
+        // Pre-load script to handle initial reveal
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+                document.querySelectorAll('.initial-reveal-container').forEach(el => el.classList.add('active'));
+            }, 100);
+        });
+    </script>
 
     <!-- Sidebar Backdrop -->
     <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
 
     <!-- Sidebar Menu -->
-    <aside id="sidebar-menu" class="sidebar-menu">
+    <aside id="sidebar-menu" class="sidebar-menu initial-reveal-container">
         <!-- Header -->
-        <div class="sidebar-header" style="background-color: var(--bg-tertiary);">
-            <div class="sidebar-user-info">
-                <h3 style="color: var(--text-primary); font-family: 'Playfair Display', serif;">
+        <div class="sidebar-header"
+            style="background-color: #F2F2F0; border-bottom: 1px solid rgba(0,0,0,0.05); padding: 2rem 1.5rem;">
+            <div class="text-center w-full">
+                <div
+                    class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border border-white p-0.5 bg-white shadow-xl">
+                    <img src="Images/Menta icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
+                </div>
+                <h3
+                    style="color: #111; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.5rem; margin-bottom: 0.5rem;">
                     <?= htmlspecialchars($user['name']) ?>
                 </h3>
-                <p><?= htmlspecialchars($user['email']) ?></p>
+                <p style="color: #888; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.02em;">
+                    <?= htmlspecialchars($user['email']) ?>
+                </p>
                 <div class="mood-badge"
-                    style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 99px;">
-                    <?= $moodEmoji ?> <span
-                        style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; tracking: 0.05em; margin-left: 4px;">Ánimo
-                        Semanal</span>
+                    style="background: white; border: 1px solid rgba(0,0,0,0.05); padding: 8px 16px; border-radius: 99px; margin-top: 1.5rem; display: inline-flex; align-items: center; gap: 8px; shadow: var(--shadow-sm);">
+                    <span style="font-size: 1.1rem;"><?= $moodEmoji ?></span>
+                    <span
+                        style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: #111;">Weekly
+                        Vitality</span>
                 </div>
             </div>
-            <button class="sidebar-close" onclick="closeMenu()" aria-label="Cerrar menú">&times;</button>
+            <button class="sidebar-close absolute top-4 right-4" onclick="closeMenu()" aria-label="Cerrar menú"
+                style="color:#aaa;">&times;</button>
         </div>
 
         <!-- Content -->
@@ -149,13 +168,13 @@ if ($hour >= 5 && $hour < 12) {
             <!-- Main Actions -->
             <div class="sidebar-section">
                 <button class="menu-btn group" onclick="newChat()"
-                    style="background: white; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 0.75rem;">
-                    <span class="menu-btn-icon text-mentta-primary group-hover:scale-110 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                    style="background: white; border: 1px solid rgba(0,0,0,0.03); box-shadow: var(--shadow-sm); margin-bottom: 0.75rem; border-radius: 1.5rem; padding: 1.25rem;">
+                    <span class="menu-btn-icon text-black group-hover:scale-110 transition-transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                         </svg>
                     </span>
-                    <span class="font-bold text-mentta-primary text-sm">Nuevo Chat</span>
+                    <span class="font-bold text-black text-sm tracking-tight">Nuevo Chat</span>
                 </button>
                 <button class="menu-btn group" onclick="window.location.href='map.php'"
                     style="background: white; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 0.75rem;">
@@ -196,7 +215,7 @@ if ($hour >= 5 && $hour < 12) {
                                 d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                     </span>
-                    <span class="font-black tracking-[0.25em] text-[11px] uppercase">Mentta Live</span>
+                    <span class="font-bold tracking-[0.25em] text-[10px] uppercase">Mentta Live Session</span>
                 </button>
             </div>
 
@@ -226,51 +245,44 @@ if ($hour >= 5 && $hour < 12) {
                 </div>
             </div>
         </div>
-
-        </div>
-    </aside>
     </aside>
 
     <!-- Analysis Paused Banner -->
     <div id="analysis-paused-banner" class="analysis-paused-banner"></div>
 
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md"
-        style="background-color: rgba(255, 255, 255, 0.8); border-bottom: 1px solid var(--border-color);">
-        <div class="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <!-- Hamburger Button with Badge -->
-                <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Abrir menú"
-                    style="background: var(--bg-tertiary); border-radius: 12px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
+    <header class="fixed top-0 left-0 right-0 z-50 bg-[#F9F9F7]/95 initial-reveal-container" style="border-bottom: 1px solid rgba(0,0,0,0.05); transition-delay: 0.1s;">
+        <div class="max-w-xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <!-- Hamburger Button -->
+                <!-- Floating Hamburger Trigger -->
+                <button class="hamburger-btn group btn-bloom" onclick="toggleMenu()" aria-label="Abrir menú"
+                    style="background: white; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); height: 52px; width: 52px; transition: all 0.4s ease;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#111"
+                        class="w-6 h-6 transition-transform group-hover:rotate-90 mx-auto">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8h16M4 16h16" />
                     </svg>
-                    <span id="notification-badge" class="notification-badge <?= $notifCount > 0 ? '' : 'hidden' ?>"
-                        style="background-color: var(--accent-secondary);">
-                        <?= $notifCount > 99 ? '99+' : $notifCount ?>
-                    </span>
                 </button>
 
-                <div
-                    class="w-10 h-10 bg-mentta-500 rounded-xl flex items-center justify-center shadow-lg shadow-mentta-500/20">
-                    <span class="text-white font-bold text-lg">M</span>
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold"
-                        style="color: var(--text-primary); font-family: 'Playfair Display', serif; line-height: 1;">
-                        Mentta</h1>
-                    <p class="text-[10px] uppercase tracking-widest font-bold" style="color: var(--text-tertiary);">
-                        Soporte Elite</p>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full overflow-hidden border border-white p-0.5 bg-white shadow-md">
+                        <img src="Images/Menta icono.jpg" alt="M" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <div>
+                        <h1 class="text-base font-bold"
+                            style="color: #111; font-family: 'Playfair Display', serif; line-height: 1;">
+                            Mentta</h1>
+                        <p class="text-[8px] uppercase tracking-[0.3em] font-bold opacity-40">Elite Care</p>
+                    </div>
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button onclick="confirmLogout()" class="p-2.5 rounded-xl transition-all hover:bg-red-50 group"
-                    style="color: var(--text-tertiary);" title="Cerrar sesión">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:text-red-500" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
+                <button onclick="confirmLogout()"
+                    class="w-10 h-10 rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center hover:bg-red-50 transition-colors group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-black group-hover:text-red-500"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            d="M17 16l4-4m0 0l-4-4m4 4H7" />
                     </svg>
                 </button>
             </div>
@@ -278,30 +290,46 @@ if ($hour >= 5 && $hour < 12) {
     </header>
 
     <!-- Main Chat Area -->
-    <main class="pt-20 pb-40">
+    <main class="pt-20 pb-40 initial-reveal-container" style="transition-delay: 0.2s;">
         <div class="max-w-2xl mx-auto">
             <!-- Messages Container -->
             <div id="messagesContainer" class="min-h-[calc(100vh-14rem)] px-4 py-6 space-y-6">
                 <!-- Welcome message - UX-002 FIXED -->
-                <div id="welcomeMessage" class="text-center py-12 animate-fade">
+                <!-- Welcome message - ANTIGRAVITY CENTRAL CARD -->
+                <div id="welcomeMessage" class="py-20 animate-fade">
                     <div
-                        class="w-20 h-20 bg-gradient-to-br from-mentta-400 to-mentta-600 rounded-[2rem] mx-auto mb-6 flex items-center justify-center shadow-2xl shadow-mentta-500/20 rotate-3">
-                        <span class="text-white font-bold text-3xl">- M -</span>
-                    </div>
-                    <h2 class="text-3xl font-bold mb-3"
-                        style="color: var(--text-primary); font-family: 'Playfair Display', serif;">
-                        <?= htmlspecialchars($greeting) ?>,
-                        <?= htmlspecialchars(explode(' ', $user['name'])[0]) ?>
-                    </h2>
-                    <p style="color: var(--text-secondary);" class="max-w-md mx-auto text-lg leading-relaxed">
-                        <?= htmlspecialchars($contextMessage) ?> Tómate tu tiempo, este es tu refugio.
-                    </p>
-                    <?php if ($weekMood !== null && $weekMood < 0.4): ?>
-                        <div class="mt-6 p-4 bg-mentta-100 rounded-2xl inline-block border border-mentta-200">
-                            <p class="text-sm font-medium" style="color: var(--text-primary);">Veo que has tenido una semana
-                                intensa. Estoy aquí para procesarlo contigo. 🌿</p>
+                        class="bg-white rounded-[3rem] p-12 shadow-xl border border-black/5 max-w-lg mx-auto relative overflow-hidden">
+                        <!-- Abstract glow -->
+                        <div
+                            class="absolute -top-24 -right-24 w-64 h-64 bg-mentta-light rounded-full opacity-30 blur-3xl">
                         </div>
-                    <?php endif; ?>
+
+                        <div class="relative z-10 text-center">
+                            <div
+                                class="w-16 h-16 mx-auto mb-10 rounded-full overflow-hidden border border-white p-0.5 bg-white shadow-xl">
+                                <img src="Images/Menta icono.jpg" alt="Mentta Logo"
+                                    class="w-full h-full object-cover rounded-full">
+                            </div>
+                            <h2 class="text-4xl font-bold mb-6"
+                                style="color: #111; font-family: 'Playfair Display', serif; letter-spacing: -0.02em; line-height: 1.2;">
+                                <?= htmlspecialchars($greeting) ?>,<br>
+                                <span
+                                    class="italic font-normal"><?= htmlspecialchars(explode(' ', $user['name'])[0]) ?></span>
+                            </h2>
+                            <p style="color: #666;" class="text-lg leading-relaxed font-sans font-light mb-10">
+                                <?= htmlspecialchars($contextMessage) ?> Tómate tu tiempo, este es tu refugio de
+                                claridad.
+                            </p>
+
+                            <div class="flex justify-center gap-4">
+                                <span
+                                    class="text-[9px] font-bold uppercase tracking-[0.4em] text-black/20">Secure</span>
+                                <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-black/20">•</span>
+                                <span
+                                    class="text-[9px] font-bold uppercase tracking-[0.4em] text-black/20">Private</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Messages will be rendered here -->
@@ -341,44 +369,49 @@ if ($hour >= 5 && $hour < 12) {
     </div>
 
     <!-- Input Area -->
-    <div class="fixed bottom-0 left-0 right-0 z-50 backdrop-blur-lg"
-        style="background-color: rgba(255, 255, 255, 0.7); border-top: 1px solid var(--border-color);">
-        <div class="max-w-2xl mx-auto px-4 py-6">
-            <div class="rounded-3xl shadow-xl transition-all overflow-hidden"
-                style="background-color: white; border: 1px solid var(--border-color); box-shadow: 0 10px 40px -10px rgba(45, 58, 45, 0.15);">
-                <div class="flex items-end gap-3 p-3">
-                    <textarea id="messageInput" placeholder="Escribe lo que sientes..."
-                        class="flex-1 bg-transparent resize-none focus:outline-none px-3 py-3 min-h-[50px] max-h-[160px] text-base leading-relaxed"
-                        style="color: var(--text-primary);" rows="1" onkeydown="handleKeyDown(event)"
+    <div class="fixed bottom-0 left-0 right-0 z-50"
+        style="background: linear-gradient(to top, #F9F9F7 80%, rgba(249, 249, 247, 0));">
+        <div class="max-w-xl mx-auto px-6 py-10">
+            <div class="rounded-[2.5rem] shadow-2xl transition-all overflow-hidden border border-black/5 initial-reveal-container"
+                style="background-color: white; box-shadow: 0 20px 50px -15px rgba(0,0,0,0.1); transition-delay: 0.3s;">
+                <div class="flex items-center gap-4 p-4">
+                    <textarea id="messageInput" placeholder="Write your thoughts..."
+                        class="flex-1 bg-transparent resize-none focus:outline-none px-4 py-3 min-h-[56px] max-h-[160px] text-base leading-relaxed"
+                        style="color: #111;" rows="1" onkeydown="handleKeyDown(event)"
                         oninput="autoResize(this)"></textarea>
                     <button id="sendButton" onclick="sendMessage()"
-                        class="w-12 h-12 bg-mentta-primary text-white rounded-2xl flex items-center justify-center hover:shadow-lg hover:bg-mentta-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:shadow-none"
+                        class="w-14 h-14 bg-black text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-10 disabled:cursor-not-allowed btn-bloom"
                         disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                            <path
-                                d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
                         </svg>
                     </button>
                 </div>
             </div>
-            <p class="text-center text-[10px] font-bold uppercase tracking-[0.2em] mt-4"
-                style="color: var(--text-tertiary);">Espacio Privado • Encriptado • Seguro</p>
+            <p class="text-center text-[9px] font-bold uppercase tracking-[0.5em] mt-8 text-black/20">
+                ESPACIO PRIVADO • ENCRIPTADO • SEGURO
+            </p>
         </div>
     </div>
 
-    <!-- Live Call FAB Button -->
-    <button id="liveCallFab" onclick="openLiveCallModal()"
-        class="fixed right-6 bottom-40 z-40 w-16 h-16 rounded-[1.5rem] shadow-[0_20px_50px_rgba(203,170,142,0.6)] flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group overflow-hidden border-2 border-white/20"
-        style="background-color: #cbaa8e;" title="Sesión Mentta Live">
-        <div
-            class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity">
-        </div>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 relative z-10" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="3.5">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-        </svg>
-    </button>
+    <!-- Live Call FAB Button with Ambient Glow -->
+    <div class="fixed right-8 bottom-44 z-40">
+        <!-- The Glow layer -->
+        <div class="absolute inset-0 rounded-full blur-[50px] opacity-40 animate-pulse"
+            style="background-color: #AF8A6B; transform: scale(1.5);"></div>
+
+        <!-- The Button -->
+        <button id="liveCallFab" onclick="openLiveCallModal()"
+            class="relative w-16 h-16 rounded-[1.8rem] flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group overflow-hidden border border-white/20 shadow-xl btn-bloom"
+            style="background-color: #AF8A6B;" title="Sesión Mentta Live">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 relative z-10" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+        </button>
+    </div>
 
     <!-- ========================================
          MODALS
@@ -388,9 +421,9 @@ if ($hour >= 5 && $hour < 12) {
     <div id="logoutModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 24rem;">
             <div class="modal-body text-center py-6">
-                <h3 class="text-lg font-semibold mb-2" style="color: var(--text-primary);">¿Cerrar sesión?</h3>
-                <p style="color: var(--text-secondary);" class="mb-6">Siempre puedes volver cuando necesites hablar.
-                    Cuídate mucho. 💜</p>
+                <h3 class="text-2xl font-serif font-bold mb-3" style="color: var(--text-primary);">Concluir Sesión</h3>
+                <p style="color: var(--text-secondary);" class="mb-8 leading-relaxed">Siempre puedes volver cuando
+                    necesites un momento de claridad. Cuídate mucho. 🌿</p>
                 <div class="flex gap-3">
                     <button onclick="closeLogoutModal()" class="flex-1 py-2.5 px-4 rounded-xl transition-colors"
                         style="border: 1px solid var(--border-color); color: var(--text-primary); background-color: var(--bg-tertiary);">
@@ -410,295 +443,278 @@ if ($hour >= 5 && $hour < 12) {
 
     <!-- Crisis Contact Modal -->
     <div id="crisis-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header" style="background: #fef2f2;">
-                <h3 class="modal-title" style="color: #991b1b; font-weight: 800;">🆘 Ayuda Inmediata</h3>
-                <button class="modal-close" onclick="closeCrisisModal()">&times;</button>
+        <div class="modal-content"
+            style="border-radius: 32px; background: #FCFCFA; box-shadow: 0 40px 80px rgba(80, 60, 50, 0.08); border: 1px solid rgba(0,0,0,0.03); max-width: 28rem;">
+            <div class="modal-header px-8 py-6 border-none flex justify-between items-center bg-transparent">
+                <h3 class="font-serif text-2xl text-[#2A2A2A] font-bold">Soporte de Crisis</h3>
+                <button onclick="closeCrisisModal()"
+                    class="text-[10px] font-bold uppercase tracking-widest text-black/40 hover:text-black transition-colors">Cerrar</button>
             </div>
-            <div class="modal-body">
-                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1.5rem;">
-                    Si te encuentras en una situación difícil, por favor elige una opción para recibir apoyo ahora:
+            <div class="modal-body px-8 pb-10 pt-2">
+                <p class="text-[#555] text-sm leading-relaxed mb-8">
+                    Este es un espacio seguro. Elige la opción que mejor se adapte a lo que necesitas en este momento:
                 </p>
 
-                <div class="crisis-option" onclick="selectCrisisOption('psychologist')"
-                    style="border-left: 4px solid #ef4444; background: white; margin-bottom: 1rem; box-shadow: var(--shadow-sm);">
-                    <span class="crisis-option-icon">👨‍⚕️</span>
-                    <div class="crisis-option-content">
-                        <h4 style="color: #991b1b; font-weight: 700;">Contactar a mi Psicólogo</h4>
-                        <p>Notificar a tu profesional vinculado</p>
+                <div class="space-y-4">
+                    <!-- Option: Psychologist -->
+                    <div class="group bg-white rounded-3xl p-5 shadow-sm border border-black/5 hover:shadow-xl hover:translate-y-[-2px] transition-all cursor-pointer flex items-center gap-4"
+                        onclick="selectCrisisOption('psychologist')">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-[#C8553D]/5 flex items-center justify-center text-[#C8553D]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-[#2A2A2A] font-bold text-sm">Contactar a mi Psicólogo</h4>
+                            <p class="text-[10px] text-[#888] uppercase tracking-wider mt-0.5">Notificación prioritaria
+                            </p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="crisis-option" onclick="selectCrisisOption('emergency_contact')"
-                    style="border-left: 4px solid #ef4444; background: white; margin-bottom: 1rem; box-shadow: var(--shadow-sm);">
-                    <span class="crisis-option-icon">👪</span>
-                    <div class="crisis-option-content">
-                        <h4 style="color: #991b1b; font-weight: 700;">Contacto de Emergencia</h4>
-                        <p>Avisar a tu persona de confianza</p>
+                    <!-- Option: Calming Exercises -->
+                    <div class="group bg-white rounded-3xl p-5 shadow-sm border border-black/5 hover:shadow-xl hover:translate-y-[-2px] transition-all cursor-pointer flex items-center gap-4"
+                        onclick="selectCrisisOption('calming_exercises')">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-[#C8553D]/5 flex items-center justify-center text-[#C8553D]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 3v17.25m0 0a9 9 0 100-18 9 9 0 000 18z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M14.25 9.25a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-[#2A2A2A] font-bold text-sm">Ejercicios de Calma</h4>
+                            <p class="text-[10px] text-[#888] uppercase tracking-wider mt-0.5">Respiración y Grounding
+                            </p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="crisis-option" onclick="window.location.href='tel:113'"
-                    style="background: #ef4444; border: none; color: white; padding: 1.25rem;">
-                    <span class="crisis-option-icon">📞</span>
-                    <div class="crisis-option-content">
-                        <h4 style="color: white; font-weight: 800; font-size: 1.1rem;">Línea de Crisis 113</h4>
-                        <p style="color: rgba(255,255,255,0.9);">Llamar urgentemente ahora mismo</p>
+                    <!-- Option: Emergency Contact -->
+                    <div class="group bg-white rounded-3xl p-5 shadow-sm border border-black/5 hover:shadow-xl hover:translate-y-[-2px] transition-all cursor-pointer flex items-center gap-4"
+                        onclick="selectCrisisOption('emergency_contact')">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-[#C8553D]/5 flex items-center justify-center text-[#C8553D]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-[#2A2A2A] font-bold text-sm">Contacto de Confianza</h4>
+                            <p class="text-[10px] text-[#888] uppercase tracking-wider mt-0.5">Aviso a red de seguridad
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Option: Call 113 -->
+                    <div class="group bg-[#C8553D] rounded-3xl p-6 shadow-[0_20px_40px_rgba(200,85,61,0.2)] hover:shadow-[0_25px_50px_rgba(200,85,61,0.3)] hover:scale-[1.02] transition-all cursor-pointer flex items-center gap-5 mt-6"
+                        onclick="window.location.href='tel:113'">
+                        <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-white font-bold text-lg">Llamar Línea 113</h4>
+                            <p class="text-[10px] text-white/70 uppercase tracking-[0.2em] font-bold">Urgencia Inmediata
+                            </p>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="crisis-option" onclick="selectCrisisOption('calming_exercises')">
-        <span class="crisis-option-icon">🧘</span>
-        <div class="crisis-option-content">
-            <h4>Ejercicios de Calma Rápida</h4>
-            <p>Técnicas de respiración y grounding</p>
-        </div>
-    </div>
-    </div>
-    </div>
     </div>
 
     <!-- Resources Modal -->
     <div id="resources-modal" class="modal-overlay">
-        <div class="modal-content" style="max-height: 90vh; max-width: 32rem;">
-            <div class="modal-header" style="background: var(--bg-tertiary);">
-                <h3 class="modal-title" style="color: var(--text-primary); font-family: 'Playfair Display', serif;">🌿
-                    Recursos de Bienestar</h3>
-                <button class="modal-close" onclick="closeResourcesModal()">&times;</button>
+        <div class="modal-content"
+            style="border-radius: 32px; background: #FCFCFA; box-shadow: 0 40px 80px rgba(80, 60, 50, 0.08); border: 1px solid rgba(0,0,0,0.03); max-width: 32rem; max-height: 90vh;">
+            <div class="modal-header px-8 py-6 border-none flex justify-between items-center bg-transparent">
+                <h3 class="font-serif text-2xl text-[#2A2A2A] font-bold">Recursos de Bienestar</h3>
+                <button onclick="closeResourcesModal()"
+                    class="text-[10px] font-bold uppercase tracking-widest text-black/40 hover:text-black transition-colors">Cerrar</button>
             </div>
-            <div class="modal-body" style="overflow-y: auto; padding: 1.5rem;">
+            <div class="modal-body px-8 pb-10 pt-2 overflow-y-auto">
+                <p class="text-[#555] text-sm leading-relaxed mb-8">
+                    Herramientas diseñadas para devolverte al centro. Tómate el tiempo que necesites.
+                </p>
 
-                <!-- Breathing Exercises - UX-001 FIXED: Herramienta interactiva -->
-                <div id="resource-breathing" class="resource-card"
-                    style="border: 1px solid rgba(45, 58, 45, 0.1); border-radius: 1.5rem; overflow: hidden; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); background: white;">
-                    <div class="resource-card-header" onclick="toggleResourceCard('resource-breathing')"
-                        style="background: white; padding: 1.5rem; border-bottom: 1px solid #f8faf8;">
-                        <span class="resource-card-title"
-                            style="font-weight: 800; color: #2d3a2d; font-family: 'Playfair Display', serif; font-size: 1.1rem;">
-                            <span class="resource-card-icon">🌿</span>
-                            Guía de Respiración Consciente
-                        </span>
-                    </div>
-                    <div class="resource-card-content" style="padding: 2rem; background: white;">
-                        <!-- Ultra-Clean Breathing Timer -->
-                        <div id="breathing-timer" class="mb-6 text-center">
-
-                            <!-- SVG Progress Ring -->
-                            <div class="relative w-56 h-56 mx-auto mb-10 flex items-center justify-center">
-                                <svg class="absolute inset-0 w-full h-full -rotate-90">
-                                    <circle cx="112" cy="112" r="100" stroke="#f1f3f1" stroke-width="6"
-                                        fill="transparent" />
-                                    <circle id="breathing-progress-ring" cx="112" cy="112" r="100" stroke="#2d3a2d"
-                                        stroke-width="6" fill="transparent" stroke-dasharray="628"
-                                        stroke-dashoffset="628" stroke-linecap="round"
-                                        class="transition-all duration-1000 ease-linear" />
-                                </svg>
-
-                                <!-- Core Circle -->
-                                <div id="breathing-circle"
-                                    class="w-40 h-40 rounded-full flex flex-col items-center justify-center transition-all duration-1000 relative z-10"
-                                    style="background: #2d3a2d; box-shadow: 0 30px 60px -12px rgba(45, 58, 45, 0.25);">
-                                    <span id="breathing-text"
-                                        class="text-white font-black text-2xl uppercase tracking-[0.2em]">...</span>
-                                    <span id="breathing-subtext"
-                                        class="text-white/40 text-[9px] uppercase font-bold tracking-widest mt-1">Calma</span>
+                <div class="space-y-6">
+                    <!-- Breathing Guide -->
+                    <div id="resource-breathing"
+                        class="resource-card bg-white rounded-[2rem] overflow-hidden shadow-sm border border-black/5 transition-all">
+                        <div class="px-6 py-5 flex items-center justify-between cursor-pointer hover:bg-black/[0.01]"
+                            onclick="toggleResourceCard('resource-breathing')">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-[#8B9D8B]/10 flex items-center justify-center text-[#8B9D8B]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 3v17.25m0 0a9 9 0 100-18 9 9 0 000 18z" />
+                                    </svg>
                                 </div>
+                                <h4 class="font-bold text-sm text-[#2A2A2A]">Respiración Consciente</h4>
                             </div>
-
-                            <div class="flex flex-col gap-4 items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-black/20" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                        <div class="resource-card-content px-8 pb-8 pt-2">
+                            <!-- Breathing Timer UI -->
+                            <div class="text-center py-6">
+                                <div class="relative w-48 h-48 mx-auto mb-8 flex items-center justify-center">
+                                    <svg class="absolute inset-0 w-full h-full -rotate-90">
+                                        <circle cx="96" cy="96" r="88" stroke="#F1F1EF" stroke-width="4"
+                                            fill="transparent" />
+                                        <circle id="breathing-progress-ring" cx="96" cy="96" r="88" stroke="#111"
+                                            stroke-width="4" fill="transparent" stroke-dasharray="553"
+                                            stroke-dashoffset="553" stroke-linecap="round"
+                                            class="transition-all duration-1000 ease-linear" />
+                                    </svg>
+                                    <div id="breathing-circle"
+                                        class="w-32 h-32 rounded-full bg-black flex flex-col items-center justify-center transition-all duration-1000 shadow-2xl">
+                                        <span id="breathing-text"
+                                            class="text-white font-bold text-lg uppercase tracking-widest text-[10px]">...</span>
+                                        <span id="breathing-subtext"
+                                            class="text-white/40 text-[8px] uppercase tracking-widest mt-1">Calma</span>
+                                    </div>
+                                </div>
+                                <div id="breathing-instruction"
+                                    class="text-xs text-[#888] mb-6 uppercase tracking-widest font-bold">Encuentra una
+                                    postura cómoda</div>
                                 <button id="breathing-start-btn" onclick="startBreathingExercise()"
-                                    class="bg-mentta-primary text-white px-10 py-4 rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all">Iniciar
-                                    Respiración</button>
+                                    class="bg-black text-white px-10 py-4 rounded-full font-bold text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-xl">Iniciar
+                                    Práctica</button>
                                 <button id="breathing-stop-btn" onclick="stopBreathingExercise()"
-                                    class="hidden text-red-500 font-bold text-[10px] uppercase tracking-widest border-b border-red-100 pb-1">Finalizar
-                                    ejercicio</button>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-3 gap-3 border-t border-gray-50 pt-8 mt-4">
-                            <div class="text-center">
-                                <div class="text-xs font-bold text-gray-400 uppercase tracking-tighter mb-1">Inhala
-                                </div>
-                                <div class="font-black text-mentta-primary text-xl">4s</div>
-                            </div>
-                            <div class="text-center border-x border-gray-50">
-                                <div class="text-xs font-bold text-gray-400 uppercase tracking-tighter mb-1">Mantén
-                                </div>
-                                <div class="font-black text-stone-600 text-xl">7s</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-xs font-bold text-gray-400 uppercase tracking-tighter mb-1">Exhala
-                                </div>
-                                <div class="font-black text-mentta-accent text-xl">8s</div>
+                                    class="hidden mt-4 text-[9px] uppercase tracking-widest text-red-500/60 hover:text-red-500 transition-colors font-bold">Finalizar</button>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Grounding 5-4-3-2-1 - UX-001 FIXED: Checklist interactivo -->
-                <div id="resource-grounding" class="resource-card"
-                    style="border: 1px solid rgba(45, 58, 45, 0.1); border-radius: 1.25rem; overflow: hidden; margin-bottom: 1.25rem; box-shadow: var(--shadow-sm);">
-                    <div class="resource-card-header" onclick="toggleResourceCard('resource-grounding')"
-                        style="background: #fbfbf9; padding: 1.25rem;">
-                        <span class="resource-card-title" style="font-weight: 700; color: #2d3a2d;">
-                            <span class="resource-card-icon">🧠</span>
-                            Conexión con el Presente (5-4-3-2-1)
-                        </span>
-                        <span class="resource-card-chevron" style="color: #8b9d8b;">▼</span>
-                    </div>
-                    <div class="resource-card-content" style="padding: 1.5rem; background: white;">
-                        <p class="text-sm mb-6" style="color: #4b5563;">Esta técnica te ayuda a calmar la ansiedad
-                            reconectando con tus sentidos. <strong>Toca cada paso al completarlo:</strong></p>
-
-                        <!-- Checklist interactivo -->
-                        <div id="grounding-checklist" class="mt-4 space-y-3">
-                            <div class="grounding-item p-4 rounded-2xl cursor-pointer transition-all active:scale-[0.98]"
-                                onclick="toggleGroundingItem(this, 1)"
-                                style="border: 1px solid #eef0ee; background: #fbfbf9;">
-                                <div class="flex items-center gap-4">
-                                    <div class="grounding-check w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold"
-                                        style="background: white; border: 1px solid #e2e8e2; color: #2d3a2d;">
-                                        5</div>
-                                    <div>
-                                        <h5 class="font-bold text-sm" style="color: #2d3a2d;">Cosas que VES</h5>
-                                        <p class="text-xs" style="color: #8b9d8b;">Detente y nombra 5 objetos</p>
-                                    </div>
+                    <!-- Grounding 5-4-3-2-1 -->
+                    <div id="resource-grounding"
+                        class="resource-card bg-white rounded-[2rem] overflow-hidden shadow-sm border border-black/5 transition-all">
+                        <div class="px-6 py-5 flex items-center justify-between cursor-pointer hover:bg-black/[0.01]"
+                            onclick="toggleResourceCard('resource-grounding')">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-[#8B9D8B]/10 flex items-center justify-center text-[#8B9D8B]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
                                 </div>
+                                <h4 class="font-bold text-sm text-[#2A2A2A]">Técnica de Grounding</h4>
                             </div>
-                            <!-- ... repeat styling for others ... -->
-                            <div class="grounding-item p-4 rounded-2xl cursor-pointer transition-all active:scale-[0.98]"
-                                onclick="toggleGroundingItem(this, 2)"
-                                style="border: 1px solid #eef0ee; background: #fbfbf9;">
-                                <div class="flex items-center gap-4">
-                                    <div class="grounding-check w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold"
-                                        style="background: white; border: 1px solid #e2e8e2; color: #2d3a2d;">
-                                        4</div>
-                                    <div>
-                                        <h5 class="font-bold text-sm" style="color: #2d3a2d;">Cosas que TOCAS</h5>
-                                        <p class="text-xs" style="color: #8b9d8b;">Siente texturas a tu alrededor</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="grounding-item p-4 rounded-2xl cursor-pointer transition-all active:scale-[0.98]"
-                                onclick="toggleGroundingItem(this, 3)"
-                                style="border: 1px solid #eef0ee; background: #fbfbf9;">
-                                <div class="flex items-center gap-4">
-                                    <div class="grounding-check w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold"
-                                        style="background: white; border: 1px solid #e2e8e2; color: #2d3a2d;">
-                                        3</div>
-                                    <div>
-                                        <h5 class="font-bold text-sm" style="color: #2d3a2d;">Cosas que ESCUCHAS</h5>
-                                        <p class="text-xs" style="color: #8b9d8b;">Escucha sonidos lejanos o cercanos
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="grounding-item p-4 rounded-2xl cursor-pointer transition-all active:scale-[0.98]"
-                                onclick="toggleGroundingItem(this, 4)"
-                                style="border: 1px solid #eef0ee; background: #fbfbf9;">
-                                <div class="flex items-center gap-4">
-                                    <div class="grounding-check w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold"
-                                        style="background: white; border: 1px solid #e2e8e2; color: #2d3a2d;">
-                                        2</div>
-                                    <div>
-                                        <h5 class="font-bold text-sm" style="color: #2d3a2d;">Cosas que HUELES</h5>
-                                        <p class="text-xs" style="color: #8b9d8b;">Identifica olores en el ambiente</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="grounding-item p-4 rounded-2xl cursor-pointer transition-all active:scale-[0.98]"
-                                onclick="toggleGroundingItem(this, 5)"
-                                style="border: 1px solid #eef0ee; background: #fbfbf9;">
-                                <div class="flex items-center gap-4">
-                                    <div class="grounding-check w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold"
-                                        style="background: white; border: 1px solid #e2e8e2; color: #2d3a2d;">
-                                        1</div>
-                                    <div>
-                                        <h5 class="font-bold text-sm" style="color: #2d3a2d;">Cosa que SABOREAS</h5>
-                                        <p class="text-xs" style="color: #8b9d8b;">Presta atención al gusto en tu boca
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-black/20" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
                         </div>
-
-                        <div id="grounding-complete" class="hidden mt-6 p-6 rounded-3xl text-center"
-                            style="background: #f0fdf4; border: 1px solid #dcfce7;">
-                            <span class="text-3xl">�</span>
-                            <p class="font-bold mt-3 text-green-800">¡Muy bien hecho!</p>
-                            <p class="text-xs text-green-600 mb-4">Has regresado al presente con éxito.</p>
-                            <button onclick="resetGroundingChecklist()"
-                                class="text-xs font-bold uppercase tracking-widest text-green-700 hover:text-green-900 border-b border-green-200">Reiniciar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Crisis Lines -->
-                <div id="resource-crisis-lines" class="resource-card">
-                    <div class="resource-card-header" onclick="toggleResourceCard('resource-crisis-lines')">
-                        <span class="resource-card-title">
-                            <span class="resource-card-icon">📞</span>
-                            Líneas de Crisis
-                        </span>
-                        <span class="resource-card-chevron">▼</span>
-                    </div>
-                    <div class="resource-card-content">
-                        <p>Si necesitas hablar con alguien <strong>AHORA</strong>:</p>
-
-                        <div class="crisis-lines-list">
-                            <div class="crisis-line-country">🇵🇪 Perú</div>
-                            <div class="crisis-line-item">
-                                <span class="crisis-line-name">Emergencias</span>
-                                <a href="tel:113" class="crisis-call-btn">📞 113</a>
-                            </div>
-                            <div class="crisis-line-item">
-                                <span class="crisis-line-name">Línea de Prevención del Suicidio</span>
-                                <a href="tel:0800-11-878" class="crisis-call-btn">📞 0800-11-878</a>
-                            </div>
-
-                            <div class="crisis-line-country">🌎 Internacional</div>
-                            <div class="crisis-line-item">
-                                <span class="crisis-line-name">Lifeline (USA)</span>
-                                <span class="crisis-line-number">988</span>
-                            </div>
-                            <div class="crisis-line-item">
-                                <span class="crisis-line-name">Samaritans (UK)</span>
-                                <span class="crisis-line-number">116 123</span>
-                            </div>
-                        </div>
-
-                        <p style="margin-top: 1rem; font-style: italic; text-align: center; color: var(--success);">
-                            Recuerda: Pedir ayuda es un acto de valentía, no de debilidad.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Supportive Phrases -->
-                <div id="resource-phrases" class="resource-card">
-                    <div class="resource-card-header" onclick="toggleResourceCard('resource-phrases')">
-                        <span class="resource-card-title">
-                            <span class="resource-card-icon">💭</span>
-                            Frases de Apoyo
-                        </span>
-                        <span class="resource-card-chevron">▼</span>
-                    </div>
-                    <div class="resource-card-content">
-                        <div id="supportive-phrase" class="supportive-phrase">
-                            <p>"Esto que sientes es temporal. Has superado días difíciles antes y lo harás de nuevo."
+                        <div class="resource-card-content px-8 pb-10 pt-2">
+                            <p class="text-xs text-[#888] mb-6">Conecta con tus sentidos para reducir la ansiedad.
+                                <strong>Toca cada paso al completarlo:</strong>
                             </p>
+                            <div class="space-y-3">
+                                <div class="grounding-item p-4 rounded-2xl border border-black/5 bg-[#F9F9F7] text-xs font-medium text-[#2A2A2A] flex justify-between items-center group cursor-pointer"
+                                    onclick="toggleGroundingItem(this, 5)">
+                                    <span>5 cosas que puedes <strong>ver</strong></span>
+                                    <div
+                                        class="grounding-check w-6 h-6 rounded-full border border-black/10 flex items-center justify-center bg-white transition-all text-[10px]">
+                                        5</div>
+                                </div>
+                                <div class="grounding-item p-4 rounded-2xl border border-black/5 bg-[#F9F9F7] text-xs font-medium text-[#2A2A2A] flex justify-between items-center group cursor-pointer"
+                                    onclick="toggleGroundingItem(this, 4)">
+                                    <span>4 cosas que puedes <strong>tocar</strong></span>
+                                    <div
+                                        class="grounding-check w-6 h-6 rounded-full border border-black/10 flex items-center justify-center bg-white transition-all text-[10px]">
+                                        4</div>
+                                </div>
+                                <div class="grounding-item p-4 rounded-2xl border border-black/5 bg-[#F9F9F7] text-xs font-medium text-[#2A2A2A] flex justify-between items-center group cursor-pointer"
+                                    onclick="toggleGroundingItem(this, 3)">
+                                    <span>3 cosas que puedes <strong>oír</strong></span>
+                                    <div
+                                        class="grounding-check w-6 h-6 rounded-full border border-black/10 flex items-center justify-center bg-white transition-all text-[10px]">
+                                        3</div>
+                                </div>
+                                <div class="grounding-item p-4 rounded-2xl border border-black/5 bg-[#F9F9F7] text-xs font-medium text-[#2A2A2A] flex justify-between items-center group cursor-pointer"
+                                    onclick="toggleGroundingItem(this, 2)">
+                                    <span>2 cosas que puedes <strong>oler</strong></span>
+                                    <div
+                                        class="grounding-check w-6 h-6 rounded-full border border-black/10 flex items-center justify-center bg-white transition-all text-[10px]">
+                                        2</div>
+                                </div>
+                                <div class="grounding-item p-4 rounded-2xl border border-black/5 bg-[#F9F9F7] text-xs font-medium text-[#2A2A2A] flex justify-between items-center group cursor-pointer"
+                                    onclick="toggleGroundingItem(this, 1)">
+                                    <span>1 cosa que puedes <strong>saborear</strong></span>
+                                    <div
+                                        class="grounding-check w-6 h-6 rounded-full border border-black/10 flex items-center justify-center bg-white transition-all text-[10px]">
+                                        1</div>
+                                </div>
+                            </div>
+                            <div id="grounding-complete" class="hidden mt-8 text-center animate-fade">
+                                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8B9D8B]">Bien hecho.
+                                    Estás aquí.</p>
+                                <button onclick="resetGroundingChecklist()"
+                                    class="mt-4 text-[9px] uppercase tracking-widest text-black/30 hover:text-black transition-colors">Reiniciar</button>
+                            </div>
                         </div>
-                        <button class="resource-btn resource-btn-secondary" onclick="showNewPhrase()"
-                            style="width: 100%;">
-                            Ver otra frase
-                        </button>
+                    </div>
+
+                    <!-- Phrases -->
+                    <div id="resource-phrases"
+                        class="resource-card bg-white rounded-[2rem] overflow-hidden shadow-sm border border-black/5 transition-all">
+                        <div class="px-6 py-5 flex items-center justify-between cursor-pointer hover:bg-black/[0.01]"
+                            onclick="toggleResourceCard('resource-phrases')">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-[#8B9D8B]/10 flex items-center justify-center text-[#8B9D8B]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                                    </svg>
+                                </div>
+                                <h4 class="font-bold text-sm text-[#2A2A2A]">Afirmaciones</h4>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-black/20" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                        <div class="resource-card-content px-8 pb-10 pt-4 text-center">
+                            <div id="supportive-phrase" class="mb-6">
+                                <p class="italic text-[#4A4A4A] text-lg font-serif leading-relaxed">"Esto que sientes es
+                                    temporal. Has superado días difíciles antes y lo harás de nuevo."</p>
+                            </div>
+                            <button onclick="showNewPhrase()"
+                                class="text-[10px] font-bold uppercase tracking-widest text-[#8B9D8B] hover:text-[#111] transition-colors">Siguiente
+                                afirmación</button>
+                        </div>
                     </div>
                 </div>
-
-            </div>
-            <div class="modal-footer">
-                <button class="resource-btn" onclick="closeResourcesModal()">Volver al chat</button>
             </div>
         </div>
     </div>

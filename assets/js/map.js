@@ -199,20 +199,16 @@ function createMap(location) {
  */
 function getMapStyles() {
     return [
-        { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#e9e9e9" }, { "lightness": 17 }] },
-        { "featureType": "landscape", "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }, { "lightness": 20 }] },
-        { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [{ "color": "#ffffff" }, { "lightness": 17 }] },
-        { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#ffffff" }, { "lightness": 29 }, { "weight": 0.2 }] },
-        { "featureType": "road.arterial", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }, { "lightness": 18 }] },
-        { "featureType": "road.local", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }, { "lightness": 16 }] },
-        { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }, { "lightness": 21 }] },
-        { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#dedede" }, { "lightness": 21 }] },
-        { "elementType": "labels.text.stroke", "stylers": [{ "visibility": "on" }, { "color": "#ffffff" }, { "lightness": 16 }] },
-        { "elementType": "labels.text.fill", "stylers": [{ "saturation": 36 }, { "color": "#333333" }, { "lightness": 40 }] },
-        { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },
-        { "featureType": "transit", "elementType": "geometry", "stylers": [{ "color": "#f2f2f2" }, { "lightness": 19 }] },
-        { "featureType": "administrative", "elementType": "geometry.fill", "stylers": [{ "color": "#fefefe" }, { "lightness": 20 }] },
-        { "featureType": "administrative", "elementType": "geometry.stroke", "stylers": [{ "color": "#fefefe" }, { "lightness": 17 }, { "weight": 1.2 }] }
+        { "featureType": "all", "elementType": "labels.text.fill", "stylers": [{ "color": "#7c7c7c" }] },
+        { "featureType": "all", "elementType": "labels.text.stroke", "stylers": [{ "visibility": "on" }, { "color": "#F9F9F7" }, { "weight": 2 }] },
+        { "featureType": "all", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },
+        { "featureType": "landscape", "elementType": "geometry", "stylers": [{ "color": "#F9F9F7" }] },
+        { "featureType": "poi", "elementType": "geometry", "stylers": [{ "visibility": "off" }] },
+        { "featureType": "road", "elementType": "geometry.fill", "stylers": [{ "color": "#FFFFFF" }] },
+        { "featureType": "road", "elementType": "geometry.stroke", "stylers": [{ "visibility": "off" }] },
+        { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [{ "color": "#EFEFE9" }] },
+        { "featureType": "transit", "elementType": "geometry", "stylers": [{ "visibility": "off" }] },
+        { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#E3E3DE" }] }
     ];
 }
 
@@ -327,35 +323,29 @@ function renderCentersOnMap(centers) {
         bounds.extend(position);
 
         // Determine marker style based on brand palette
-        let pinColor = "#8b9d8b"; // Default: Sage
-        let pinScale = 14;
+        let pinColor = "#AF8A6B"; // Default: Sophisticated Sand
+        let pinScale = 10;
 
         if (center.has_mentta) {
-            pinColor = "#cbaa8e"; // Gold/Sand for Mentta centers
-            pinScale = 16;
+            pinColor = "#111111"; // Elite Black
+            pinScale = 12;
         } else if (center.emergency_24h) {
-            pinColor = "#ef4444"; // Red for emergency
+            pinColor = "#C8553D"; // Soft Terracotta
         }
 
         const marker = new google.maps.Marker({
             position: position,
             map: map,
             title: center.name,
-            label: {
-                text: String(index + 1),
-                color: "#FFFFFF",
-                fontSize: "11px",
-                fontWeight: "900"
-            },
             icon: {
                 path: google.maps.SymbolPath.CIRCLE,
                 scale: pinScale,
                 fillColor: pinColor,
                 fillOpacity: 1,
                 strokeColor: "#FFFFFF",
-                strokeWeight: 3
+                strokeWeight: 4
             },
-            animation: center.emergency_24h ? google.maps.Animation.BOUNCE : null
+            optimized: false // Required for some animations
         });
 
         // Stop bounce animation after 2 seconds for emergency centers
@@ -422,46 +412,41 @@ function showCenterInfo(center, marker) {
     }
 
     const content = `
-        <div style="font-family:'Inter',sans-serif;padding:8px 4px;max-width:280px;">
-            <h3 style="font-family:'Playfair Display',serif;font-weight:700;font-size:18px;margin:0 0 8px 0;color:#2d3a2d;line-height:1.2;">
-                ${escapeHtml(center.name)}
-            </h3>
+        <div style="font-family:'Inter',sans-serif; padding:12px; max-width:300px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                <h3 style="font-family:'Playfair Display',serif; font-weight:700; font-size:20px; margin:0; color:#111; line-height:1.2; flex:1;">
+                    ${escapeHtml(center.name)}
+                </h3>
+            </div>
             
-            ${badges ? `<div style="margin-bottom:12px;">${badges}</div>` : ''}
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
+                ${center.has_mentta ? `<span style="background:#111; color:white; padding:4px 10px; border-radius:20px; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em;">✨ Mentta Elite</span>` : ''}
+                ${center.emergency_24h ? `<span style="background:#C8553D; color:white; padding:4px 10px; border-radius:20px; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em;">🚨 Urgencias 24h</span>` : ''}
+            </div>
             
-            <div style="margin-bottom:12px;display:flex;flex-direction:column;gap:6px;">
-                <div style="display:flex;gap:8px;font-size:12px;color:#4B5563;line-height:1.4;">
-                    <span style="color:#8b9d8b;">📍</span>
-                    <span>${escapeHtml(center.address)}<br>${center.district ? escapeHtml(center.district) + ', ' : ''}${center.city || 'Lima'}</span>
+            <div style="margin-bottom:20px; display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; gap:10px; font-size:13px; color:#555; line-height:1.5;">
+                    <span style="color:#AF8A6B; font-size:16px;">❂</span>
+                    <span>${escapeHtml(center.address)}, ${center.district || center.city || 'Lima'}</span>
                 </div>
                 
                 ${center.phone ? `
-                <div style="display:flex;gap:8px;font-size:12px;color:#4B5563;">
-                    <span style="color:#8b9d8b;">📞</span>
+                <div style="display:flex; gap:10px; font-size:13px; color:#555;">
+                    <span style="color:#AF8A6B; font-size:16px;">✆</span>
                     <span>${escapeHtml(center.phone)}</span>
                 </div>` : ''}
-                
-                <div style="display:flex;gap:8px;font-size:11px;color:#8b9d8b;font-weight:500;">
-                    <span>🏥</span>
-                    <span>${escapeHtml(services)}</span>
-                </div>
             </div>
             
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                ${ratingStars ? `<div>${ratingStars}</div>` : '<div></div>'}
-                ${distanceText ? `<div style="font-size:12px;color:#2d3a2d;font-weight:800;background:#f0f2f0;padding:4px 8px;border-radius:8px;">${distanceText}</div>` : ''}
-            </div>
-            
-            <div style="display:flex;gap:8px;">
+            <div style="display:flex; gap:10px;">
                 ${center.phone ? `
                     <a href="tel:${center.phone}" 
-                       style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#2d3a2d;color:white;padding:12px;border-radius:12px;text-decoration:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;transition:all 0.2s;">
+                       style="flex:1; display:flex; align-items:center; justify-content:center; background:#111; color:white; padding:14px; border-radius:16px; text-decoration:none; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; transition:all 0.3s ease;">
                         Llamar
                     </a>
                 ` : ''}
                 <a href="https://www.google.com/maps/dir/?api=1&destination=${center.latitude},${center.longitude}" 
                    target="_blank"
-                   style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#cbaa8e;color:white;padding:12px;border-radius:12px;text-decoration:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;transition:all 0.2s;">
+                   style="flex:1; display:flex; align-items:center; justify-content:center; background:#F9F9F7; color:#111; padding:14px; border-radius:16px; text-decoration:none; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; border:1px solid rgba(0,0,0,0.05);">
                     Ruta
                 </a>
             </div>
@@ -488,30 +473,39 @@ function renderCentersList(centers) {
 
     centers.forEach((center, index) => {
         const item = document.createElement('div');
-        item.className = 'center-card';
+        item.className = 'center-card group';
         item.dataset.centerId = center.id;
         item.onclick = () => focusOnCenter(center, index);
 
-        // Determine badge type
-        let badgeHtml = '';
-        if (center.has_mentta) {
-            badgeHtml = '<span class="badge badge-mentta">⭐ Mentta</span>';
-        } else if (center.emergency_24h) {
-            badgeHtml = '<span class="badge badge-emergency">🚨 24h</span>';
-        }
+        // Custom indicator color
+        let indicatorColor = "#AF8A6B"; // Lux Sand
+        if (center.emergency_24h) indicatorColor = "#C8553D"; // Deep Terracotta
+        if (center.has_mentta) indicatorColor = "#111"; // Elite Black
 
         const distanceText = center.distance !== null && center.distance !== undefined
             ? `${center.distance} km`
             : '';
 
         item.innerHTML = `
-            <div class="flex items-start gap-3">
-                <div class="center-number">${index + 1}</div>
+            <div class="flex items-center gap-5">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-[10px] font-black transition-all duration-500 group-hover:scale-110" 
+                     style="background: ${indicatorColor}; color: white; box-shadow: 0 10px 20px -5px ${indicatorColor}44;">
+                    ${String(index + 1).padStart(2, '0')}
+                </div>
                 <div class="flex-1 min-w-0">
-                    <h4 class="center-name">${escapeHtml(center.name)}</h4>
-                    <p class="center-district">${escapeHtml(center.district || center.city || '')}</p>
-                    ${distanceText ? `<p class="center-distance">📍 ${distanceText}</p>` : ''}
-                    ${badgeHtml ? `<div class="mt-2">${badgeHtml}</div>` : ''}
+                    <h4 class="font-serif italic text-[15px] text-[#111] font-bold truncate">${escapeHtml(center.name)}</h4>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <span class="text-[9px] font-bold text-black/30 uppercase tracking-widest">${escapeHtml(center.district || center.city || '')}</span>
+                        ${distanceText ? `
+                            <div class="w-1 h-1 rounded-full bg-black/10"></div>
+                            <span class="text-[9px] font-black text-[#AF8A6B] uppercase tracking-widest">${distanceText}</span>
+                        ` : ''}
+                    </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-black/[0.02] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                    <svg class="w-3 h-3 text-[#111]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                    </svg>
                 </div>
             </div>
         `;
@@ -526,12 +520,24 @@ function renderCentersList(centers) {
 function focusOnCenter(center, index) {
     if (!map) return;
 
-    // Center map on the selected center
-    map.setCenter({
+    // Center map with smooth zoom
+    map.panTo({
         lat: parseFloat(center.latitude),
         lng: parseFloat(center.longitude)
     });
-    map.setZoom(16);
+
+    // Gradual zoom for better transition
+    let currentZoom = map.getZoom();
+    let targetZoom = 16;
+    if (currentZoom < targetZoom) {
+        let zoomInterval = setInterval(() => {
+            currentZoom++;
+            map.setZoom(currentZoom);
+            if (currentZoom >= targetZoom) clearInterval(zoomInterval);
+        }, 100);
+    } else {
+        map.setZoom(targetZoom);
+    }
 
     // Trigger marker click to show info window
     if (centerMarkers[index]) {
@@ -557,7 +563,7 @@ function highlightListItem(centerId) {
     });
 
     // Add highlight to selected
-    const item = document.querySelector(`[data-center-id="${centerId}"]`);
+    const item = document.querySelector(`[data - center - id="${centerId}"]`);
     if (item) {
         item.classList.add('active');
         item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -626,14 +632,14 @@ function searchCenters(query) {
 
     searchTimeout = setTimeout(async () => {
         isSearching = true;
-        const apiUrl = `${BASE_URL}/api/map/search-centers.php?q=${encodeURIComponent(query)}`;
+        const apiUrl = `${BASE_URL} /api/map / search - centers.php ? q = ${encodeURIComponent(query)} `;
         console.log('🔍 Searching centers:', apiUrl);
 
         try {
             const response = await fetch(apiUrl);
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status} `);
             }
 
             const text = await response.text();
@@ -720,10 +726,10 @@ function showNoCentersMessage(message) {
     const container = document.getElementById('centers-list');
     if (container) {
         container.innerHTML = `
-            <div class="text-center py-8 text-gray-400">
+        < div class="text-center py-8 text-gray-400" >
                 <div class="text-4xl mb-2">🏥</div>
                 <p class="text-sm">${escapeHtml(message)}</p>
-            </div>
+            </div >
         `;
     }
     updateCentersCount(0);
@@ -841,11 +847,11 @@ window.gm_authFailure = function () {
     const mapElement = document.getElementById('map');
     if (mapElement) {
         mapElement.innerHTML = `
-            <div style="display:flex;align-items:center;justify-content:center;height:100%;background:#F3F4F6;flex-direction:column;padding:2rem;text-align:center;">
+        < div style = "display:flex;align-items:center;justify-content:center;height:100%;background:#F3F4F6;flex-direction:column;padding:2rem;text-align:center;" >
                 <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
                 <h2 style="font-size:18px;font-weight:600;color:#1F2937;margin-bottom:8px;">Error de autenticación</h2>
                 <p style="color:#6B7280;max-width:300px;">La API Key de Google Maps no es válida o no tiene los permisos necesarios.</p>
-            </div>
+            </div >
         `;
     }
 

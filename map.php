@@ -74,33 +74,40 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
     <?php endif; ?>
 
     <style>
+        :root {
+            --bg-antigravity: #F9F9F7;
+            --text-main: #111111;
+            --accent-lux: #AF8A6B;
+        }
+
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
             font-family: 'Inter', sans-serif;
-            background-color: #f5f5f0;
+            background-color: var(--bg-antigravity);
+            color: var(--text-main);
         }
 
         .loading-overlay {
             position: fixed;
             inset: 0;
-            background: #fbfbf9;
+            background: var(--bg-antigravity);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
             z-index: 9999;
         }
 
         .spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid #eef2ee;
-            border-top-color: #2d3a2d;
+            width: 56px;
+            height: 56px;
+            border: 2px solid rgba(0, 0, 0, 0.03);
+            border-top-color: #111;
             border-radius: 50%;
-            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation: spin 1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
 
         @keyframes spin {
@@ -110,36 +117,116 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
         }
 
         .panel-sidebar {
-            background-color: #fbfbf9;
-            border-right: 1px solid rgba(45, 58, 45, 0.08);
-            box-shadow: 10px 0 30px rgba(45, 58, 45, 0.03);
+            background-color: #FDFDFB;
+            /* Light cream */
+            border-right: none;
             z-index: 20;
+            width: 400px !important;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .center-card {
-            background: white;
-            border: 1px solid rgba(45, 58, 45, 0.05);
-            border-radius: 1.25rem;
-            padding: 1rem;
-            transition: all 0.3s ease;
+            background: #FFFFFF;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            border-radius: 24px;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01);
         }
 
-        .center-card:hover {
-            transform: translateY(-2px);
-            border-color: #cbaa8e;
-            box-shadow: 0 10px 20px rgba(45, 58, 45, 0.05);
+        .center-card:hover,
+        .center-card.active {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .center-card.active {
+            border-left: 4px solid #C8553D;
+            /* Soft Terracotta */
+        }
+
+        .capsule-label {
+            display: inline-flex;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: rgba(0, 0, 0, 0.03);
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .capsule-label.urgency {
+            background: rgba(200, 85, 61, 0.08);
+            color: #C8553D;
+        }
+
+        .capsule-label.elite {
+            background: #111111;
+            color: white;
         }
 
         header {
-            background: rgba(255, 255, 255, 0.85) !important;
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(45, 58, 45, 0.05) !important;
+            background: rgba(249, 249, 247, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+        }
+
+        /* Ambient Glow for Urgency markers */
+        .urgency-pulse {
+            position: relative;
+        }
+
+        .urgency-pulse::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            background: #C8553D;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                transform: scale(1);
+                opacity: 0.2;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.2;
+            }
+        }
+
+        .floating-action {
+            background: white;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
         }
     </style>
 </head>
 
 <body class="antialiased bg-gray-100">
+    <script>
+        // Page reveal logic
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+                document.querySelectorAll('.initial-reveal-container').forEach(el => el.classList.add('active'));
+            }, 100);
+        });
+    </script>
+
 
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="loading-overlay">
@@ -148,60 +235,44 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
     </div>
 
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-30 shadow-sm transition-all duration-300">
-        <div class="px-6 py-4 flex items-center justify-between max-w-[1440px] mx-auto">
-            <!-- Back Button -->
+    <header class="fixed top-0 left-0 right-0 z-30 transition-all duration-500 h-[72px] initial-reveal-container">
+        <div class="px-8 py-4 flex items-center justify-between max-w-full mx-auto h-full">
+            <!-- Luxury Back Button -->
             <button onclick="goBack()"
-                class="flex items-center gap-2 text-mentta-primary hover:text-black transition-all group">
-                <div
-                    class="w-8 h-8 rounded-full flex items-center justify-center bg-mentta-50 group-hover:bg-mentta-100 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </div>
-                <span class="font-bold text-[10px] uppercase tracking-widest hidden sm:inline">Volver</span>
+                class="floating-action flex items-center justify-center w-12 h-12 rounded-[18px] text-[#111] hover:scale-105 active:scale-95 transition-all btn-bloom">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+                </svg>
             </button>
 
-            <!-- Title -->
-            <div class="flex items-center gap-3">
-                <span class="font-serif italic text-xl text-mentta-primary"
-                    style="font-family: 'Playfair Display', serif; font-weight: 700;">Mentta</span>
-                <span class="w-1 h-1 bg-mentta-secondary rounded-full"></span>
-                <span
-                    class="text-[10px] font-black text-mentta-primary uppercase tracking-[0.25em] hidden sm:inline">Localizador
-                    de Centros</span>
+            <!-- Sophisticated Title -->
+            <div class="flex items-center gap-4">
+                <h1 class="font-serif italic text-2xl text-[#111] font-bold tracking-tight">Mentta</h1>
+                <div class="w-px h-6 bg-black/10"></div>
+                <span class="text-[9px] font-bold text-black/40 uppercase tracking-[0.4em]">Localizador de Élite</span>
             </div>
 
-            <!-- Search Toggle -->
+            <!-- Search Trigger -->
             <button id="search-toggle-btn" onclick="toggleSearch()"
-                class="w-10 h-10 flex items-center justify-center bg-mentta-primary text-white rounded-xl shadow-lg shadow-mentta-900/10 hover:scale-105 active:scale-95 transition-all"
-                title="Buscar">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                class="floating-action w-12 h-12 flex items-center justify-center text-[#111] rounded-[18px] hover:bg-black hover:text-white transition-all btn-bloom">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
             </button>
         </div>
 
-        <!-- Search Bar (hidden by default) -->
-        <div id="search-bar" class="hidden px-4 pb-3 animate-slideDown">
-            <div class="relative">
-                <input type="text" id="search-input" placeholder="Buscar por nombre, distrito o servicio..."
-                    class="w-full px-4 py-2.5 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800"
+        <!-- Search Bar Expansion -->
+        <div id="search-bar" class="hidden px-8 pb-6 animate-fade">
+            <div class="relative max-w-2xl mx-auto">
+                <input type="text" id="search-input" placeholder="Busca por nombre o distrito..."
+                    class="w-full bg-white/50 backdrop-blur-md px-12 py-4 rounded-[2rem] border border-black/5 focus:outline-none focus:ring-4 focus:ring-black/5 transition-all text-sm font-medium"
                     oninput="searchCenters(this.value)" autocomplete="off">
-                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none"
+                <svg class="w-5 h-5 text-black/30 absolute left-5 top-1/2 -translate-y-1/2" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
-                <button onclick="clearSearch()"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden"
-                    id="clear-search-btn">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
             </div>
         </div>
     </header>
@@ -210,116 +281,76 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
     <div class="flex flex-col md:flex-row h-screen pt-[60px]">
 
         <!-- Side Panel (Desktop: Left | Mobile: Bottom) -->
-        <aside id="centers-panel" class="panel-sidebar">
+        <aside id="centers-panel" class="panel-sidebar initial-reveal-container" style="transition-delay: 0.1s;">
             <!-- Swipe Handle (Mobile only) -->
             <div class="swipe-handle md:hidden" id="swipe-handle">
                 <div class="handle-bar"></div>
             </div>
 
-            <!-- Location Info -->
-            <div class="p-6 bg-[#2d3a2d] text-white border-b border-white/10">
-                <div class="flex items-center gap-4">
-                    <div
-                        class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20">
-                        <svg class="w-6 h-6 text-mentta-secondary" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold text-white/50 uppercase tracking-widest mb-0.5">Tu área actual</p>
-                        <p class="text-sm font-bold" id="user-location-text">Detectando...</p>
-                        <p class="text-[10px] text-white/60 font-medium" id="user-city-text">Actualizando base de
-                            datos...</p>
+            <!-- Location Aura Section -->
+            <div class="p-8 bg-black text-white relative overflow-hidden h-[180px] flex flex-col justify-end">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-[#AF8A6B]/20 blur-[60px] rounded-full"></div>
+                <div class="relative z-10">
+                    <p class="text-[9px] font-bold text-white/40 uppercase tracking-[0.3em] mb-2">Entorno Actual</p>
+                    <h3 class="font-serif italic text-2xl mb-1" id="user-location-text">Detectando...</h3>
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-[#AF8A6B] rounded-full animate-pulse"></span>
+                        <p class="text-[10px] text-white/50 font-medium" id="user-city-text">Optimizado para tu
+                            ubicación</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Filters -->
-            <div class="p-6 border-b bg-white">
-                <p class="text-[10px] font-black text-mentta-accent uppercase tracking-[0.2em] mb-4">Filtrar por
-                    categoría</p>
-                <div class="space-y-3">
-                    <label class="flex items-center gap-3 cursor-pointer group">
+            <!-- Filters: Antigravity Selection Style -->
+            <div class="p-8 border-b border-black/5">
+                <p class="text-[9px] font-bold text-black/30 uppercase tracking-[0.3em] mb-6">Categorías de Centro</p>
+                <div class="flex flex-wrap gap-3">
+                    <label class="cursor-pointer group">
                         <input type="radio" name="filter" value="all" checked onchange="applyFilter(this.value)"
-                            class="w-4 h-4 text-mentta-primary focus:ring-mentta-primary border-mentta-accent/30">
-                        <span
-                            class="text-xs font-bold text-mentta-primary/70 group-hover:text-black transition-all">Todos
-                            los centros</span>
+                            class="hidden peer">
+                        <div
+                            class="px-6 py-3.5 rounded-full border border-black/5 bg-white text-[11px] font-bold text-black/40 peer-checked:bg-[#C8553D] peer-checked:text-white peer-checked:border-[#C8553D] transition-all group-hover:border-black/10">
+                            Todos</div>
                     </label>
-                    <label class="flex items-center gap-3 cursor-pointer group">
+                    <label class="cursor-pointer group">
                         <input type="radio" name="filter" value="mentta" onchange="applyFilter(this.value)"
-                            class="w-4 h-4 text-mentta-primary focus:ring-mentta-primary border-mentta-accent/30">
-                        <span
-                            class="text-xs font-bold text-mentta-primary/70 group-hover:text-black transition-all flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-mentta-secondary rounded-full"></span>
-                            Red Mentta
-                        </span>
+                            class="hidden peer">
+                        <div
+                            class="px-6 py-3.5 rounded-full border border-black/5 bg-white text-[11px] font-bold text-black/40 peer-checked:bg-[#111111] peer-checked:text-white peer-checked:border-[#111111] transition-all group-hover:border-black/10">
+                            Red Mentta</div>
                     </label>
-                    <label class="flex items-center gap-3 cursor-pointer group">
+                    <label class="cursor-pointer group">
                         <input type="radio" name="filter" value="emergency" onchange="applyFilter(this.value)"
-                            class="w-4 h-4 text-mentta-primary focus:ring-mentta-primary border-mentta-accent/30">
-                        <span
-                            class="text-xs font-bold text-mentta-primary/70 group-hover:text-black transition-all flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
-                            Emergencias 24h
-                        </span>
+                            class="hidden peer">
+                        <div
+                            class="px-6 py-3.5 rounded-full border border-black/5 bg-white text-[11px] font-bold text-black/40 peer-checked:bg-[#C8553D] peer-checked:text-white peer-checked:border-[#C8553D] transition-all group-hover:border-black/10">
+                            24h</div>
                     </label>
                 </div>
             </div>
 
-            <!-- Centers List -->
-            <div class="flex-1 overflow-y-auto bg-gray-50">
-                <div class="p-4">
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                        <span id="centers-count">0</span> centros cercanos
-                    </p>
-                    <div id="centers-list" class="space-y-3">
-                        <!-- Centers will be populated by JavaScript -->
-                        <div class="text-center py-8 text-gray-400">
-                            <div class="spinner mx-auto mb-3" style="width:32px;height:32px;border-width:3px;"></div>
-                            <p class="text-sm">Buscando centros...</p>
-                        </div>
-                    </div>
+            <!-- Centers List with Elite Card Style -->
+            <div class="flex-1 overflow-y-auto px-6 py-6" style="background: rgba(0,0,0,0.01);">
+                <p class="text-[9px] font-bold text-black/20 uppercase tracking-[0.2em] mb-6 px-2">Centros Certificados
+                </p>
+                <div id="centers-list" class="space-y-4">
+                    <!-- Populated by JS -->
                 </div>
             </div>
 
-            <!-- Legend -->
-            <div class="p-3 bg-white border-t text-xs">
-                <div class="flex flex-wrap gap-3 justify-center text-gray-600">
-                    <span class="flex items-center gap-1">
-                        <span class="w-3 h-3 bg-blue-500 rounded-full"></span> Tu ubicación
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <span class="w-3 h-3 bg-green-500 rounded-full"></span> Mentta
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <span class="w-3 h-3 bg-orange-500 rounded-full"></span> 24h
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <span class="w-3 h-3 bg-red-500 rounded-full"></span> Otros
-                    </span>
-                </div>
-            </div>
+
         </aside>
 
         <!-- Map Container -->
-        <main class="flex-1 relative">
+        <main class="flex-1 relative initial-reveal-container" style="transition-delay: 0.2s;">
             <div id="map" class="w-full h-full"></div>
 
-            <!-- Re-center Button -->
+            <!-- Re-center Button: Floating Aesthetic -->
             <button id="recenter-btn" onclick="recenterMap()"
-                class="absolute bottom-24 right-3 bg-[#2d3a2d] p-4 rounded-2xl shadow-2xl hover:scale-110 active:scale-95 transition-all z-10 border border-white/20 overflow-hidden group"
+                class="absolute bottom-10 right-8 w-16 h-16 bg-white text-[#111] rounded-[1.8rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:scale-110 active:scale-95 transition-all z-10 flex items-center justify-center border border-black/5 group btn-bloom"
                 title="Volver a mi ubicación">
-                <div
-                    class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                </div>
-                <svg class="w-6 h-6 text-mentta-secondary relative z-10" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <svg class="w-6 h-6 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.364-7.364l-1.414 1.414M7.05 16.95l-1.414 1.414m12.728 0l-1.414-1.414M7.05 7.05L5.636 5.636M12 12a3 3 0 100-6 3 3 0 000 6z" />
                 </svg>
             </button>
 
@@ -402,19 +433,29 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             document.getElementById('user-city-text').textContent = 'Usando ubicación aproximada';
             document.getElementById('centers-count').textContent = centers.length;
 
-            document.getElementById('centers-list').innerHTML = centers.map(c => `
-            <div class="center-card group" onclick="map.setView([${c.lat}, ${c.lng}], 16)">
-                <div class="flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-2.5 h-2.5 rounded-full ring-4 ring-opacity-20" style="background:${c.mentta ? '#cbaa8e' : c.emergency ? '#ef4444' : '#8b9d8b'}; ring-color:${c.mentta ? '#cbaa8e33' : c.emergency ? '#ef444433' : '#8b9d8b33'}"></div>
-                        <span class="font-bold text-sm text-mentta-primary group-hover:text-black transition-colors">${c.name}</span>
+            document.getElementById('centers-list').innerHTML = centers.map((c, index) => {
+                let indicatorColor = "#AF8A6B";
+                if (c.emergency) indicatorColor = "#C8553D";
+                if (c.mentta) indicatorColor = "#111";
+
+                return `
+                <div class="center-card group mb-4" onclick="map.panTo([${c.lat}, ${c.lng}]); map.setZoom(16);">
+                    <div class="flex items-center gap-5">
+                        <div class="w-12 h-12 rounded-[20px] bg-[#FDFDFB] border border-black/5 flex items-center justify-center transition-all group-hover:border-[#C8553D]/20">
+                            <span class="font-serif italic text-lg text-[#111]">${index + 1}</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-serif italic text-[16px] text-[#111] font-bold truncate">${c.name}</h4>
+                            <div class="flex items-center gap-2 mt-1.5">
+                                <span class="capsule-label ${c.mentta ? 'elite' : c.emergency ? 'urgency' : ''}">
+                                    ${c.mentta ? 'Red Elite' : c.emergency ? 'Urgencia 24h' : 'Centro Salud'}
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <svg class="w-4 h-4 text-mentta-accent opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
                 </div>
-            </div>
-        `).join('');
+            `;
+            }).join('');
 
             // Functions
             window.goBack = () => history.back() || (location.href = 'chat.php');

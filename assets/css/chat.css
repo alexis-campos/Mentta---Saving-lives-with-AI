@@ -11,6 +11,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior: none;
     line-height: 1.6;
+    letter-spacing: -0.01em;
 }
 
 /* Hide scrollbar but keep functionality */
@@ -36,25 +37,27 @@ body {
 .message-bubble {
     max-width: 85%;
     word-wrap: break-word;
-    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    font-size: 0.9375rem;
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
 .message-user {
-    background-color: var(--accent-primary);
+    background-color: #111111;
     color: white;
-    border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
-    padding: 1rem 1.25rem;
-    box-shadow: 0 4px 15px rgba(45, 58, 45, 0.08);
+    border-radius: 2rem 2rem 0.5rem 2rem;
+    padding: 1.25rem 1.75rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    font-weight: 400;
 }
 
 .message-ai {
     background-color: white;
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
-    padding: 1rem 1.25rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+    color: #111111;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 2rem 2rem 2rem 0.5rem;
+    padding: 1.25rem 1.75rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 }
 
 /* Animations */
