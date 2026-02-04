@@ -445,10 +445,15 @@ NUNCA:
             riskEvents: riskEvents,
             alertsTriggered: alertsCount
           })}
-          className="btn-clean w-12 h-12 flex items-center justify-center"
-          style={{ color: '#666' }}
+          className="btn-clean px-6 h-12 flex items-center justify-center gap-3 transition-all hover:pr-8"
+          style={{
+            color: '#2A2A2A',
+            borderRadius: '24px',
+            width: 'auto'
+          }}
         >
           <ArrowLeft size={20} strokeWidth={1.5} />
+          <span className="font-sans text-[10px] font-bold tracking-[0.2em] uppercase">Regresar</span>
         </button>
       </div>
 
@@ -481,8 +486,20 @@ NUNCA:
               </div>
             )}
 
+            {/* Mute Indicator overlay */}
+            {!isMicOn && (
+              <div className="absolute inset-0 bg-red-500/5 backdrop-blur-[2px] flex items-center justify-center z-10 pointer-events-none transition-all duration-300">
+                <div className="bg-white/90 px-8 py-5 rounded-[2rem] shadow-2xl border border-red-100 flex flex-col items-center gap-3 transform animate-in fade-in zoom-in duration-300">
+                  <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+                    <MicOff size={24} className="text-[#C8553D]" strokeWidth={1.5} />
+                  </div>
+                  <span className="text-[10px] font-sans font-bold text-[#C8553D] tracking-[0.25em] uppercase">Micrófono Apagado</span>
+                </div>
+              </div>
+            )}
+
             {/* Label */}
-            <div className="absolute top-5 left-5">
+            <div className="absolute top-5 left-5 z-20">
               <span
                 className="px-4 py-2 rounded-full text-[10px] font-sans font-medium uppercase"
                 style={{

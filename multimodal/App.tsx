@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import LiveSession from './components/LiveSession';
-import { Heart, Shield, Zap, Video } from 'lucide-react';
+import { Heart, Shield, Zap, Video, ArrowLeft } from 'lucide-react';
 import { MentalHealthState, RiskLevel } from './types';
 
 const App: React.FC = () => {
@@ -13,14 +13,34 @@ const App: React.FC = () => {
   const endSession = async (sessionData?: { maxRiskLevel: number; emotions: string[]; riskEvents: any[]; alertsTriggered: number }) => {
     setInSession(false);
 
-    // Get session token from parent window or sessionStorage
-    const sessionToken = window.parent?.sessionStorage?.getItem('liveSessionToken') ||
-      sessionStorage.getItem('liveSessionToken');
+    // Get session token safely (handles cross-origin security errors)
+    let sessionToken = null;
+    try {
+      sessionToken = window.parent?.sessionStorage?.getItem('liveSessionToken');
+    } catch (e) {
+      console.log('No se pudo acceder al sessionStorage del padre (cross-origin)');
+    }
+
+    if (!sessionToken) {
+      sessionToken = sessionStorage.getItem('liveSessionToken');
+    }
+
+    // Notify parent window to close overlay IMMEDIATELY for a snappy feel
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'MENTTA_LIVE_END' }, '*');
+    }
+
+    // Close window if opened as popup (fallback)
+    if (window.opener) {
+      window.close();
+    }
 
     if (sessionToken && sessionData) {
       try {
-        // Save session data to PHP backend
-        const response = await fetch('http://localhost/Mentta---Saving-lives-with-AI/api/live/save-session.php', {
+        console.log("Guardando datos de sesión...");
+        // Save session data to PHP backend (we don't wait for it to finish before notifying parent if we want it snappy, 
+        // but here we already notified the parent, so we can just do the work)
+        await fetch('http://localhost/Mentta---Saving-lives-with-AI/api/live/save-session.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -32,25 +52,12 @@ const App: React.FC = () => {
             alertsTriggered: sessionData.alertsTriggered
           })
         });
-
-        const result = await response.json();
-        console.log('Sesión guardada:', result);
       } catch (error) {
         console.error('Error guardando sesión:', error);
       }
     }
 
     console.log("Sesión terminada");
-
-    // Notify parent window to close overlay (when embedded in iframe)
-    if (window.parent !== window) {
-      window.parent.postMessage({ type: 'MENTTA_LIVE_END' }, '*');
-    }
-
-    // Close window if opened as popup (fallback)
-    if (window.opener) {
-      window.close();
-    }
   };
 
   if (inSession) {
@@ -105,7 +112,18 @@ const App: React.FC = () => {
         }
       `}</style>
 
-      <div className="max-w-2xl w-full">
+      <div className="max-w-2xl w-full relative">
+        {/* Back Button */}
+        <div className="absolute -top-16 left-0">
+          <button
+            onClick={() => endSession()}
+            className="flex items-center gap-3 px-6 py-3 rounded-full bg-white/50 hover:bg-white transition-all border border-black/5 shadow-sm group"
+          >
+            <ArrowLeft size={16} className="text-black/40 group-hover:text-black transition-colors" />
+            <span className="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-black/40 group-hover:text-black transition-colors">Regresar</span>
+          </button>
+        </div>
+
         {/* Header Logo */}
         <div className="flex justify-center mb-12">
           <div className="flex items-center gap-3">
@@ -209,7 +227,7 @@ const App: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
