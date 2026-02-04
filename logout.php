@@ -1,12 +1,12 @@
 <?php
 /**
  * MENTTA - Logout
- * Cierra la sesión con una transición elegante
+ * Cierra la sesión con una transición elegante y premium
  */
 
 require_once 'includes/auth.php';
 
-// Ejecutar logout (esto limpia la sesión)
+// Ejecutar logout
 logout();
 ?>
 <!DOCTYPE html>
@@ -15,108 +15,136 @@ logout();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cerrando Sesión - Mentta</title>
+    <title>Cerrando Sesión | MENTTA</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;0,800;1,400&display=swap"
+        rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'serif': ['Playfair Display', 'serif'],
+                    },
                     colors: {
-                        'mentta-primary': '#2d3a2d',
-                        'mentta-secondary': '#cbaa8e',
-                        'mentta-light': '#f5f5f0',
-                        'mentta-accent': '#8b9d8b',
+                        'mentta-bg': '#FAFAF8',
+                        'mentta-fg': '#111111',
+                        'mentta-muted': '#888888',
+                        'mentta-border': 'rgba(0,0,0,0.08)',
                     }
                 }
             }
         }
     </script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap"
-        rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f5f5f0;
+            background-color: #FAFAF8;
+            -webkit-font-smoothing: antialiased;
             overflow: hidden;
         }
 
-        h2 {
-            font-family: 'Playfair Display', serif;
+        .logout-anim {
+            animation: logoutEntry 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .fade-out-up {
-            animation: fadeOutUp 1s ease-out forwards;
-            animation-delay: 1s;
+        @keyframes logoutEntry {
+            0% {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
-        @keyframes fadeOutUp {
-            from {
+        .exit-anim {
+            animation: logoutExit 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes logoutExit {
+            0% {
                 opacity: 1;
                 transform: translateY(0);
             }
 
-            to {
+            100% {
                 opacity: 0;
                 transform: translateY(-20px);
             }
         }
 
-        .pulse-soft {
-            animation: pulseSoft 2s infinite;
+        .progress-bar {
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 2rem;
         }
 
-        @keyframes pulseSoft {
+        .progress-inner {
+            height: 100%;
+            background: #111;
+            width: 0%;
+            animation: progressLoad 1.8s linear forwards;
+        }
 
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 1;
+        @keyframes progressLoad {
+            0% {
+                width: 0%;
             }
 
-            50% {
-                transform: scale(1.05);
-                opacity: 0.8;
+            100% {
+                width: 100%;
             }
         }
     </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center">
-    <div class="text-center fade-out-up">
-        <div class="mb-8 relative inline-block">
-            <div class="w-20 h-20 bg-mentta-primary rounded-3xl flex items-center justify-center shadow-2xl pulse-soft">
-                <span class="text-white font-bold text-4xl">M</span>
-            </div>
+<body class="min-h-screen flex items-center justify-center p-6 bg-mentta-bg">
+
+    <div class="w-full max-w-sm text-center logout-anim exit-anim">
+        <!-- Brand Logo -->
+        <div class="mb-10 inline-block relative">
             <div
-                class="absolute -bottom-2 -right-2 w-8 h-8 bg-mentta-secondary rounded-full flex items-center justify-center shadow-lg">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="w-20 h-20 mx-auto rounded-full overflow-hidden border border-mentta-border p-1 bg-white shadow-xl shadow-black/5">
+                <img src="Images/Menta icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
+            </div>
+            <!-- Checkmark badge -->
+            <div
+                class="absolute -bottom-1 -right-1 w-7 h-7 bg-mentta-fg rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                 </svg>
             </div>
         </div>
 
-        <h2 class="text-3xl font-bold text-mentta-primary mb-3">Sesión cerrada</h2>
-        <p class="text-mentta-accent font-medium">Gracias por confiar en tu bienestar.</p>
+        <!-- Message -->
+        <h2 class="text-4xl font-serif font-bold text-mentta-fg mb-4">Session Securely Closed</h2>
+        <p class="text-mentta-muted text-sm leading-relaxed max-w-[280px] mx-auto">
+            Thank you for prioritizing your mental well-being with Mentta today.
+        </p>
 
-        <div class="mt-10 flex flex-col items-center">
-            <p class="text-[10px] text-gray-400 uppercase tracking-[0.3em] font-bold mb-4">Redirigiendo</p>
-            <div class="flex gap-1.5">
-                <div class="w-1.5 h-1.5 rounded-full bg-mentta-primary animate-bounce" style="animation-delay: 0.1s">
-                </div>
-                <div class="w-1.5 h-1.5 rounded-full bg-mentta-primary animate-bounce" style="animation-delay: 0.2s">
-                </div>
-                <div class="w-1.5 h-1.5 rounded-full bg-mentta-primary animate-bounce" style="animation-delay: 0.3s">
-                </div>
+        <!-- Redirect Indicator -->
+        <div class="mt-12">
+            <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-mentta-muted/60 mb-2">Redirecting to home
+            </p>
+            <div class="progress-bar max-w-[120px] mx-auto">
+                <div class="progress-inner"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Redirigir después de la animación
+        // Redirect after animation completes
         setTimeout(() => {
             window.location.href = 'index.php';
-        }, 1800);
+        }, 2200);
     </script>
 </body>
 

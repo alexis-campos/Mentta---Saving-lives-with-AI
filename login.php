@@ -4,196 +4,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - Mentta</title>
-    <!-- Tailwind CSS -->
+    <title>Iniciar Sesión | MENTTA</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,400&display=swap"
+        rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'serif': ['Playfair Display', 'serif'],
+                    },
                     colors: {
-                        'mentta-primary': '#2d3a2d',
-                        'mentta-secondary': '#cbaa8e',
-                        'mentta-light': '#f5f5f0',
-                        'mentta-accent': '#8b9d8b',
+                        'mentta-bg': '#FAFAF8',
+                        'mentta-fg': '#111111',
+                        'mentta-muted': '#888888',
+                        'mentta-border': 'rgba(0,0,0,0.08)',
                     }
                 }
             }
         }
     </script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
-        rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f5f5f0;
-            background-image:
-                radial-gradient(at 0% 0%, rgba(139, 157, 139, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(203, 170, 142, 0.1) 0px, transparent 50%);
+            background-color: var(--mentta-bg);
+            -webkit-font-smoothing: antialiased;
         }
 
-        h1,
-        h2 {
-            font-family: 'Playfair Display', serif;
+        .login-card {
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.04);
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 25px 50px -12px rgba(45, 58, 45, 0.08);
+        .input-field {
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
-        .login-input {
-            background: white;
-            border: 1px solid #e1e1d1;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .login-input:focus {
-            border-color: #2d3a2d;
-            box-shadow: 0 0 0 4px rgba(45, 58, 45, 0.05);
-        }
-
-        .custom-btn {
-            background-color: #2d3a2d;
-            transition: all 0.3s ease;
-        }
-
-        .custom-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px rgba(45, 58, 45, 0.2);
-            filter: brightness(1.1);
-        }
-
-        .custom-btn:active {
-            transform: translateY(0);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade {
-            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .input-field:focus {
+            transform: translateY(-1px);
         }
     </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md animate-fade">
-        <!-- Brand -->
-        <div class="text-center mb-10">
-            <a href="index.php" class="inline-flex items-center gap-4 group">
+<body class="min-h-screen bg-mentta-bg flex items-center justify-center p-6">
+
+    <div class="w-full max-w-[440px]">
+        <!-- Brand / Logo -->
+        <div class="text-center mb-12">
+            <a href="index.php" class="inline-block">
                 <div
-                    class="w-12 h-12 bg-mentta-primary rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <span class="text-white font-bold text-2xl">M</span>
+                    class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border border-mentta-border p-1 bg-white">
+                    <img src="Images/Menta icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
                 </div>
-                <div class="text-left">
-                    <h1 class="text-3xl font-bold text-mentta-primary tracking-tight leading-none mb-1">Mentta</h1>
-                    <p class="text-mentta-accent text-[10px] font-bold uppercase tracking-widest">Salud Mental de Élite
-                    </p>
-                </div>
+                <h1 class="text-3xl font-serif font-bold tracking-tight text-mentta-fg">MENTTA</h1>
+                <p class="text-[10px] uppercase tracking-[0.4em] text-mentta-muted mt-2">Sophisticated Clarity</p>
             </a>
         </div>
 
-        <!-- Login Card -->
-        <div class="glass-card rounded-[2rem] p-10">
-            <div class="mb-10">
-                <h2 class="text-3xl font-bold text-mentta-primary mb-2">Bienvenido</h2>
-                <p class="text-gray-500 text-sm">Ingresa a tu cuenta para continuar con tu proceso.</p>
-            </div>
+        <!-- Card -->
+        <div
+            class="bg-white rounded-[2.5rem] p-10 md:p-12 login-card border border-mentta-border relative overflow-hidden">
+            <!-- Subtle background decoration -->
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-mentta-bg rounded-full opacity-50"></div>
 
-            <!-- Login Form -->
-            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-6">
-                <div>
-                    <label class="block text-mentta-primary text-xs font-bold mb-2 uppercase tracking-widest"
-                        for="email">
-                        Correo Electrónico
-                    </label>
-                    <input type="email" id="email" name="email" required autocomplete="email"
-                        class="login-input w-full px-5 py-4 rounded-2xl focus:outline-none placeholder-gray-300 text-mentta-primary"
-                        placeholder="tu@email.com">
+            <div class="relative z-10">
+                <div class="mb-10">
+                    <h2 class="text-3xl font-serif font-bold text-mentta-fg mb-3">Welcome Back</h2>
+                    <p class="text-mentta-muted text-sm leading-relaxed">Please enter your credentials to access your
+                        serene space.</p>
                 </div>
 
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="block text-mentta-primary text-xs font-bold uppercase tracking-widest"
-                            for="password">
-                            Contraseña
-                        </label>
-                        <a href="#"
-                            class="text-xs text-mentta-secondary font-semibold hover:text-mentta-primary transition-colors">¿Olvidaste
-                            tu contraseña?</a>
+                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-6">
+                    <div class="space-y-2">
+                        <label for="email"
+                            class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg ml-4">Email
+                            Address</label>
+                        <input type="email" id="email" name="email" required autocomplete="email"
+                            class="input-field w-full px-6 py-4 rounded-full bg-mentta-bg border-transparent focus:bg-white focus:border-mentta-border outline-none text-mentta-fg placeholder:text-mentta-muted/50 text-sm shadow-sm"
+                            placeholder="name@example.com">
                     </div>
-                    <input type="password" id="password" name="password" required autocomplete="current-password"
-                        class="login-input w-full px-5 py-4 rounded-2xl focus:outline-none placeholder-gray-300 text-mentta-primary"
-                        placeholder="••••••••">
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center px-4">
+                            <label for="password"
+                                class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg">Password</label>
+                            <a href="#"
+                                class="text-[10px] font-semibold text-mentta-muted hover:text-mentta-fg transition-colors">Forgot?</a>
+                        </div>
+                        <input type="password" id="password" name="password" required autocomplete="current-password"
+                            class="input-field w-full px-6 py-4 rounded-full bg-mentta-bg border-transparent focus:bg-white focus:border-mentta-border outline-none text-mentta-fg placeholder:text-mentta-muted/50 text-sm shadow-sm"
+                            placeholder="••••••••">
+                    </div>
+
+                    <button type="submit" id="submitBtn"
+                        class="w-full bg-mentta-fg text-white py-5 rounded-full font-bold text-xs uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-[0.98] shadow-lg shadow-black/5 flex items-center justify-center gap-3 mt-4">
+                        <span>Sign In</span>
+                        <svg id="loadingSpinner" class="hidden animate-spin h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                    </button>
+                </form>
+
+                <!-- Status Messages -->
+                <div id="error-message" class="mt-6 text-red-500 text-xs text-center font-medium hidden"></div>
+                <div id="success-message" class="mt-6 text-emerald-600 text-xs text-center font-medium hidden"></div>
+
+                <!-- Footer Links -->
+                <div class="mt-10 pt-8 border-t border-mentta-border text-center">
+                    <p class="text-sm text-mentta-muted">
+                        New to Mentta?
+                        <a href="register.php"
+                            class="text-mentta-fg font-bold hover:underline underline-offset-4 decoration-mentta-border transition-all">Create
+                            Account</a>
+                    </p>
                 </div>
-
-                <button type="submit" id="submitBtn"
-                    class="custom-btn w-full text-white py-4 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 group mt-4">
-                    <span>Ingresar</span>
-                    <svg id="loadingSpinner" class="hidden animate-spin h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                        </circle>
-                        <path class="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                        </path>
-                    </svg>
-                </button>
-            </form>
-
-            <!-- Status Messages -->
-            <div id="error-message"
-                class="mt-6 bg-red-50 border border-red-100 text-red-600 text-sm text-center p-4 rounded-2xl hidden animate-fade">
-            </div>
-            <div id="success-message"
-                class="mt-6 bg-green-50 border border-green-100 text-green-700 text-sm text-center p-4 rounded-2xl hidden animate-fade">
-            </div>
-
-            <!-- Footer -->
-            <div class="mt-10 pt-8 border-t border-gray-100 text-center">
-                <p class="text-sm text-gray-500">
-                    ¿No tienes una cuenta?
-                    <a href="register.php"
-                        class="text-mentta-primary font-bold hover:text-mentta-accent transition-colors">Regístrate
-                        ahora</a>
-                </p>
             </div>
         </div>
 
-        <!-- Demo Credentials -->
-        <div class="mt-8 p-6 bg-white/40 backdrop-blur-md rounded-[1.5rem] border border-white/60 shadow-sm">
-            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-mentta-accent mb-4 text-center">Acceso de
-                Demostración</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-1">
-                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Paciente</p>
-                    <p class="text-[11px] text-mentta-primary font-medium">paciente1@mentta.com</p>
-                </div>
-                <div class="space-y-1">
-                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Psicólogo</p>
-                    <p class="text-[11px] text-mentta-primary font-medium">psicologo1@mentta.com</p>
-                </div>
+        <!-- Security Badge -->
+        <div
+            class="mt-12 flex items-center justify-center gap-6 opacity-40 grayscale group hover:opacity-100 hover:grayscale-0 transition-all">
+            <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <span class="text-[10px] font-bold uppercase tracking-widest">End-to-End Encrypted</span>
             </div>
-            <p class="text-[10px] text-gray-400 mt-4 text-center italic">Contraseña: <span
-                    class="text-mentta-secondary font-bold not-italic">Demo2025</span></p>
+            <div class="w-px h-3 bg-mentta-fg"></div>
+            <span class="text-[10px] font-bold uppercase tracking-widest">Premium Care</span>
         </div>
-
-        <p class="mt-10 text-center text-gray-400 text-[10px] uppercase tracking-widest font-medium">
-            &copy; 2026 Mentta &bull; Espacio Seguro &bull; Confidencial
-        </p>
     </div>
 
     <script>
@@ -224,7 +170,7 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    successDiv.textContent = '¡Bienvenido! Redirigiendo...';
+                    successDiv.textContent = 'Identity verified. Preparing your space...';
                     successDiv.classList.remove('hidden');
 
                     setTimeout(() => {
@@ -235,17 +181,19 @@
                         } else {
                             window.location.href = 'index.php';
                         }
-                    }, 1000);
+                    }, 1200);
                 } else {
-                    errorDiv.textContent = data.error || 'Error de credenciales';
+                    errorDiv.textContent = data.error || 'Invalid credentials. Please try again.';
                     errorDiv.classList.remove('hidden');
-                    submitBtn.disabled = false;
-                    spinner.classList.add('hidden');
-                    submitBtn.querySelector('span').classList.remove('opacity-50');
+                    resetBtn();
                 }
             } catch (error) {
-                errorDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+                errorDiv.textContent = 'Neural link unstable. Please verify connection.';
                 errorDiv.classList.remove('hidden');
+                resetBtn();
+            }
+
+            function resetBtn() {
                 submitBtn.disabled = false;
                 spinner.classList.add('hidden');
                 submitBtn.querySelector('span').classList.remove('opacity-50');
