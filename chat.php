@@ -251,7 +251,8 @@ if ($hour >= 5 && $hour < 12) {
     <div id="analysis-paused-banner" class="analysis-paused-banner"></div>
 
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-[#F9F9F7]/95 initial-reveal-container" style="border-bottom: 1px solid rgba(0,0,0,0.05); transition-delay: 0.1s;">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-[#F9F9F7]/95 initial-reveal-container"
+        style="border-bottom: 1px solid rgba(0,0,0,0.05); transition-delay: 0.1s;">
         <div class="max-w-xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-4">
                 <!-- Hamburger Button -->
