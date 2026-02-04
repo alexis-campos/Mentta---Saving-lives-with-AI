@@ -4,637 +4,789 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mentta - Plataforma Profesional de Salud Mental</title>
-    <meta name="description" content="Plataforma certificada de apoyo emocional con inteligencia artificial y psicólogos profesionales.">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'mentta-primary': '#2d3a2d',
-                        'mentta-secondary': '#cbaa8e',
-                        'mentta-light': '#f5f5f0',
-                        'mentta-accent': '#8b9d8b',
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.6s ease-out forwards',
-                        'slide-up': 'slideUp 0.8s ease-out forwards',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
-                    }
-                }
+    <title>Mentta - Tu Espacio de Bienestar Mental</title>
+    <meta name="description"
+        content="Un espacio seguro para tu bienestar emocional. Apoyo profesional, conversaciones con IA terapéutica y recursos de salud mental.">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #FAFAF8;
+            --color-bg-subtle: #F5F4F1;
+            --color-text: #3D3D3D;
+            --color-text-soft: #6B6B6B;
+            --color-text-muted: #9A9A9A;
+            --color-accent: #7C9A8E;
+            --color-accent-soft: #A8C4B8;
+            --color-accent-muted: rgba(124, 154, 142, 0.15);
+            --color-border: rgba(61, 61, 61, 0.08);
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --transition-slow: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-medium: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Scroll Container */
+        .scroll-container {
+            height: 180vh;
+            position: relative;
+        }
+
+        /* Cinematic Section */
+        .cinematic-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.8s ease;
+        }
+
+        .cinematic-section.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .cinematic-frame {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cinematic-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom,
+                    rgba(250, 250, 248, 0.2) 0%,
+                    rgba(250, 250, 248, 0) 40%,
+                    rgba(250, 250, 248, 0.6) 80%,
+                    rgba(250, 250, 248, 1) 100%);
+            pointer-events: none;
+        }
+
+        .hero-cta.hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            pointer-events: none;
+        }
+
+        .branding-header {
+            position: fixed;
+            top: 2.5rem;
+            right: 2.5rem;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1.2s ease forwards;
+            animation-delay: 0.8s;
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.125rem;
+        }
+
+        .brand-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-text);
+            letter-spacing: -0.02em;
+            text-align: right;
+        }
+
+        .brand-summary {
+            font-size: 0.75rem;
+            color: var(--color-text-soft);
+            max-width: 180px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            line-height: 1.4;
+            text-align: right;
+            /* Aligned to right */
+        }
+
+        .hero-headline {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .hero-subtext {
+            font-size: 1.125rem;
+            color: var(--color-text-soft);
+            max-width: 480px;
+            margin-bottom: 2.5rem;
+            font-weight: 400;
+        }
+
+        /* Primary Button */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.625rem;
+            background: var(--color-accent);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 100px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all var(--transition-medium);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #6B8A7E;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-primary:hover svg {
+            transform: translateX(3px);
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 40;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .scroll-indicator.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 500;
+        }
+
+        .scroll-indicator .line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--color-text-muted), transparent);
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollLine {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scaleY(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleY(1.2);
             }
         }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
+
+        /* ========== CONTENT SECTIONS ========== */
+        .content-wrapper {
+            position: relative;
+            z-index: 50;
+            /* Above fixed hero */
+            margin-top: 180vh;
+            background: var(--color-bg);
+            box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.1);
         }
 
-        h1, h2, h3 {
-            font-family: 'Playfair Display', serif;
+        /* Section Base */
+        .section {
+            padding: 8rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .trust-badge {
-            transition: all 0.3s ease;
+        .section-narrow {
+            max-width: 800px;
         }
 
-        .trust-badge:hover {
+        /* Fade-in Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* About Section */
+        .about-section {
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .about-section h2 {
+            font-size: clamp(1.75rem, 3vw, 2.5rem);
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .about-section p {
+            font-size: 1.125rem;
+            color: var(--color-text-soft);
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Services Section */
+        .services-section h2 {
+            font-size: clamp(1.75rem, 3vw, 2.5rem);
+            font-weight: 600;
+            color: var(--color-text);
+            text-align: center;
+            margin-bottom: 4rem;
+            letter-spacing: -0.02em;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--color-bg-subtle);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            transition: all var(--transition-medium);
+            border: 1px solid transparent;
+        }
+
+        .service-card:hover {
+            background: white;
+            border-color: var(--color-border);
             transform: translateY(-4px);
         }
 
-        .feature-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        .service-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 0.75rem;
         }
 
-        .feature-card:hover {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08);
+        .service-card p {
+            font-size: 0.9375rem;
+            color: var(--color-text-soft);
+            line-height: 1.7;
         }
 
-        .stat-counter {
-            font-variant-numeric: tabular-nums;
+        .service-card .service-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-accent);
+            background: var(--color-accent-muted);
+            padding: 0.375rem 0.875rem;
+            border-radius: 100px;
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .service-illustration {
+            width: 100%;
+            height: 160px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--color-accent-muted) 0%, rgba(168, 196, 184, 0.05) 100%);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .service-illustration svg {
+            width: 100%;
+            height: 100%;
+            opacity: 0.9;
+        }
+
+        /* Why Section */
+        .why-section {
+            text-align: center;
+            background: var(--color-bg-subtle);
+            border-radius: 24px;
+            padding: 5rem 3rem;
+            margin: 0 2rem;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .why-section h2 {
+            font-size: clamp(1.75rem, 3vw, 2.5rem);
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .why-item h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .why-item p {
+            font-size: 0.9375rem;
+            color: var(--color-text-soft);
+        }
+
+        /* Final CTA */
+        .final-cta {
+            text-align: center;
+            padding: 8rem 2rem;
+        }
+
+        .final-cta h2 {
+            font-size: clamp(1.75rem, 3vw, 2.5rem);
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .final-cta p {
+            font-size: 1.125rem;
+            color: var(--color-text-soft);
+            max-width: 500px;
+            margin: 0 auto 2.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .footer p {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        .footer a {
+            color: var(--color-text-soft);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--color-accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .section {
+                padding: 5rem 1.5rem;
+            }
+
+            .why-section {
+                margin: 0 1rem;
+                padding: 3rem 1.5rem;
+            }
+
+            .services-grid {
+                gap: 1.5rem;
+            }
         }
     </style>
 </head>
 
-<body class="bg-white antialiased">
-
-    <!-- Professional Header -->
-    <header class="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <div class="flex items-center space-x-3">
-                    <img src="assets/img/icon-new.png" alt="Mentta" class="h-12 w-auto">
-                    <span class="text-2xl font-semibold text-mentta-primary">Mentta</span>
-                </div>
-
-                <!-- Navigation -->
-                <nav class="hidden md:flex items-center space-x-8">
-                    <a href="#como-funciona" class="text-gray-700 hover:text-mentta-primary transition text-sm font-medium">Cómo Funciona</a>
-                    <a href="#seguridad" class="text-gray-700 hover:text-mentta-primary transition text-sm font-medium">Seguridad</a>
-                    <a href="#profesionales" class="text-gray-700 hover:text-mentta-primary transition text-sm font-medium">Para Profesionales</a>
-                    <a href="login.php" class="text-gray-700 hover:text-mentta-primary transition text-sm font-medium">Iniciar Sesión</a>
-                    <a href="register.php" class="bg-mentta-primary text-white px-6 py-2.5 rounded-lg hover:bg-mentta-primary/90 transition text-sm font-medium">
-                        Comenzar Ahora
-                    </a>
-                </nav>
-            </div>
+<body>
+    <!-- Branding Header -->
+    <header class="branding-header">
+        <div class="brand-info">
+            <span class="brand-name">Mentta</span>
+            <p class="brand-summary">Apoyo emocional e IA profesional</p>
         </div>
     </header>
 
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progress-bar"></div>
+
     <!-- Hero Section -->
-    <section class="pt-32 pb-20 bg-gradient-to-br from-mentta-light via-white to-gray-50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <!-- Content -->
-                <div class="space-y-8">
-                    <div class="inline-flex items-center space-x-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                        <span>Plataforma Certificada y Segura</span>
-                    </div>
+    <div class="scroll-container" id="scroll-container">
+        <!-- Hero Visual Section -->
+        <section class="cinematic-section" id="cinematic-section">
+            <!-- SVG Hero Illustration -->
+            <svg class="cinematic-frame" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice"
+                xmlns="http://www.w3.org/2000/svg">
+                <!-- Background -->
+                <rect width="1920" height="1080" fill="#FAFAF8" />
 
-                    <h1 class="text-5xl lg:text-6xl font-bold text-mentta-primary leading-tight">
-                        Apoyo Profesional en Salud Mental
-                    </h1>
+                <!-- Subtle gradient overlay -->
+                <defs>
+                    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#F5F4F1;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#FAFAF8;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#A8C4B8;stop-opacity:0.4" />
+                        <stop offset="100%" style="stop-color:#7C9A8E;stop-opacity:0.2" />
+                    </linearGradient>
+                    <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" style="stop-color:#A8C4B8;stop-opacity:0.3" />
+                        <stop offset="100%" style="stop-color:#A8C4B8;stop-opacity:0" />
+                    </radialGradient>
+                </defs>
 
-                    <p class="text-xl text-gray-600 leading-relaxed">
-                        Combinamos inteligencia artificial avanzada con atención psicológica profesional para ofrecerte 
-                        un soporte integral, confidencial y disponible cuando lo necesites.
-                    </p>
+                <rect width="1920" height="1080" fill="url(#bgGradient)" />
 
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="register.php" class="inline-flex items-center justify-center bg-mentta-primary text-white px-8 py-4 rounded-lg hover:bg-mentta-primary/90 transition font-medium text-lg shadow-lg shadow-mentta-primary/20">
-                            Comenzar Evaluación Gratuita
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </a>
-                        <a href="login.php?role=psychologist" class="inline-flex items-center justify-center border-2 border-mentta-primary text-mentta-primary px-8 py-4 rounded-lg hover:bg-mentta-primary hover:text-white transition font-medium text-lg">
-                            Acceso Profesionales
-                        </a>
-                    </div>
+                <!-- Background organic shapes - right layer only -->
+                <ellipse cx="1600" cy="200" rx="400" ry="300" fill="#A8C4B8" opacity="0.08" />
+                <circle cx="960" cy="540" r="450" fill="url(#glowGradient)" />
 
-                    <!-- Trust Indicators -->
-                    <div class="pt-8 flex items-center space-x-8 border-t border-gray-200">
-                        <div class="flex items-center space-x-2 text-gray-600">
-                            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <span class="text-sm font-medium">Datos Encriptados</span>
-                        </div>
-                        <div class="flex items-center space-x-2 text-gray-600">
-                            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                            </svg>
-                            <span class="text-sm font-medium">Psicólogos Certificados</span>
-                        </div>
-                        <div class="flex items-center space-x-2 text-gray-600">
-                            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                            </svg>
-                            <span class="text-sm font-medium">Disponible 24/7</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Flowing abstract lines -->
+                <path d="M0 600 Q400 450 800 550 T1600 480 T1920 520" stroke="#A8C4B8" stroke-width="2" fill="none"
+                    opacity="0.3" />
+                <path d="M0 650 Q500 500 900 600 T1500 530 T1920 580" stroke="#7C9A8E" stroke-width="1.5" fill="none"
+                    opacity="0.2" />
+                <path d="M0 700 Q300 600 700 680 T1400 600 T1920 650" stroke="#A8C4B8" stroke-width="1" fill="none"
+                    opacity="0.15" />
 
-                <!-- Hero Image/Illustration -->
-                <div class="relative">
-                    <div class="relative rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="assets/img/user-mint-bg.png" alt="Plataforma Mentta" class="w-full h-auto">
-                        <div class="absolute inset-0 bg-gradient-to-t from-mentta-primary/20 to-transparent"></div>
-                    </div>
-                    <!-- Floating Stats -->
-                    <div class="absolute -bottom-8 -left-8 bg-white rounded-xl shadow-xl p-6 trust-badge">
-                        <div class="text-4xl font-bold text-mentta-primary stat-counter">98%</div>
-                        <div class="text-sm text-gray-600 mt-1">Satisfacción</div>
-                    </div>
-                    <div class="absolute -top-8 -right-8 bg-white rounded-xl shadow-xl p-6 trust-badge">
-                        <div class="text-4xl font-bold text-mentta-primary stat-counter">24/7</div>
-                        <div class="text-sm text-gray-600 mt-1">Disponibilidad</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                <!-- Central composition - abstract human forms -->
+                <g transform="translate(960, 480)">
+                    <!-- Outer glow ring -->
+                    <circle cx="0" cy="0" r="200" fill="none" stroke="#A8C4B8" stroke-width="1" opacity="0.2" />
+                    <circle cx="0" cy="0" r="280" fill="none" stroke="#7C9A8E" stroke-width="0.5" opacity="0.1" />
 
-    <!-- Stats Section -->
-    <section class="py-16 bg-mentta-primary">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="text-5xl font-bold text-white mb-2 stat-counter">+5,000</div>
-                    <div class="text-mentta-accent text-sm">Usuarios Activos</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-5xl font-bold text-white mb-2 stat-counter">150+</div>
-                    <div class="text-mentta-accent text-sm">Psicólogos Certificados</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-5xl font-bold text-white mb-2 stat-counter">100%</div>
-                    <div class="text-mentta-accent text-sm">Confidencialidad</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-5xl font-bold text-white mb-2 stat-counter">4.9/5</div>
-                    <div class="text-mentta-accent text-sm">Valoración Promedio</div>
-                </div>
-            </div>
-        </div>
-    </section>
+                    <!-- Abstract figure - main -->
+                    <g transform="translate(0, 0)">
+                        <ellipse cx="0" cy="-60" rx="35" ry="40" fill="#A8C4B8" opacity="0.25" />
+                        <ellipse cx="0" cy="30" rx="45" ry="70" fill="#7C9A8E" opacity="0.2" />
+                        <circle cx="0" cy="-80" r="25" fill="#A8C4B8" opacity="0.3" />
+                    </g>
 
-    <!-- How It Works Section -->
-    <section id="como-funciona" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-bold text-mentta-primary mb-4">Cómo Funciona</h2>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                    Un proceso simple y profesional diseñado para tu bienestar
-                </p>
-            </div>
+                    <!-- Subtle connection detail -->
+                    <ellipse cx="0" cy="0" rx="60" ry="40" fill="#7C9A8E" opacity="0.1" />
+                </g>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Step 1 -->
-                <div class="feature-card bg-gray-50 rounded-2xl p-8 relative">
-                    <div class="absolute -top-4 left-8 bg-mentta-secondary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow-lg">1</div>
-                    <div class="mt-6">
-                        <div class="w-16 h-16 bg-mentta-primary/10 rounded-xl flex items-center justify-center mb-6">
-                            <svg class="w-8 h-8 text-mentta-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-semibold text-mentta-primary mb-3">Evaluación Inicial</h3>
-                        <p class="text-gray-600 leading-relaxed">
-                            Completa un breve cuestionario confidencial que nos ayuda a entender tu situación actual y necesidades específicas.
-                        </p>
-                    </div>
-                </div>
+                <!-- Decorative elements - floating shapes -->
+                <circle cx="300" cy="300" r="8" fill="#7C9A8E" opacity="0.3" />
+                <circle cx="350" cy="250" r="5" fill="#A8C4B8" opacity="0.4" />
+                <circle cx="280" cy="350" r="6" fill="#7C9A8E" opacity="0.25" />
 
-                <!-- Step 2 -->
-                <div class="feature-card bg-gray-50 rounded-2xl p-8 relative">
-                    <div class="absolute -top-4 left-8 bg-mentta-secondary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow-lg">2</div>
-                    <div class="mt-6">
-                        <div class="w-16 h-16 bg-mentta-primary/10 rounded-xl flex items-center justify-center mb-6">
-                            <svg class="w-8 h-8 text-mentta-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-semibold text-mentta-primary mb-3">Soporte IA 24/7</h3>
-                        <p class="text-gray-600 leading-relaxed">
-                            Accede a conversaciones terapéuticas con IA que analiza patrones y te brinda apoyo inmediato cuando lo necesites.
-                        </p>
-                    </div>
-                </div>
+                <circle cx="1600" cy="700" r="10" fill="#A8C4B8" opacity="0.3" />
+                <circle cx="1650" cy="750" r="6" fill="#7C9A8E" opacity="0.35" />
+                <circle cx="1550" cy="680" r="4" fill="#A8C4B8" opacity="0.4" />
 
-                <!-- Step 3 -->
-                <div class="feature-card bg-gray-50 rounded-2xl p-8 relative">
-                    <div class="absolute -top-4 left-8 bg-mentta-secondary text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow-lg">3</div>
-                    <div class="mt-6">
-                        <div class="w-16 h-16 bg-mentta-primary/10 rounded-xl flex items-center justify-center mb-6">
-                            <svg class="w-8 h-8 text-mentta-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-semibold text-mentta-primary mb-3">Atención Profesional</h3>
-                        <p class="text-gray-600 leading-relaxed">
-                            Tu psicólogo recibe insights detallados y puede intervenir cuando sea necesario, garantizando atención humana experta.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                <circle cx="1700" cy="350" r="7" fill="#7C9A8E" opacity="0.25" />
+                <circle cx="1750" cy="400" r="5" fill="#A8C4B8" opacity="0.3" />
 
-    <!-- Security Section -->
-    <section id="seguridad" class="py-24 bg-gradient-to-br from-gray-50 to-mentta-light">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div>
-                    <h2 class="text-4xl lg:text-5xl font-bold text-mentta-primary mb-6">
-                        Tu Seguridad es Nuestra Prioridad
-                    </h2>
-                    <p class="text-xl text-gray-600 mb-8">
-                        Implementamos los más altos estándares de seguridad y privacidad para proteger tu información y garantizar un espacio seguro.
-                    </p>
+                <circle cx="150" cy="500" r="6" fill="#A8C4B8" opacity="0.3" />
+                <circle cx="100" cy="550" r="4" fill="#7C9A8E" opacity="0.35" />
 
-                    <div class="space-y-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-mentta-primary mb-2">Encriptación de Extremo a Extremo</h3>
-                                <p class="text-gray-600">Todas tus conversaciones y datos están protegidos con encriptación AES-256.</p>
-                            </div>
-                        </div>
+                <!-- Subtle leaf/organic shapes -->
+                <path d="M1500 150 Q1530 120 1560 150 Q1530 180 1500 150" fill="#A8C4B8" opacity="0.2" />
+                <path d="M1750 550 Q1780 520 1810 550 Q1780 580 1750 550" fill="#A8C4B8" opacity="0.18" />
 
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-mentta-primary mb-2">Cumplimiento Normativo</h3>
-                                <p class="text-gray-600">Cumplimos con las regulaciones de protección de datos y privacidad médica.</p>
-                            </div>
-                        </div>
+                <!-- Bottom fade -->
+                <rect x="0" y="900" width="1920" height="180" fill="url(#bgGradient)" opacity="0.8" />
+            </svg>
 
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-mentta-primary mb-2">Equipo Certificado</h3>
-                                <p class="text-gray-600">Todos nuestros psicólogos están certificados y siguen estrictos códigos de ética.</p>
-                            </div>
-                        </div>
+            <div class="cinematic-overlay" style="z-index: 25;"></div>
 
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-mentta-primary mb-2">Control Total</h3>
-                                <p class="text-gray-600">Tú decides qué información compartir y puedes eliminar tus datos en cualquier momento.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- New Center Content (Visible Immediately) -->
+            <div class="hero-center-content"
+                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 30; text-align: center; width: 100%; max-width: 800px; padding: 0 2rem;">
+                <h2
+                    style="font-size: 0.875rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 2rem; font-weight: 600;">
+                    Mentta</h2>
+                <h1
+                    style="font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 600; line-height: 1.1; margin-bottom: 2.5rem; color: var(--color-text);">
+                    Tu viaje hacia el bienestar <br><span
+                        style="color: var(--color-text-soft); font-weight: 400; font-style: italic;">comienza
+                        aquí.</span></h1>
 
-                <div class="relative">
-                    <div class="bg-white rounded-2xl shadow-2xl p-8">
-                        <div class="space-y-6">
-                            <div class="border-b border-gray-200 pb-6">
-                                <div class="flex items-center justify-between mb-4">
-                                    <span class="text-sm font-medium text-gray-600">Nivel de Seguridad</span>
-                                    <span class="text-sm font-bold text-green-600">Máximo</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-3">
-                                    <div class="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full" style="width: 100%"></div>
-                                </div>
-                            </div>
-
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-                                    <span class="text-sm font-medium text-gray-700">Encriptación SSL/TLS</span>
-                                    <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-                                    <span class="text-sm font-medium text-gray-700">Autenticación de Dos Factores</span>
-                                    <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-                                    <span class="text-sm font-medium text-gray-700">Auditorías de Seguridad</span>
-                                    <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-                                    <span class="text-sm font-medium text-gray-700">Backup Automático</span>
-                                    <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Professional Section -->
-    <section id="profesionales" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-bold text-mentta-primary mb-4">Para Profesionales de la Salud Mental</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Herramientas avanzadas que potencian tu práctica profesional
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="feature-card bg-gray-50 rounded-2xl p-8">
-                    <div class="w-14 h-14 bg-mentta-primary/10 rounded-xl flex items-center justify-center mb-6">
-                        <svg class="w-7 h-7 text-mentta-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-mentta-primary mb-3">Dashboard Analítico</h3>
-                    <p class="text-gray-600">Visualiza el progreso de tus pacientes con métricas y reportes detallados.</p>
-                </div>
-
-                <div class="feature-card bg-gray-50 rounded-2xl p-8">
-                    <div class="w-14 h-14 bg-mentta-primary/10 rounded-xl flex items-center justify-center mb-6">
-                        <svg class="w-7 h-7 text-mentta-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-mentta-primary mb-3">Alertas Inteligentes</h3>
-                    <p class="text-gray-600">Recibe notificaciones ante situaciones que requieren atención inmediata.</p>
-                </div>
-
-                <div class="feature-card bg-gray-50 rounded-2xl p-8">
-                    <div class="w-14 h-14 bg-mentta-primary/10 rounded-xl flex items-center justify-center mb-6">
-                        <svg class="w-7 h-7 text-mentta-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-mentta-primary mb-3">Gestión de Casos</h3>
-                    <p class="text-gray-600">Organiza y gestiona tus pacientes de manera eficiente y segura.</p>
-                </div>
-
-                <div class="feature-card bg-gray-50 rounded-2xl p-8">
-                    <div class="w-14 h-14 bg-mentta-primary/10 rounded-xl flex items-center justify-center mb-6">
-                        <svg class="w-7 h-7 text-mentta-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-mentta-primary mb-3">Historial Completo</h3>
-                    <p class="text-gray-600">Accede al historial completo de conversaciones y evolución del paciente.</p>
-                </div>
-
-                <div class="feature-card bg-gray-50 rounded-2xl p-8">
-                    <div class="w-14 h-14 bg-mentta-primary/10 rounded-xl flex items-center justify-center mb-6">
-                        <svg class="w-7 h-7 text-mentta-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-mentta-primary mb-3">Agenda Digital</h3>
-                    <p class="text-gray-600">Sistema de citas integrado con recordatorios automáticos.</p>
-                </div>
-
-                <div class="feature-card bg-gray-50 rounded-2xl p-8">
-                    <div class="w-14 h-14 bg-mentta-primary/10 rounded-xl flex items-center justify-center mb-6">
-                        <svg class="w-7 h-7 text-mentta-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-semibold text-mentta-primary mb-3">Privacidad Total</h3>
-                    <p class="text-gray-600">Cumplimiento total con regulaciones de confidencialidad médica.</p>
-                </div>
-            </div>
-
-            <div class="mt-12 text-center">
-                <a href="login.php?role=psychologist" class="inline-flex items-center bg-mentta-primary text-white px-8 py-4 rounded-lg hover:bg-mentta-primary/90 transition font-medium text-lg shadow-lg">
-                    Acceso Portal Profesional
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                <a href="login.php" class="btn-primary" style="opacity: 1; pointer-events: auto;">
+                    Comenzar
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                 </a>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 
-    <!-- Testimonials Section -->
-    <section class="py-24 bg-gradient-to-br from-mentta-light to-gray-50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-bold text-mentta-primary mb-4">Lo Que Dicen Nuestros Usuarios</h2>
-                <p class="text-xl text-gray-600">Historias reales de transformación y bienestar</p>
-            </div>
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" id="scroll-indicator">
+        <span>Explora</span>
+        <div class="line"></div>
+    </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div class="flex items-center mb-4">
-                        <div class="flex text-yellow-400">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        "Mentta me ayudó a encontrar apoyo en momentos difíciles. La disponibilidad 24/7 fue crucial para mí."
-                    </p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-mentta-primary/10 rounded-full flex items-center justify-center text-mentta-primary font-semibold">M</div>
-                        <div class="ml-3">
-                            <p class="font-semibold text-mentta-primary">María S.</p>
-                            <p class="text-sm text-gray-500">Paciente</p>
-                        </div>
-                    </div>
-                </div>
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
 
-                <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div class="flex items-center mb-4">
-                        <div class="flex text-yellow-400">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        "Como psicólogo, las herramientas de Mentta me permiten brindar mejor atención y detectar situaciones de riesgo."
-                    </p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-mentta-primary/10 rounded-full flex items-center justify-center text-mentta-primary font-semibold">C</div>
-                        <div class="ml-3">
-                            <p class="font-semibold text-mentta-primary">Dr. Carlos R.</p>
-                            <p class="text-sm text-gray-500">Psicólogo Clínico</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div class="flex items-center mb-4">
-                        <div class="flex text-yellow-400">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        "Finalmente encontré un espacio donde puedo hablar sin miedo al juicio. La IA es increíblemente comprensiva."
-                    </p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-mentta-primary/10 rounded-full flex items-center justify-center text-mentta-primary font-semibold">A</div>
-                        <div class="ml-3">
-                            <p class="font-semibold text-mentta-primary">Andrea L.</p>
-                            <p class="text-sm text-gray-500">Paciente</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="py-24 bg-gradient-to-br from-mentta-primary to-mentta-primary/90">
-        <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-            <h2 class="text-4xl lg:text-5xl font-bold text-white mb-6">
-                Comienza Tu Camino Hacia el Bienestar
-            </h2>
-            <p class="text-xl text-white/90 mb-10 leading-relaxed">
-                Únete a miles de personas que ya están priorizando su salud mental con Mentta
+        <!-- About Section -->
+        <section class="section section-narrow about-section fade-in">
+            <h2>Un enfoque centrado en ti</h2>
+            <p>
+                Creemos que el bienestar mental es un camino personal. Por eso, combinamos tecnología empática
+                con atención profesional para ofrecerte un espacio donde puedas expresarte sin juicios,
+                encontrar apoyo cuando lo necesites y avanzar a tu propio ritmo.
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="register.php" class="inline-flex items-center justify-center bg-white text-mentta-primary px-8 py-4 rounded-lg hover:bg-gray-100 transition font-medium text-lg shadow-xl">
-                    Registrarse Gratis
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </a>
-                <a href="#como-funciona" class="inline-flex items-center justify-center border-2 border-white text-white px-8 py-4 rounded-lg hover:bg-white/10 transition font-medium text-lg">
-                    Conocer Más
-                </a>
-            </div>
-            <p class="mt-8 text-white/70 text-sm">
-                Sin tarjeta de crédito • Cancelación en cualquier momento • Soporte 24/7
-            </p>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300 py-16">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid md:grid-cols-4 gap-12 mb-12">
-                <!-- Brand -->
-                <div class="md:col-span-1">
-                    <div class="flex items-center space-x-2 mb-4">
-                        <img src="assets/img/icon-new.png" alt="Mentta" class="h-10 w-auto">
-                        <span class="text-2xl font-semibold text-white">Mentta</span>
+        <!-- Services Section -->
+        <section class="section services-section">
+            <h2 class="fade-in">Cómo podemos ayudarte</h2>
+            <div class="services-grid">
+                <div class="service-card fade-in">
+                    <div class="service-illustration">
+                        <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- AI Chat Illustration -->
+                            <rect x="30" y="20" width="80" height="60" rx="8" fill="#A8C4B8" opacity="0.3" />
+                            <rect x="35" y="25" width="50" height="6" rx="3" fill="#7C9A8E" opacity="0.6" />
+                            <rect x="35" y="35" width="65" height="6" rx="3" fill="#7C9A8E" opacity="0.4" />
+                            <rect x="35" y="45" width="40" height="6" rx="3" fill="#7C9A8E" opacity="0.4" />
+                            <circle cx="145" cy="50" r="25" fill="#7C9A8E" opacity="0.2" />
+                            <circle cx="145" cy="50" r="15" fill="#7C9A8E" opacity="0.4" />
+                            <path d="M140 45 L145 50 L150 45" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round"
+                                fill="none" />
+                            <path d="M140 50 L145 55 L150 50" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round"
+                                fill="none" />
+                            <circle cx="60" cy="95" r="4" fill="#A8C4B8" />
+                            <circle cx="75" cy="95" r="4" fill="#7C9A8E" opacity="0.6" />
+                            <circle cx="90" cy="95" r="4" fill="#7C9A8E" opacity="0.3" />
+                        </svg>
                     </div>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        Plataforma profesional de salud mental con IA y psicólogos certificados.
-                    </p>
+                    <span class="service-tag">Disponible 24/7</span>
+                    <h3>Conversación con IA</h3>
+                    <p>Un asistente terapéutico que te escucha sin juzgar. Técnicas de respiración, reflexión guiada y
+                        apoyo emocional inmediato.</p>
                 </div>
-
-                <!-- Platform -->
-                <div>
-                    <h3 class="text-white font-semibold mb-4">Plataforma</h3>
-                    <ul class="space-y-3 text-sm">
-                        <li><a href="#como-funciona" class="hover:text-white transition">Cómo Funciona</a></li>
-                        <li><a href="#seguridad" class="hover:text-white transition">Seguridad</a></li>
-                        <li><a href="register.php" class="hover:text-white transition">Registrarse</a></li>
-                        <li><a href="login.php" class="hover:text-white transition">Iniciar Sesión</a></li>
-                    </ul>
-                </div>
-
-                <!-- Professionals -->
-                <div>
-                    <h3 class="text-white font-semibold mb-4">Profesionales</h3>
-                    <ul class="space-y-3 text-sm">
-                        <li><a href="#profesionales" class="hover:text-white transition">Portal Profesional</a></li>
-                        <li><a href="login.php?role=psychologist" class="hover:text-white transition">Acceso</a></li>
-                        <li><a href="#" class="hover:text-white transition">Documentación</a></li>
-                        <li><a href="#" class="hover:text-white transition">Recursos</a></li>
-                    </ul>
-                </div>
-
-                <!-- Emergency -->
-                <div>
-                    <h3 class="text-white font-semibold mb-4">Emergencias</h3>
-                    <div class="bg-red-900/20 border border-red-800 rounded-lg p-4">
-                        <p class="text-sm text-gray-300 mb-2">
-                            Si estás en crisis:
-                        </p>
-                        <a href="tel:113" class="text-2xl font-bold text-white hover:text-red-400 transition">
-                            113
-                        </a>
-                        <p class="text-xs text-gray-400 mt-1">
-                            Línea 113 Salud - Perú
-                        </p>
+                <div class="service-card fade-in">
+                    <div class="service-illustration">
+                        <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Map Illustration -->
+                            <rect x="25" y="15" width="150" height="90" rx="8" fill="#A8C4B8" opacity="0.15" />
+                            <path d="M40 85 L60 55 L80 70 L110 35 L140 60 L160 40" stroke="#7C9A8E" stroke-width="2"
+                                stroke-linecap="round" fill="none" opacity="0.4" />
+                            <circle cx="85" cy="50" r="20" fill="#7C9A8E" opacity="0.15" />
+                            <circle cx="85" cy="50" r="10" fill="#7C9A8E" opacity="0.3" />
+                            <circle cx="85" cy="50" r="4" fill="#7C9A8E" />
+                            <path d="M85 30 L85 25" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round" />
+                            <path d="M105 50 L110 50" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round" />
+                            <path d="M85 70 L85 75" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round" />
+                            <path d="M65 50 L60 50" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round" />
+                            <circle cx="140" cy="75" r="12" fill="#A8C4B8" opacity="0.4" />
+                            <path d="M140 69 L140 75 L145 75" stroke="#7C9A8E" stroke-width="1.5"
+                                stroke-linecap="round" />
+                        </svg>
                     </div>
+                    <span class="service-tag">Geolocalización</span>
+                    <h3>Recursos cercanos</h3>
+                    <p>Encuentra centros de atención, líneas de ayuda y profesionales cerca de ti. En momentos
+                        difíciles, la ayuda está a un toque.</p>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-illustration">
+                        <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Video Call Illustration -->
+                            <rect x="30" y="25" width="90" height="70" rx="8" fill="#A8C4B8" opacity="0.25" />
+                            <rect x="35" y="30" width="80" height="50" rx="4" fill="#7C9A8E" opacity="0.15" />
+                            <circle cx="75" cy="50" r="15" fill="#7C9A8E" opacity="0.3" />
+                            <circle cx="75" cy="47" r="5" fill="#7C9A8E" opacity="0.5" />
+                            <path d="M67 58 Q75 62 83 58" stroke="#7C9A8E" stroke-width="2" stroke-linecap="round"
+                                fill="none" opacity="0.5" />
+                            <polygon points="130,40 160,55 130,70" fill="#7C9A8E" opacity="0.4" />
+                            <rect x="125" y="38" width="10" height="34" rx="2" fill="#A8C4B8" opacity="0.3" />
+                            <circle cx="55" cy="85" r="6" fill="#7C9A8E" opacity="0.3" />
+                            <rect x="70" y="82" width="30" height="6" rx="3" fill="#A8C4B8" opacity="0.4" />
+                        </svg>
+                    </div>
+                    <span class="service-tag">Profesionales</span>
+                    <h3>Videollamadas</h3>
+                    <p>Conecta con psicólogos certificados desde la comodidad de tu hogar. Sesiones seguras, privadas y
+                        a tu horario.</p>
                 </div>
             </div>
+        </section>
 
-            <!-- Bottom Bar -->
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                <p class="text-sm text-gray-400">
-                    © 2026 Mentta. Todos los derechos reservados.
-                </p>
-                <div class="flex space-x-6 text-sm">
-                    <a href="#" class="hover:text-white transition">Privacidad</a>
-                    <a href="#" class="hover:text-white transition">Términos</a>
-                    <a href="#" class="hover:text-white transition">Cookies</a>
+        <!-- Why Section -->
+        <section class="why-section fade-in">
+            <h2>¿Por qué elegir este espacio?</h2>
+            <div class="why-grid">
+                <div class="why-item">
+                    <h4>Confidencial</h4>
+                    <p>Tu privacidad es sagrada. Encriptación total.</p>
+                </div>
+                <div class="why-item">
+                    <h4>Sin presiones</h4>
+                    <p>Avanza a tu ritmo, sin compromisos.</p>
+                </div>
+                <div class="why-item">
+                    <h4>Siempre disponible</h4>
+                    <p>Apoyo las 24 horas, cada día del año.</p>
+                </div>
+                <div class="why-item">
+                    <h4>Humano + IA</h4>
+                    <p>Lo mejor de ambos mundos, cuando lo necesites.</p>
                 </div>
             </div>
-        </div>
-    </footer>
+        </section>
 
-    <!-- Smooth Scroll Script -->
+        <!-- Final CTA -->
+        <section class="final-cta fade-in">
+            <h2>Tu bienestar importa</h2>
+            <p>El primer paso siempre es el más difícil. Estamos aquí para acompañarte.</p>
+            <a href="login.php" class="btn-primary">
+                Dar el primer paso
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2026 Mentta · <a href="#">Privacidad</a> · <a href="#">Términos</a></p>
+        </footer>
+
+    </div>
+
     <script>
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+        // Configuration
+        const frameCount = 80;
+        const folderPath = 'images/Smooth_cinematic_transition_202602032027_smq_000/';
+        const baseFileName = 'Smooth_cinematic_transition_202602032027_smq_';
+
+        // Elements
+        const cinematicSection = document.getElementById('cinematic-section');
+        const scrollIndicator = document.getElementById('scroll-indicator');
+        const scrollContainer = document.getElementById('scroll-container');
+
+        // Preload images
+        const images = [];
+        let loadedCount = 0;
+
+        function preloadImages() {
+            // No images to preload as requested
+        }
+
+        // Update frame based on scroll
+        function updateFrame() {
+            const scrollTop = window.scrollY;
+            const maxScroll = scrollContainer.offsetHeight - window.innerHeight;
+            const scrollProgress = Math.min(scrollTop / maxScroll, 1);
+
+            const frameIndex = Math.min(
+                Math.floor(scrollProgress * frameCount),
+                frameCount - 1
+            );
+
+            // Hide scroll indicator
+            if (scrollProgress > 0.6) {
+                scrollIndicator.classList.add('hidden');
+            } else {
+                scrollIndicator.classList.remove('hidden');
+            }
+
+            // Fade out hero content as user scrolls down
+            const fadeThreshold = 0.7;
+            if (scrollProgress > fadeThreshold) {
+                const heroOpacity = 1 - ((scrollProgress - fadeThreshold) / (1 - fadeThreshold));
+                cinematicSection.style.opacity = Math.max(0, heroOpacity).toString();
+                if (heroOpacity <= 0) {
+                    cinematicSection.style.pointerEvents = "none";
+                } else {
+                    cinematicSection.style.pointerEvents = "auto";
+                }
+            } else {
+                cinematicSection.style.opacity = "1";
+                cinematicSection.style.pointerEvents = "auto";
+            }
+        }
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px 0px -20px 0px',
+            threshold: 0.01
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
             });
-        });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Initialize
+        preloadImages();
+        window.addEventListener('scroll', updateFrame);
+        updateFrame();
     </script>
 </body>
 
