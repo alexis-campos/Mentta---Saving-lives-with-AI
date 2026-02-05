@@ -3,6 +3,17 @@ import LiveSession from './components/LiveSession';
 import { Heart, Shield, Zap, Video, ArrowLeft } from 'lucide-react';
 import { MentalHealthState, RiskLevel } from './types';
 
+// SECURITY: Allowed origins for postMessage communication
+// PRODUCTION-READY: window.location.origin adapts to whatever domain the app is deployed on
+const ALLOWED_ORIGINS = [
+  window.location.origin,                    // Current app origin (works in prod & dev)
+  'http://localhost',                        // XAMPP local
+  'http://localhost:80',                     // XAMPP explicit port
+  'http://127.0.0.1',                        // Local IP
+  // Add your production parent domain here if different from this app's origin:
+  // 'https://mentta.com',
+].filter(Boolean);
+
 const App: React.FC = () => {
   const [inSession, setInSession] = useState(false);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
@@ -11,8 +22,14 @@ const App: React.FC = () => {
   // Listen for session token from parent window (cross-origin communication)
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
+      // SECURITY: Validate origin
+      if (!ALLOWED_ORIGINS.some(origin => event.origin.startsWith(origin))) {
+        console.warn('Blocked message from untrusted origin:', event.origin);
+        return;
+      }
+
       if (event.data.type === 'MENTTA_SESSION_TOKEN') {
-        console.log('Recibido token de sesión del padre');
+        console.log('Received session token from parent');
         setSessionToken(event.data.sessionToken);
         setSessionId(event.data.sessionId);
         // Also store in local sessionStorage as backup
@@ -25,7 +42,9 @@ const App: React.FC = () => {
 
     // Request token from parent (fallback if we loaded before parent sent it)
     if (window.parent !== window) {
-      window.parent.postMessage({ type: 'MENTTA_REQUEST_TOKEN' }, '*');
+      // Try to determine parent origin
+      const parentOrigin = document.referrer ? new URL(document.referrer).origin : '*';
+      window.parent.postMessage({ type: 'MENTTA_REQUEST_TOKEN' }, parentOrigin);
     }
 
     return () => window.removeEventListener('message', handleMessage);
@@ -43,7 +62,8 @@ const App: React.FC = () => {
 
     // Notify parent window to close overlay IMMEDIATELY for a snappy feel
     if (window.parent !== window) {
-      window.parent.postMessage({ type: 'MENTTA_LIVE_END' }, '*');
+      const parentOrigin = document.referrer ? new URL(document.referrer).origin : '*';
+      window.parent.postMessage({ type: 'MENTTA_LIVE_END' }, parentOrigin);
     }
 
     // Close window if opened as popup (fallback)

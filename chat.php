@@ -73,7 +73,7 @@ if ($hour >= 5 && $hour < 12) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="es" data-theme="<?= htmlspecialchars($theme) ?>">
+<html lang="<?= htmlspecialchars($user['language'] ?? 'en') ?>" data-theme="<?= htmlspecialchars($theme) ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -118,6 +118,9 @@ if ($hour >= 5 && $hour < 12) {
     <link rel="apple-touch-icon" href="assets/images/icon-192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
+    <!-- Translation System -->
+    <script src="assets/js/translations.js"></script>
 </head>
 
 <body class="antialiased" style="background-color: var(--bg-primary);">
@@ -278,16 +281,20 @@ if ($hour >= 5 && $hour < 12) {
                     </div>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <a href="login.php"
-                    class="w-5 h-8 rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center hover:bg-gray-50 transition-colors group"
-                    title="Regresar al Login">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-black group-hover:text-gray-600"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <div class="flex items-center gap-3">
+                <!-- Language Switcher -->
+                <div id="headerLangSwitcher" class="hidden md:block"></div>
+                
+                <!-- Logout Button -->
+                <button onclick="openLogoutModal()"
+                    class="w-10 h-10 rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center hover:bg-gray-50 transition-colors group"
+                    title="Log out" aria-label="Log out">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-black/40 group-hover:text-black/70"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
-                </a>
+                </button>
             </div>
         </div>
     </header>
@@ -798,7 +805,104 @@ if ($hour >= 5 && $hour < 12) {
 
     <!-- Live Call Functions -->
     <script>
-        // Session timer
+        // ============================================
+        // CRITICAL: Navigation Guard - Prevent back button to login
+        // ============================================
+        (function preventBackToLogin() {
+            // Replace current history entry
+            history.replaceState(null, '', location.href);
+            
+            // Block back button navigation
+            window.addEventListener('popstate', function(e) {
+                history.pushState(null, '', location.href);
+            });
+        })();
+
+        // ============================================
+        // Logout Modal Functions
+        // ============================================
+        function openLogoutModal() {
+            closeMenu();
+            document.getElementById('logoutModal').classList.add('active');
+            document.getElementById('logoutModal').setAttribute('aria-hidden', 'false');
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('logoutModal').classList.remove('active');
+            document.getElementById('logoutModal').setAttribute('aria-hidden', 'true');
+        }
+
+        // ============================================
+        // ESC Key Handler for All Modals
+        // ============================================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Close all active modals
+                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                    modal.classList.remove('active');
+                    modal.setAttribute('aria-hidden', 'true');
+                });
+                // Close sidebar if open
+                const sidebar = document.getElementById('sidebar-menu');
+                if (sidebar && sidebar.classList.contains('active')) {
+                    closeMenu();
+                }
+                // Close live overlay if open
+                const liveOverlay = document.getElementById('live-overlay');
+                if (liveOverlay && !liveOverlay.classList.contains('hidden')) {
+                    closeLiveOverlay();
+                }
+            }
+        });
+
+        // ============================================
+        // Loading State with Timeout Safety
+        // ============================================
+        let loadingTimeout = null;
+        const LOADING_TIMEOUT_MS = 30000; // 30 seconds
+
+        function showLoading(text) {
+            const indicator = document.getElementById('loadingIndicator');
+            const loadingText = document.getElementById('loadingText');
+            if (indicator) {
+                indicator.classList.remove('hidden');
+                if (loadingText && text) {
+                    loadingText.textContent = text;
+                }
+            }
+            
+            // Safety timeout
+            clearTimeout(loadingTimeout);
+            loadingTimeout = setTimeout(() => {
+                hideLoading();
+                showToast(i18n.t('errors.operationTimeout'), 'error');
+            }, LOADING_TIMEOUT_MS);
+        }
+
+        function hideLoading() {
+            clearTimeout(loadingTimeout);
+            const indicator = document.getElementById('loadingIndicator');
+            if (indicator) {
+                indicator.classList.add('hidden');
+            }
+        }
+
+        // Simple toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-sm font-medium shadow-lg z-50 transition-all animate-fade ${type === 'error' ? 'bg-red-500 text-white' : 'bg-black text-white'}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // ============================================
+        // Session Timer
+        // ============================================
         let liveTimerInterval = null;
         let liveStartTime = null;
 
@@ -857,7 +961,7 @@ if ($hour >= 5 && $hour < 12) {
                 const data = await response.json();
 
                 if (!data.success) {
-                    alert('Error al iniciar sesión: ' + (data.error || 'Error desconocido'));
+                    alert(i18n.t('errors.connectionFailed') + ': ' + (data.error || 'Unknown error'));
                     return;
                 }
 
@@ -875,17 +979,18 @@ if ($hour >= 5 && $hour < 12) {
                 overlay.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
 
-                // Set iframe source (dev: localhost:3000, prod: /multimodal/)
+                // Set iframe source (dev: localhost:3001)
                 const liveAppUrl = 'http://localhost:3001';
                 iframe.src = liveAppUrl;
 
                 // When iframe loads, send the session token via postMessage
                 iframe.onload = function() {
+                    // SECURITY FIX: Specify target origin instead of '*'
                     iframe.contentWindow.postMessage({
                         type: 'MENTTA_SESSION_TOKEN',
                         sessionToken: data.sessionToken,
                         sessionId: data.sessionId
-                    }, '*');
+                    }, liveAppUrl);
                 };
 
                 // Start timer
@@ -894,12 +999,27 @@ if ($hour >= 5 && $hour < 12) {
 
             } catch (error) {
                 console.error('Error starting live call:', error);
-                alert('Error de conexión. Por favor intenta de nuevo.');
+                alert(i18n.t('errors.connectionFailed'));
             }
         }
 
-        // Listen for messages from iframe
+        // Listen for messages from iframe - with origin validation
+        // PRODUCTION-READY: This automatically includes the current domain
+        const ALLOWED_ORIGINS = [
+            window.location.origin,                    // Current page origin (works in prod & dev)
+            'http://localhost:3001',                   // Vite dev server
+            'http://localhost',                        // XAMPP local
+            // Add your production domains here if iframe is on different subdomain:
+            // 'https://live.mentta.com',
+        ].filter(Boolean);
+        
         window.addEventListener('message', function (event) {
+            // SECURITY: Validate origin
+            if (!ALLOWED_ORIGINS.includes(event.origin)) {
+                console.warn('Blocked message from untrusted origin:', event.origin);
+                return;
+            }
+
             // When session ends
             if (event.data.type === 'MENTTA_LIVE_END') {
                 closeLiveOverlay();
@@ -914,9 +1034,27 @@ if ($hour >= 5 && $hour < 12) {
                         type: 'MENTTA_SESSION_TOKEN',
                         sessionToken: token,
                         sessionId: sessionId
-                    }, '*');
+                    }, event.origin);
                 }
             }
+        });
+
+        // ============================================
+        // Initialize on DOM Ready
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize language switcher
+            i18n.createLanguageSwitcher('headerLangSwitcher');
+            
+            // Apply translations
+            i18n.applyTranslations();
+            
+            // Set initial ARIA states on modals
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.setAttribute('aria-hidden', 'true');
+                modal.setAttribute('role', 'dialog');
+                modal.setAttribute('aria-modal', 'true');
+            });
         });
     </script>
 </body>

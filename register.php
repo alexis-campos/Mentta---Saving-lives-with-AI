@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Cuenta | MENTTA</title>
+    <title>Create Account | MENTTA</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/theme.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,400&display=swap"
         rel="stylesheet">
@@ -29,7 +30,7 @@
     </script>
     <style>
         body {
-            background-color: var(--mentta-bg);
+            background-color: #FAFAF8;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -43,6 +44,11 @@
 
         .input-field:focus {
             transform: translateY(-1px);
+        }
+
+        .input-field.error {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
         }
 
         .custom-checkbox {
@@ -76,6 +82,8 @@
 </head>
 
 <body class="min-h-screen bg-mentta-bg flex items-center justify-center p-6 md:py-16">
+    <!-- Language Switcher -->
+    <div class="header-lang-switcher" id="langSwitcher"></div>
 
     <div class="w-full max-w-[600px]">
         <!-- Brand / Logo -->
@@ -98,8 +106,8 @@
 
             <div class="relative z-10">
                 <div class="mb-12 text-center md:text-left">
-                    <h2 class="text-4xl font-serif font-bold text-mentta-fg mb-4">Start Your Journey</h2>
-                    <p class="text-mentta-muted text-sm leading-relaxed max-w-sm">A professional and secure space
+                    <h2 class="text-4xl font-serif font-bold text-mentta-fg mb-4" data-i18n="register.title">Start Your Journey</h2>
+                    <p class="text-mentta-muted text-sm leading-relaxed max-w-sm" data-i18n="register.subtitle">A professional and secure space
                         designed for your total well-being.</p>
                 </div>
 
@@ -107,17 +115,18 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label for="name"
-                                class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg ml-4">Full
+                                class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg ml-4" data-i18n="register.nameLabel">Full
                                 Name</label>
                             <input type="text" id="name" name="name" required autocomplete="name"
                                 class="input-field w-full px-6 py-4 rounded-full bg-mentta-bg border-transparent focus:bg-white focus:border-mentta-border outline-none text-mentta-fg placeholder:text-mentta-muted/50 text-sm shadow-sm"
+                                data-i18n-placeholder="register.namePlaceholder"
                                 placeholder="Your name">
                         </div>
 
                         <div class="space-y-2">
                             <label for="age"
-                                class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg ml-4">Age</label>
-                            <input type="number" id="age" name="age" min="13" max="120" required
+                                class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg ml-4" data-i18n="register.ageLabel">Age</label>
+                            <input type="number" id="age" name="age" min="13" max="120"
                                 class="input-field w-full px-6 py-4 rounded-full bg-mentta-bg border-transparent focus:bg-white focus:border-mentta-border outline-none text-mentta-fg placeholder:text-mentta-muted/50 text-sm shadow-sm"
                                 placeholder="Ex: 25">
                         </div>
@@ -125,29 +134,32 @@
 
                     <div class="space-y-2">
                         <label for="email"
-                            class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg ml-4">Email
+                            class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg ml-4" data-i18n="register.emailLabel">Email
                             Address</label>
                         <input type="email" id="email" name="email" required autocomplete="email"
                             class="input-field w-full px-6 py-4 rounded-full bg-mentta-bg border-transparent focus:bg-white focus:border-mentta-border outline-none text-mentta-fg placeholder:text-mentta-muted/50 text-sm shadow-sm"
+                            data-i18n-placeholder="register.emailPlaceholder"
                             placeholder="name@example.com">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label for="password"
-                                class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg ml-4">Password</label>
+                                class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg ml-4" data-i18n="register.passwordLabel">Password</label>
                             <input type="password" id="password" name="password" required minlength="8"
                                 autocomplete="new-password"
                                 class="input-field w-full px-6 py-4 rounded-full bg-mentta-bg border-transparent focus:bg-white focus:border-mentta-border outline-none text-mentta-fg placeholder:text-mentta-muted/50 text-sm shadow-sm"
-                                placeholder="••••••••">
+                                data-i18n-placeholder="register.passwordPlaceholder"
+                                placeholder="At least 8 characters">
                         </div>
 
                         <div class="space-y-2">
                             <label for="password_confirm"
-                                class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg ml-4">Confirm</label>
+                                class="text-[10px] font-bold uppercase tracking-widest text-mentta-fg ml-4" data-i18n="register.confirmPasswordLabel">Confirm</label>
                             <input type="password" id="password_confirm" name="password_confirm" required minlength="8"
                                 autocomplete="new-password"
                                 class="input-field w-full px-6 py-4 rounded-full bg-mentta-bg border-transparent focus:bg-white focus:border-mentta-border outline-none text-mentta-fg placeholder:text-mentta-muted/50 text-sm shadow-sm"
+                                data-i18n-placeholder="register.confirmPasswordPlaceholder"
                                 placeholder="••••••••">
                         </div>
                     </div>
@@ -167,9 +179,9 @@
 
                     <button type="submit" id="submitBtn"
                         class="w-full bg-mentta-fg text-white py-5 rounded-full font-bold text-xs uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-[0.98] shadow-lg shadow-black/5 flex items-center justify-center gap-3">
-                        <span>Create Account</span>
+                        <span id="submitBtnText" data-i18n="register.signUp">Create Account</span>
                         <svg id="loadingSpinner" class="hidden animate-spin h-4 w-4 text-white"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
                             </circle>
                             <path class="opacity-75" fill="currentColor"
@@ -180,15 +192,15 @@
                 </form>
 
                 <!-- Status Messages -->
-                <div id="error-message" class="mt-6 text-red-500 text-xs text-center font-medium hidden"></div>
-                <div id="success-message" class="mt-6 text-emerald-600 text-xs text-center font-medium hidden"></div>
+                <div id="error-message" class="mt-6 text-red-500 text-xs text-center font-medium hidden" role="alert" aria-live="polite"></div>
+                <div id="success-message" class="mt-6 text-emerald-600 text-xs text-center font-medium hidden" role="status" aria-live="polite"></div>
 
                 <!-- Footer Links -->
                 <div class="mt-12 pt-8 border-t border-mentta-border text-center">
                     <p class="text-sm text-mentta-muted">
-                        Already have an account?
+                        <span data-i18n="register.hasAccount">Already have an account?</span>
                         <a href="login.php"
-                            class="text-mentta-fg font-bold hover:underline underline-offset-4 decoration-mentta-border transition-all">Sign
+                            class="text-mentta-fg font-bold hover:underline underline-offset-4 decoration-mentta-border transition-all" data-i18n="register.signIn">Sign
                             In Here</a>
                     </p>
                 </div>
@@ -200,7 +212,19 @@
         </p>
     </div>
 
+    <!-- Translation System -->
+    <script src="assets/js/translations.js"></script>
+    
     <script>
+        // Initialize language switcher
+        document.addEventListener('DOMContentLoaded', () => {
+            // CRITICAL: Trigger the reveal animation from theme.css
+            document.body.classList.add('loaded');
+            
+            i18n.createLanguageSwitcher('langSwitcher');
+            i18n.applyTranslations();
+        });
+
         async function handleRegister(event) {
             event.preventDefault();
 
@@ -210,18 +234,23 @@
             const errorDiv = document.getElementById('error-message');
             const successDiv = document.getElementById('success-message');
 
+            // Clear previous states
             errorDiv.classList.add('hidden');
             successDiv.classList.add('hidden');
+            document.querySelectorAll('.input-field').forEach(el => el.classList.remove('error'));
 
             const password = document.getElementById('password').value;
             const passwordConfirm = document.getElementById('password_confirm').value;
 
             if (password !== passwordConfirm) {
-                errorDiv.textContent = 'Passwords do not match.';
+                errorDiv.textContent = i18n.t('register.passwordMismatch');
                 errorDiv.classList.remove('hidden');
+                document.getElementById('password').classList.add('error');
+                document.getElementById('password_confirm').classList.add('error');
                 return;
             }
 
+            // Disable button and show loading
             submitBtn.disabled = true;
             spinner.classList.remove('hidden');
             submitBtn.querySelector('span').classList.add('opacity-50');
@@ -237,19 +266,20 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    successDiv.textContent = 'Account created successfully. Initializing your journey...';
+                    successDiv.textContent = i18n.t('register.registrationSuccess');
                     successDiv.classList.remove('hidden');
 
                     setTimeout(() => {
-                        window.location.href = 'chat.php';
+                        // CRITICAL FIX: Use replace() instead of href to prevent back navigation
+                        window.location.replace('chat.php');
                     }, 1500);
                 } else {
-                    errorDiv.textContent = data.error || 'Registration failed. Please attempt again.';
+                    errorDiv.textContent = data.error || i18n.t('errors.connectionFailed');
                     errorDiv.classList.remove('hidden');
                     resetBtn();
                 }
             } catch (error) {
-                errorDiv.textContent = 'Connection interrupted. Please verify your link.';
+                errorDiv.textContent = i18n.t('errors.connectionFailed');
                 errorDiv.classList.remove('hidden');
                 resetBtn();
             }
@@ -260,6 +290,14 @@
                 submitBtn.querySelector('span').classList.remove('opacity-50');
             }
         }
+
+        // Clear error styling on input focus
+        document.querySelectorAll('.input-field').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.classList.remove('error');
+                document.getElementById('error-message').classList.add('hidden');
+            });
+        });
     </script>
 </body>
 
