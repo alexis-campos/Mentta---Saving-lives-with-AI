@@ -146,25 +146,168 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             /* Soft Terracotta */
         }
 
-        /* Mobile overrides for better visibility */
-        @media (max-width: 768px) {
+        /* ============================================
+           MOBILE BOTTOM SHEET - Complete Rewrite
+           ============================================ */
+        @media (max-width: 767px) {
+            /* Hide desktop order classes on mobile */
+            .order-2.md\:order-1 {
+                order: 2 !important;
+            }
+            
+            /* Main container - stack vertically */
+            .flex.flex-col-reverse.md\:flex-row {
+                display: block !important;
+                position: relative;
+                height: calc(100vh - 72px);
+            }
+            
+            /* Map container - full screen behind panel */
+            main.flex-1 {
+                position: absolute !important;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 100% !important;
+                z-index: 1;
+            }
+            
+            #map {
+                height: 100% !important;
+                width: 100% !important;
+            }
+            
+            /* Bottom Sheet Panel */
+            #centers-panel {
+                position: absolute !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                top: auto !important;
+                height: 40vh;
+                max-height: 85vh;
+                min-height: 120px;
+                z-index: 100 !important;
+                background: white !important;
+                border-radius: 24px 24px 0 0 !important;
+                box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12) !important;
+                display: flex;
+                flex-direction: column;
+                transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                overflow: hidden;
+            }
+            
+            /* Panel expanded state */
+            #centers-panel.expanded {
+                height: 75vh;
+            }
+            
+            /* Panel collapsed state */
+            #centers-panel.collapsed {
+                height: 140px;
+            }
+            
+            /* Drag handle area */
+            #swipe-area {
+                flex-shrink: 0;
+                padding: 12px 0 8px 0;
+                cursor: grab;
+                touch-action: none;
+            }
+            
+            #swipe-area:active {
+                cursor: grabbing;
+            }
+            
+            /* Drag handle bar */
+            #swipe-area > div {
+                width: 40px;
+                height: 4px;
+                background: #D1D5DB;
+                border-radius: 2px;
+            }
+            
+            /* Location header - more compact */
+            #centers-panel > div:nth-child(2) {
+                padding: 12px 16px !important;
+            }
+            
+            #centers-panel > div:nth-child(2) h3 {
+                font-size: 1.125rem !important;
+            }
+            
+            /* Filters - horizontal scroll */
+            #centers-panel > div:nth-child(3) {
+                padding: 8px 12px !important;
+                flex-shrink: 0;
+            }
+            
+            /* Centers list - scrollable */
+            #centers-panel > div:nth-child(4) {
+                flex: 1;
+                overflow-y: auto;
+                padding: 12px !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* Center cards - more compact */
             .center-card {
-                padding: 1.25rem;
-                margin-bottom: 0.75rem;
+                padding: 12px !important;
+                margin-bottom: 8px !important;
+                border-radius: 16px !important;
             }
-
+            
             .center-card h4 {
-                font-size: 1.1rem;
-                /* Larger font for readability */
+                font-size: 0.9375rem !important;
                 white-space: normal;
-                /* Allow text wrapping */
-                overflow: visible;
+                line-height: 1.3;
             }
-
+            
+            /* Ensure white background fills entire panel */
+            #centers-list {
+                background: white !important;
+                min-height: 100%;
+                padding-bottom: 20px !important;
+            }
+            
+            /* Panel inner sections all white */
+            #centers-panel > div {
+                background: white !important;
+            }
+            
+            /* Keep location section black */
+            #centers-panel > div:nth-child(2) {
+                background: #111 !important;
+            }
+            
+            /* Recenter button - above panel */
+            #recenter-btn {
+                bottom: calc(40vh + 16px) !important;
+                right: 16px !important;
+                z-index: 90;
+                width: 44px !important;
+                height: 44px !important;
+                transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            /* Header floating buttons */
             .floating-action {
-                width: 3.5rem;
-                height: 3.5rem;
-                /* Larger touch target */
+                width: 40px !important;
+                height: 40px !important;
+                min-width: 44px;
+                min-height: 44px;
+            }
+            
+            /* Touch device - disable hover */
+            .center-card:hover {
+                transform: none !important;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01) !important;
+            }
+            
+            .center-card:active {
+                transform: scale(0.98) !important;
+                background: #F9FAFB !important;
             }
         }
 
@@ -321,14 +464,14 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
     </header>
 
     <!-- Main Container -->
-    <div class="flex flex-col md:flex-row h-screen pt-[72px] overflow-hidden">
+    <div class="flex flex-col-reverse md:flex-row h-screen pt-[72px] overflow-hidden">
 
-        <!-- Side Panel (Desktop: Left | Mobile: Top Panel - Mobile First Design) -->
+        <!-- Side Panel (Desktop: Left | Mobile: Bottom Sheet) -->
         <aside id="centers-panel"
-            class="panel-sidebar md:w-[400px] w-full h-[45vh] md:h-full flex flex-col shadow-[0_20px_40px_-5px_rgba(0,0,0,0.15)] md:shadow-none bg-white z-40 relative rounded-b-[32px] md:rounded-none overflow-hidden shrink-0 initial-reveal-container transform transition-all duration-300"
+            class="panel-sidebar md:w-[400px] w-full h-[35vh] md:h-full flex flex-col shadow-[0_-10px_40px_-5px_rgba(0,0,0,0.15)] md:shadow-none bg-white z-40 relative rounded-t-[32px] md:rounded-none overflow-hidden shrink-0 initial-reveal-container transform transition-all duration-300 order-2 md:order-1"
             style="transition-delay: 0.1s;">
-            <!-- Swipe Handle (Mobile only - Bottom of panel) -->
-            <div class="w-full flex justify-center pt-2 pb-3 md:hidden bg-white cursor-pointer absolute bottom-0 left-0 z-20 hover:bg-gray-50 transition-colors"
+            <!-- Swipe Handle (Mobile only - Top of panel) -->
+            <div class="w-full flex justify-center py-2 md:hidden bg-white cursor-pointer z-20 hover:bg-gray-50 transition-colors"
                 id="swipe-area" onclick="togglePanelHeight()">
                 <div class="w-12 h-1 bg-gray-300 rounded-full"></div>
             </div>
@@ -546,8 +689,8 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
     <?php endif; ?>
 
     <!-- Utility Scripts -->
-    <script src="assets/js/utils.js"></script>
-    <script src="assets/js/map.js"></script>
+    <script src="assets/js/utils.js?v=<?= time() ?>"></script>
+    <script src="assets/js/map.js?v=<?= time() ?>"></script>
 </body>
 
 </html>

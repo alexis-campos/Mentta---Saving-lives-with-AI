@@ -40,6 +40,8 @@
 
         .input-field {
             transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            font-size: 16px; /* Prevents iOS zoom */
+            min-height: 52px; /* Touch-friendly */
         }
 
         .input-field:focus {
@@ -49,6 +51,59 @@
         .input-field.error {
             border-color: #ef4444 !important;
             background-color: #fef2f2 !important;
+        }
+        
+        /* Mobile-First Responsive Styles */
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem !important;
+            }
+            
+            .login-card {
+                padding: 1.75rem !important;
+                border-radius: 1.5rem !important;
+            }
+            
+            .login-card h2 {
+                font-size: 1.75rem !important;
+            }
+            
+            .brand-container {
+                margin-bottom: 2rem !important;
+            }
+            
+            .brand-container h1 {
+                font-size: 1.5rem !important;
+            }
+            
+            .security-badges {
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+            }
+            
+            .security-badges .divider {
+                display: none;
+            }
+            
+            .input-field {
+                padding: 1rem 1.25rem !important;
+                min-height: 54px;
+            }
+            
+            .submit-btn {
+                padding: 1rem 1.5rem !important;
+                min-height: 54px;
+            }
+        }
+        
+        @media (max-width: 375px) {
+            .login-card {
+                padding: 1.5rem !important;
+            }
+            
+            .login-card h2 {
+                font-size: 1.5rem !important;
+            }
         }
     </style>
 </head>
@@ -137,7 +192,7 @@
 
         <!-- Security Badge -->
         <div
-            class="mt-12 flex items-center justify-center gap-6 opacity-40 grayscale group hover:opacity-100 hover:grayscale-0 transition-all">
+            class="security-badges mt-12 flex items-center justify-center gap-6 opacity-40 grayscale group hover:opacity-100 hover:grayscale-0 transition-all">
             <div class="flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -145,7 +200,7 @@
                 </svg>
                 <span class="text-[10px] font-bold uppercase tracking-widest" data-i18n="login.endToEndEncrypted">End-to-End Encrypted</span>
             </div>
-            <div class="w-px h-3 bg-mentta-fg"></div>
+            <div class="divider w-px h-3 bg-mentta-fg"></div>
             <span class="text-[10px] font-bold uppercase tracking-widest" data-i18n="login.premiumCare">Premium Care</span>
         </div>
     </div>

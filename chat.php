@@ -121,9 +121,12 @@ if ($hour >= 5 && $hour < 12) {
     
     <!-- Translation System -->
     <script src="assets/js/translations.js"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="images/Menta icono.jpg">
 </head>
 
-<body class="antialiased" style="background-color: var(--bg-primary);">
+<body class="antialiased" style="background-color: #FAFAFA;">
     <script>
         // Pre-load script to handle initial reveal
         window.addEventListener('DOMContentLoaded', () => {
@@ -255,8 +258,8 @@ if ($hour >= 5 && $hour < 12) {
     <div id="analysis-paused-banner" class="analysis-paused-banner"></div>
 
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-[#F9F9F7]/95 initial-reveal-container"
-        style="border-bottom: 1px solid rgba(0,0,0,0.05); transition-delay: 0.1s;">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-[#FAFAFA] initial-reveal-container"
+        style="border-bottom: 1px solid rgba(0,0,0,0.03); transition-delay: 0.1s;">
         <div class="max-w-xl mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
             <div class="flex items-center gap-4">
                 <!-- Hamburger Button -->
@@ -381,10 +384,10 @@ if ($hour >= 5 && $hour < 12) {
 
     <!-- Input Area -->
     <div class="fixed bottom-0 left-0 right-0 z-50"
-        style="background: linear-gradient(to top, #F9F9F7 85%, rgba(249, 249, 247, 0));">
-        <div class="max-w-xl mx-auto px-2 md:px-6 py-2 md:py-10">
-            <div class="rounded-[2rem] md:rounded-[2.5rem] shadow-xl md:shadow-2xl transition-all overflow-hidden border border-black/5 initial-reveal-container"
-                style="background-color: white; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); transition-delay: 0.3s;">
+        style="background: #FAFAFA; border-top: 1px solid rgba(0,0,0,0.03);">
+        <div class="max-w-xl mx-auto px-4 py-4">
+            <div class="rounded-2xl shadow-sm transition-all overflow-hidden border border-black/5"
+                style="background-color: white;">
                 <div class="flex items-center gap-2 md:gap-4 p-2 md:p-4">
                     <textarea id="messageInput" placeholder="Escribe aquí..."
                         class="flex-1 bg-transparent resize-none focus:outline-none px-3 py-3 md:px-4 min-h-[48px] md:min-h-[56px] max-h-[140px] text-sm md:text-base leading-relaxed"

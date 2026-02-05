@@ -445,15 +445,17 @@ aside::-webkit-scrollbar-thumb:hover,
 }
 
 /* ============================================
-   RESPONSIVE
+   MOBILE-FIRST RESPONSIVE DESIGN
    ============================================ */
 
+/* Tablets (1024px and below) */
 @media (max-width: 1024px) {
     .grid-cols-4 {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
+/* Large Phones / Small Tablets (768px and below) */
 @media (max-width: 768px) {
 
     /* Sidebar toggle for mobile */
@@ -482,8 +484,18 @@ aside::-webkit-scrollbar-thumb:hover,
     .grid-cols-1.lg\:grid-cols-2 {
         grid-template-columns: 1fr;
     }
+
+    /* Metric cards mobile */
+    .metric-card {
+        padding: 1.25rem;
+    }
+
+    .metric-card .text-3xl {
+        font-size: 1.75rem;
+    }
 }
 
+/* Small Phones (480px and below) */
 @media (max-width: 480px) {
     .grid-cols-2 {
         grid-template-columns: 1fr;
@@ -491,6 +503,110 @@ aside::-webkit-scrollbar-thumb:hover,
 
     #patient-info .rounded-xl {
         padding: 1rem;
+    }
+
+    /* Header mobile */
+    header {
+        padding: 0.75rem 1rem;
+    }
+
+    header h1 {
+        font-size: 1.25rem;
+    }
+
+    /* Metric cards smaller mobile */
+    .metric-card {
+        padding: 1rem;
+        border-radius: 1rem;
+    }
+
+    .metric-card .text-3xl {
+        font-size: 1.5rem;
+    }
+
+    .metric-card .text-xs {
+        font-size: 0.625rem;
+    }
+
+    /* Patient cards mobile */
+    .patient-card {
+        padding: 1rem;
+    }
+
+    .patient-card-name {
+        font-size: 0.9375rem;
+    }
+
+    .patient-card-info {
+        font-size: 0.75rem;
+    }
+
+    /* Alerts mobile */
+    .alert-item {
+        padding: 0.875rem;
+        border-radius: 0.875rem;
+    }
+
+    /* Chart container mobile */
+    .chart-container {
+        height: 200px;
+    }
+
+    /* Buttons touch-friendly */
+    button {
+        min-height: 44px;
+    }
+
+    /* Main content padding */
+    main {
+        padding: 1rem;
+    }
+}
+
+/* Extra Small Phones (375px and below) */
+@media (max-width: 374px) {
+    main {
+        padding: 0.75rem;
+    }
+
+    .metric-card {
+        padding: 0.875rem;
+    }
+
+    .metric-card .text-3xl {
+        font-size: 1.375rem;
+    }
+
+    .patient-card {
+        padding: 0.875rem;
+    }
+
+    header h1 {
+        font-size: 1.125rem;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+
+    .patient-card:hover,
+    .metric-card:hover,
+    .alert-item:hover {
+        transform: none;
+    }
+
+    .patient-card:active,
+    .metric-card:active {
+        transform: scale(0.98);
+    }
+
+    /* Disable topic tag hover on touch */
+    #top-topics span:hover {
+        transform: none;
+    }
+
+    #top-topics span:active {
+        transform: scale(0.95);
     }
 }
 

@@ -584,6 +584,509 @@
             opacity: 0.3;
         }
 
+        /* --- IMPACT STATISTICS --- */
+        .statistics {
+            padding: 6rem 2rem;
+            background-color: #f8f9f8;
+            color: var(--fg);
+        }
+
+        .statistics-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .statistics-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .statistics-title {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--fg);
+        }
+
+        .stats-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 16px;
+            background: #fff;
+            border: 1px solid var(--border);
+            transition: all 0.4s ease;
+        }
+
+        .stat-item:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+        }
+
+        .stat-number {
+            font-family: var(--font-heading);
+            font-size: 2.75rem;
+            font-weight: 600;
+            color: var(--fg);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+        }
+
+        /* --- HOW IT WORKS --- */
+        .how-it-works {
+            padding: 8rem 2rem;
+            background-color: var(--soft-bg);
+        }
+
+        .hiw-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .hiw-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hiw-title {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        .hiw-subtitle {
+            font-size: 1.1rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 1.5rem auto 0;
+        }
+
+        .steps-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            position: relative;
+        }
+
+        .step-card {
+            background: #fff;
+            border-radius: 32px;
+            padding: 3rem 2rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.5s ease;
+            position: relative;
+        }
+
+        .step-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--fg);
+            color: #fff;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+        }
+
+        .step-title {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .step-desc {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* --- FEATURES GRID --- */
+        .features-section {
+            padding: 8rem 2rem;
+            background-color: var(--bg);
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .features-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .features-title {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--soft-bg);
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 1px solid var(--border);
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            border-color: rgba(0,0,0,0.12);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--fg);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: #fff;
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .feature-card-title {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card-desc {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* --- TESTIMONIALS --- */
+        .testimonials {
+            padding: 8rem 2rem;
+            background: linear-gradient(180deg, var(--soft-bg) 0%, var(--bg) 100%);
+        }
+
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .testimonials-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonials-title {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        .testimonials-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 1px solid var(--border);
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.06);
+        }
+
+        .testimonial-quote {
+            font-size: 3rem;
+            color: var(--border);
+            position: absolute;
+            top: 1.5rem;
+            left: 2rem;
+            font-family: var(--font-heading);
+        }
+
+        .testimonial-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--fg);
+            margin-bottom: 2rem;
+            padding-top: 1rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .testimonial-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--soft-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .testimonial-info h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-family: var(--font-main);
+        }
+
+        .testimonial-info p {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        /* --- FAQ --- */
+        .faq {
+            padding: 8rem 2rem;
+            background-color: var(--bg);
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .faq-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .faq-title {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .faq-question {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.75rem 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--fg);
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--muted);
+        }
+
+        .faq-icon {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding-bottom: 1.5rem;
+        }
+
+        .faq-answer p {
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        /* --- FINAL CTA --- */
+        .final-cta {
+            padding: 8rem 2rem;
+            background: var(--fg);
+            text-align: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 10;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-title {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .cta-desc {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .btn-cta {
+            padding: 1.25rem 3rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: #fff;
+            color: var(--fg);
+            border: none;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .btn-cta-outline {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-cta-outline:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .cta-emergency {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .cta-emergency strong {
+            color: #C8553D;
+        }
+
         /* --- FOOTER --- */
         .footer {
             padding: 6rem 4rem 2rem;
@@ -678,31 +1181,386 @@
             }
         }
 
-        /* Responsive */
-        @media (max-width: 992px) {
+        /* ============================================
+           MOBILE-FIRST RESPONSIVE DESIGN
+           Base styles are mobile, enhanced for larger screens
+           ============================================ */
+
+        /* Extra Small Phones (375px and below) */
+        @media (max-width: 374px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 0.95rem;
+            }
+            
+            .btn {
+                padding: 1rem 1.5rem;
+                font-size: 0.65rem;
+            }
+            
+            .section-title {
+                font-size: 1.75rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+
+        /* Mobile Base (375px - 479px) */
+        @media (max-width: 479px) {
+            .hero {
+                padding: 1rem;
+                min-height: 100vh;
+                height: auto;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+                margin-bottom: 2.5rem;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+                gap: 1rem;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+                padding: 1.1rem 2rem;
+                font-size: 0.7rem;
+                min-height: 48px;
+            }
+            
+            /* Experience Section */
             .experience {
                 grid-template-columns: 1fr;
             }
-
-            .curation-header {
+            
+            .exp-left {
+                padding: 2rem 1rem;
+            }
+            
+            .exp-right {
+                padding: 2rem 1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .section-desc {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .features {
                 grid-template-columns: 1fr;
                 gap: 2rem;
             }
-
-            .team-grid {
-                grid-template-columns: 1fr;
+            
+            /* Stats */
+            .statistics {
+                padding: 3rem 1rem;
             }
-
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .stat-item {
+                padding: 1.25rem;
+            }
+            
+            .stat-number {
+                font-size: 2.25rem;
+            }
+            
+            /* How It Works */
+            .how-it-works {
+                padding: 3rem 1rem;
+            }
+            
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .step-card {
+                padding: 1.5rem;
+                border-radius: 20px;
+            }
+            
+            .step-number {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+            
+            .step-title {
+                font-size: 1.25rem;
+            }
+            
+            /* Features Grid */
+            .features-section {
+                padding: 3rem 1rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .feature-card {
+                padding: 1.5rem;
+                border-radius: 16px;
+            }
+            
+            .feature-icon {
+                width: 48px;
+                height: 48px;
+            }
+            
+            /* Testimonials */
+            .testimonials {
+                padding: 3rem 1rem;
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .testimonial-card {
+                padding: 1.5rem;
+            }
+            
+            /* FAQ */
+            .faq {
+                padding: 3rem 1rem;
+            }
+            
+            .faq-question {
+                font-size: 0.95rem;
+                padding: 1.25rem 0;
+            }
+            
+            /* CTA */
+            .final-cta {
+                padding: 4rem 1rem;
+            }
+            
+            .cta-title {
+                font-size: 1.75rem;
+            }
+            
+            .cta-desc {
+                font-size: 1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.75rem;
+            }
+            
+            .btn-cta {
+                width: 100%;
+                min-height: 48px;
+            }
+            
+            /* Footer */
             .footer {
                 grid-template-columns: 1fr;
+                padding: 3rem 1rem 1.5rem;
+                gap: 2rem;
             }
-
+            
             .footer-right {
                 align-items: flex-start;
             }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .footer-utility {
+                justify-content: center;
+            }
+            
+            /* Typography Sections */
+            .statistics-title,
+            .hiw-title,
+            .features-title,
+            .testimonials-title,
+            .faq-title {
+                font-size: 1.75rem;
+            }
+            
+            /* Curation Section */
+            .curation {
+                padding: 3rem 1rem;
+            }
+            
+            .curation-header {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin-bottom: 3rem;
+            }
+            
+            .curation-title {
+                font-size: 2rem;
+            }
+            
+            .team-card {
+                width: 280px;
+            }
+            
+            /* Showcase */
+            .showcase {
+                padding: 4rem 1rem;
+            }
+            
+            .showcase-title {
+                font-size: 2rem;
+            }
+            
+            .video-container {
+                border-radius: 16px;
+            }
+            
+            .play-button {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .video-ui {
+                bottom: 15px;
+                left: 15px;
+                right: 15px;
+                font-size: 0.65rem;
+            }
+        }
 
+        /* Large Phones / Phablets (480px - 767px) */
+        @media (min-width: 480px) and (max-width: 767px) {
             .hero-title {
-                font-size: 5rem;
+                font-size: 4rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .step-card {
+                padding: 2rem;
+            }
+        }
+
+        /* Tablets (768px - 1023px) */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .hero-title {
+                font-size: 6rem;
+            }
+            
+            .experience {
+                grid-template-columns: 1fr;
+            }
+            
+            .exp-right {
+                padding: 4rem 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .curation-header {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Small Desktops (1024px+) */
+        @media (min-width: 1024px) {
+            .hero-title {
+                font-size: 8rem;
+            }
+            
+            .experience {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .steps-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Large Desktops (1280px+) */
+        @media (min-width: 1280px) {
+            .hero-title {
+                font-size: 10rem;
+            }
+        }
+
+        /* Touch Device Optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .btn:hover,
+            .step-card:hover,
+            .feature-card:hover,
+            .testimonial-card:hover,
+            .stat-item:hover {
+                transform: none;
+            }
+            
+            .btn:active,
+            .step-card:active {
+                transform: scale(0.98);
             }
         }
     </style>
@@ -910,6 +1768,221 @@
         </div>
     </section>
 
+    <!-- Impact Statistics Section -->
+    <section class="statistics">
+        <div class="statistics-header">
+            <p class="statistics-label">Our Impact</p>
+            <h2 class="statistics-title">Numbers That Matter</h2>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50K+</div>
+                <div class="stat-label">Sessions Completed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">User Satisfaction</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Always Available</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="hiw-header">
+            <p class="hiw-label">Simple Process</p>
+            <h2 class="hiw-title">How Mentta Works</h2>
+            <p class="hiw-subtitle">Begin your journey to mental clarity in three simple steps</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3 class="step-title">Create Your Account</h3>
+                <p class="step-desc">Sign up in seconds with just your email. Your privacy is our priority from day one.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3 class="step-title">Start a Conversation</h3>
+                <p class="step-desc">Open a chat with our AI companion. It's trained to listen, understand, and support without judgment.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3 class="step-title">Receive Personalized Support</h3>
+                <p class="step-desc">Get insights, techniques, and real-time emotional support tailored to your unique needs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid Section -->
+    <section class="features-section">
+        <div class="features-header">
+            <p class="features-label">Capabilities</p>
+            <h2 class="features-title">What Makes Us Different</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2m0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16m-1 4h2v4h2l-3 4-3-4h2V8z"/></svg>
+                </div>
+                <h3 class="feature-card-title">AI Emotional Analysis</h3>
+                <p class="feature-card-desc">Advanced algorithms detect emotional patterns and provide real-time insights to support your wellbeing.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <h3 class="feature-card-title">Crisis Detection</h3>
+                <p class="feature-card-desc">Intelligent monitoring identifies signs of distress and provides immediate resources when you need them most.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M15 10l4.55-2.28A1 1 0 0 1 21 8.62v6.76a1 1 0 0 1-1.45.89L15 14M5 18h8a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg>
+                </div>
+                <h3 class="feature-card-title">Mentta Live Sessions</h3>
+                <p class="feature-card-desc">Connect through video calls for a more personal, human-like experience with our AI companion.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M16 4a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4h8m0-2H8a6 6 0 0 0-6 6v8a6 6 0 0 0 6 6h8a6 6 0 0 0 6-6V8a6 6 0 0 0-6-6z"/><path d="M12 8v8M8 12h8"/></svg>
+                </div>
+                <h3 class="feature-card-title">Professional Connection</h3>
+                <p class="feature-card-desc">Seamlessly connect with licensed psychologists when you need human expertise beyond AI support.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12V11c0 4.52-2.98 8.69-7 9.93-4.02-1.24-7-5.41-7-9.93V6.3l7-3.12zM11 7v6h2V7h-2zm0 8v2h2v-2h-2z"/></svg>
+                </div>
+                <h3 class="feature-card-title">Bank-Level Security</h3>
+                <p class="feature-card-desc">End-to-end encryption ensures your conversations remain private and protected at all times.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                </div>
+                <h3 class="feature-card-title">24/7 Availability</h3>
+                <p class="feature-card-desc">Mental health support doesn't wait. Mentta is here for you anytime, day or night, holidays included.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="testimonials-header">
+            <p class="testimonials-label">Stories</p>
+            <h2 class="testimonials-title">What Our Users Say</h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-quote">"</div>
+                <p class="testimonial-text">Mentta helped me through my darkest moments. Having someone to talk to at 3 AM when anxiety hits is invaluable.</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">A</div>
+                    <div class="testimonial-info">
+                        <h4>Anonymous User</h4>
+                        <p>Member since 2025</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-quote">"</div>
+                <p class="testimonial-text">I was skeptical about AI therapy, but Mentta truly understands context. It remembers our conversations and builds on them.</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">M</div>
+                    <div class="testimonial-info">
+                        <h4>M. García</h4>
+                        <p>3 months with Mentta</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-quote">"</div>
+                <p class="testimonial-text">The breathing exercises and grounding techniques have become part of my daily routine. Simple but life-changing.</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">C</div>
+                    <div class="testimonial-info">
+                        <h4>Carlos R.</h4>
+                        <p>Active user</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <div class="faq-header">
+            <p class="faq-label">Questions</p>
+            <h2 class="faq-title">Frequently Asked</h2>
+        </div>
+        <div class="faq-container">
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    Is my information secure and private?
+                    <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <p>Absolutely. We use bank-level encryption for all data. Your conversations are never shared, sold, or used for advertising. You can delete your data at any time from your profile settings.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How does the AI understand my emotions?
+                    <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <p>Our AI is trained on clinical psychology protocols and uses advanced natural language processing to detect emotional cues, context, and patterns in your messages. It continuously learns from our conversations to better support you.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    What happens if I'm in a crisis?
+                    <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <p>Mentta has built-in crisis detection. If we identify you may be in danger, we'll provide immediate access to emergency hotlines (like 113), calming exercises, and—if you've set it up—notify your emergency contacts or linked psychologist.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    Is Mentta free to use?
+                    <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes, Mentta offers a free tier with full access to our AI companion, chat history, and wellness resources. Premium features like Mentta Live video sessions and professional psychologist connections may have associated costs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta">
+        <div class="cta-content">
+            <p class="cta-label">Ready to Begin?</p>
+            <h2 class="cta-title">Your Journey to Clarity Starts Now</h2>
+            <p class="cta-desc">Join thousands who have found solace, understanding, and growth with Mentta. Your mental well-being deserves attention.</p>
+            <div class="cta-buttons">
+                <a href="register.php" class="btn-cta">Create Free Account</a>
+                <a href="login.php" class="btn-cta btn-cta-outline">Sign In</a>
+            </div>
+            <p class="cta-emergency">In case of emergency, call <strong>113</strong> or <strong>106</strong> immediately.</p>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-left">
@@ -983,12 +2056,28 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.experience, .curation, .team-card, .feature').forEach(el => {
+        document.querySelectorAll('.experience, .curation, .team-card, .feature, .statistics, .how-it-works, .features-section, .testimonials, .faq, .step-card, .feature-card, .testimonial-card, .stat-item').forEach(el => {
             el.style.opacity = "0";
             el.style.transform = "translateY(40px)";
             el.style.transition = "all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1)";
             observer.observe(el);
         });
+
+        // FAQ Toggle Function
+        function toggleFaq(button) {
+            const faqItem = button.parentElement;
+            const isActive = faqItem.classList.contains('active');
+            
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Toggle current item
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
     </script>
 </body>
 

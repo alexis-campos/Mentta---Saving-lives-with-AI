@@ -19,8 +19,8 @@ let isSearching = false;
 let panelExpanded = false;
 let geocoder = null;
 
-// Get base URL from current page location
-const BASE_URL = window.location.pathname.replace(/\/[^\/]*$/, '');
+// Get base URL from current page location (trimmed and decoded)
+const BASE_URL = decodeURIComponent(window.location.pathname.replace(/\/[^\/]*$/, '')).trim();
 
 // ============================================
 // MAP INITIALIZATION
@@ -222,15 +222,15 @@ function addUserMarker(location) {
     if (userMarker) userMarker.setMap(null);
     if (userCircle) userCircle.setMap(null);
 
-    // Create user marker (brand green)
+    // Create user marker (Google Maps Blue for easy identification)
     userMarker = new google.maps.Marker({
         position: location,
         map: map,
         title: "Tu ubicación",
         icon: {
             path: google.maps.SymbolPath.CIRCLE,
-            scale: 10,
-            fillColor: "#2d3a2d",
+            scale: 12,
+            fillColor: "#4285F4",
             fillOpacity: 1,
             strokeColor: "#FFFFFF",
             strokeWeight: 4
@@ -238,13 +238,13 @@ function addUserMarker(location) {
         zIndex: 1000
     });
 
-    // Add pulsing effect (brand green)
+    // Add pulsing effect (blue)
     userCircle = new google.maps.Circle({
-        strokeColor: "#2d3a2d",
-        strokeOpacity: 0.3,
+        strokeColor: "#4285F4",
+        strokeOpacity: 0.4,
         strokeWeight: 2,
-        fillColor: "#2d3a2d",
-        fillOpacity: 0.1,
+        fillColor: "#4285F4",
+        fillOpacity: 0.15,
         map: map,
         center: location,
         radius: 150
@@ -563,7 +563,7 @@ function highlightListItem(centerId) {
     });
 
     // Add highlight to selected
-    const item = document.querySelector(`[data - center - id="${centerId}"]`);
+    const item = document.querySelector(`[data-center-id="${centerId}"]`);
     if (item) {
         item.classList.add('active');
         item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -608,6 +608,24 @@ function toggleSearch() {
 }
 
 /**
+ * Toggle mobile search overlay visibility
+ */
+function toggleMobileSearch() {
+    const overlay = document.getElementById('mobile-search-overlay');
+    if (overlay) {
+        overlay.classList.toggle('hidden');
+        overlay.classList.toggle('flex');
+
+        if (!overlay.classList.contains('hidden')) {
+            const mobileSearchInput = document.getElementById('mobile-search-input');
+            if (mobileSearchInput) {
+                setTimeout(() => mobileSearchInput.focus(), 100);
+            }
+        }
+    }
+}
+
+/**
  * Search centers by text (debounced)
  */
 let searchTimeout = null;
@@ -632,7 +650,7 @@ function searchCenters(query) {
 
     searchTimeout = setTimeout(async () => {
         isSearching = true;
-        const apiUrl = `${BASE_URL} /api/map / search - centers.php ? q = ${encodeURIComponent(query)} `;
+        const apiUrl = `${BASE_URL}/api/map/search-centers.php?q=${encodeURIComponent(query)}`;
         console.log('🔍 Searching centers:', apiUrl);
 
         try {
@@ -824,16 +842,62 @@ function initSwipeHandler() {
  */
 function togglePanel(expand) {
     const panel = document.getElementById('centers-panel');
+    const recenterBtn = document.getElementById('recenter-btn');
     if (!panel) return;
 
-    panel.style.transition = 'max-height 0.3s ease';
-
     if (expand) {
-        panel.style.maxHeight = '80vh';
+        panel.classList.remove('collapsed');
+        panel.classList.add('expanded');
         panelExpanded = true;
+        // Adjust recenter button position
+        if (recenterBtn && window.innerWidth < 768) {
+            recenterBtn.style.bottom = 'calc(75vh + 16px)';
+        }
     } else {
-        panel.style.maxHeight = '40vh';
+        panel.classList.remove('expanded');
+        panel.classList.add('collapsed');
         panelExpanded = false;
+        // Reset recenter button position
+        if (recenterBtn && window.innerWidth < 768) {
+            recenterBtn.style.bottom = 'calc(140px + 16px)';
+        }
+    }
+}
+
+/**
+ * Toggle panel height - called from swipe handle click
+ * Cycles through: collapsed -> normal -> expanded -> collapsed
+ */
+function togglePanelHeight() {
+    const panel = document.getElementById('centers-panel');
+    if (!panel) return;
+
+    const isExpanded = panel.classList.contains('expanded');
+    const isCollapsed = panel.classList.contains('collapsed');
+    const recenterBtn = document.getElementById('recenter-btn');
+
+    if (isCollapsed) {
+        // collapsed -> normal
+        panel.classList.remove('collapsed');
+        panelExpanded = false;
+        if (recenterBtn && window.innerWidth < 768) {
+            recenterBtn.style.bottom = 'calc(40vh + 16px)';
+        }
+    } else if (!isExpanded && !isCollapsed) {
+        // normal -> expanded
+        panel.classList.add('expanded');
+        panelExpanded = true;
+        if (recenterBtn && window.innerWidth < 768) {
+            recenterBtn.style.bottom = 'calc(75vh + 16px)';
+        }
+    } else {
+        // expanded -> collapsed
+        panel.classList.remove('expanded');
+        panel.classList.add('collapsed');
+        panelExpanded = false;
+        if (recenterBtn && window.innerWidth < 768) {
+            recenterBtn.style.bottom = 'calc(140px + 16px)';
+        }
     }
 }
 

@@ -309,6 +309,140 @@ try {
             background-color: rgba(255, 255, 255, 0.8) !important;
             backdrop-filter: blur(12px);
         }
+        
+        /* ============================================
+           MOBILE-FIRST RESPONSIVE STYLES
+           ============================================ */
+        
+        /* Mobile Form Inputs - Prevent iOS Zoom */
+        .form-input,
+        .form-input:focus {
+            font-size: 16px; /* Prevents iOS zoom on focus */
+        }
+        
+        /* Mobile Base (under 480px) */
+        @media (max-width: 479px) {
+            .profile-section {
+                padding: 1.25rem;
+                border-radius: 1.25rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .profile-section-title {
+                font-size: 1.125rem;
+                margin-bottom: 1.25rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1.25rem;
+            }
+            
+            .form-input {
+                padding: 0.875rem 1rem;
+                min-height: 48px;
+                border-radius: 0.875rem;
+            }
+            
+            .btn-primary,
+            .btn-secondary {
+                min-height: 48px;
+                padding: 0.875rem 1.25rem;
+                font-size: 0.75rem;
+            }
+            
+            .preference-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            .toggle-switch {
+                align-self: flex-end;
+            }
+            
+            .contact-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .contact-card button {
+                width: 100%;
+                min-height: 44px;
+            }
+            
+            /* Modal mobile styles */
+            .modal-content {
+                margin: 0.75rem;
+                max-width: calc(100% - 1.5rem);
+                max-height: calc(100vh - 1.5rem);
+                border-radius: 1.25rem;
+            }
+            
+            .modal-body {
+                padding: 1rem;
+            }
+            
+            .modal-header {
+                padding: 0.875rem 1rem;
+            }
+            
+            .modal-footer {
+                padding: 0.875rem 1rem;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .modal-footer button {
+                width: 100%;
+            }
+        }
+        
+        /* Small Phones (under 375px) */
+        @media (max-width: 374px) {
+            main {
+                padding-top: 3.5rem;
+            }
+            
+            .max-w-2xl {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+            
+            .profile-section {
+                padding: 1rem;
+            }
+            
+            .preference-info h4 {
+                font-size: 0.875rem;
+            }
+            
+            .preference-info p {
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Touch Device Optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-primary:hover,
+            .btn-secondary:hover,
+            .contact-card:hover {
+                transform: none;
+            }
+            
+            .btn-primary:active,
+            .btn-secondary:active {
+                transform: scale(0.98);
+            }
+            
+            /* Larger touch targets for toggles */
+            .toggle-switch {
+                min-width: 54px;
+                min-height: 30px;
+            }
+        }
     </style>
 </head>
 

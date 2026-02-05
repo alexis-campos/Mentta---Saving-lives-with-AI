@@ -40,6 +40,8 @@
 
         .input-field {
             transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            font-size: 16px; /* Prevents iOS zoom */
+            min-height: 52px; /* Touch-friendly */
         }
 
         .input-field:focus {
@@ -53,8 +55,9 @@
 
         .custom-checkbox {
             appearance: none;
-            width: 1.25rem;
-            height: 1.25rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            min-width: 1.5rem; /* Prevent shrinking */
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 6px;
             background-color: #f9f9f9;
@@ -75,8 +78,62 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: bold;
+        }
+        
+        /* Mobile-First Responsive Styles */
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem !important;
+            }
+            
+            .register-card {
+                padding: 1.5rem !important;
+                border-radius: 1.5rem !important;
+            }
+            
+            .register-card h2 {
+                font-size: 1.75rem !important;
+            }
+            
+            .brand-container {
+                margin-bottom: 2rem !important;
+            }
+            
+            .brand-container h1 {
+                font-size: 1.5rem !important;
+            }
+            
+            .input-field {
+                padding: 0.875rem 1.25rem !important;
+                min-height: 52px;
+            }
+            
+            .terms-box {
+                padding: 1rem !important;
+            }
+            
+            .submit-btn {
+                padding: 1rem !important;
+                min-height: 54px;
+            }
+            
+            /* Stack grids on mobile */
+            .form-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+        }
+        
+        @media (max-width: 375px) {
+            .register-card {
+                padding: 1.25rem !important;
+            }
+            
+            .register-card h2 {
+                font-size: 1.5rem !important;
+            }
         }
     </style>
 </head>

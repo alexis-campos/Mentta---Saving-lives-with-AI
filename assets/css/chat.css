@@ -167,6 +167,11 @@ body {
     .fixed.bottom-0 {
         padding-bottom: env(safe-area-inset-bottom);
     }
+
+    /* Chat input area safe area */
+    .chat-input-container {
+        padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+    }
 }
 
 /* Desktop optimizations */
@@ -176,19 +181,21 @@ body {
     }
 }
 
-/* Mobile Optimizations - Reduced saturation */
+/* ============================================
+   MOBILE-FIRST CHAT OPTIMIZATIONS
+   ============================================ */
+
+/* Large Phones (480px - 639px) */
 @media (max-width: 639px) {
     .message-bubble {
-        max-width: 90%;
+        max-width: 88%;
         font-size: 0.95rem;
     }
 
     .message-user,
     .message-ai {
-        padding: 0.85rem 1.15rem;
-        /* Reduced padding for mobile */
+        padding: 0.875rem 1.125rem;
         border-radius: 1.5rem 1.5rem 0.5rem 1.5rem;
-        /* Slightly tighter border radius */
     }
 
     .message-ai {
@@ -198,6 +205,103 @@ body {
     #messagesContainer {
         padding-left: 0.75rem;
         padding-right: 0.75rem;
+    }
+
+    /* Toast for mobile */
+    .toast {
+        bottom: 120px;
+        left: 1rem;
+        right: 1rem;
+        transform: none;
+        max-width: none;
+        text-align: center;
+    }
+}
+
+/* Small Phones (under 480px) */
+@media (max-width: 479px) {
+    .message-bubble {
+        max-width: 92%;
+        font-size: 0.9375rem;
+    }
+
+    .message-user,
+    .message-ai {
+        padding: 0.75rem 1rem;
+        border-radius: 1.25rem 1.25rem 0.375rem 1.25rem;
+    }
+
+    .message-ai {
+        border-radius: 1.25rem 1.25rem 1.25rem 0.375rem;
+    }
+
+    #messagesContainer {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        padding-bottom: 100px;
+        /* Space for input */
+    }
+
+    /* Chat header mobile */
+    .chat-header {
+        padding: 0.75rem 0.5rem;
+    }
+
+    /* Chat input */
+    #messageInput {
+        font-size: 16px !important;
+        /* Prevent iOS zoom */
+        min-height: 44px;
+    }
+
+    /* Send button touch target */
+    #sendButton {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* Modal adjustments for mobile */
+    .modal-content {
+        margin: 0.75rem;
+        max-height: calc(100vh - 1.5rem);
+        border-radius: 1.25rem;
+    }
+
+    .modal-body {
+        padding: 1rem;
+    }
+
+    .modal-header {
+        padding: 0.875rem 1rem;
+    }
+
+    /* Sidebar mobile enhancements */
+    .sidebar-menu {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .menu-btn {
+        padding: 0.75rem 1rem;
+        min-height: 48px;
+    }
+}
+
+/* Extra Small Phones (under 375px) */
+@media (max-width: 374px) {
+    .message-bubble {
+        max-width: 94%;
+        font-size: 0.875rem;
+    }
+
+    .message-user,
+    .message-ai {
+        padding: 0.625rem 0.875rem;
+    }
+
+    .sidebar-menu {
+        width: 100%;
+        max-width: 280px;
     }
 }
 
@@ -287,5 +391,33 @@ body {
     30% {
         transform: translateY(-5px);
         background-color: var(--mentta-primary);
+    }
+}
+
+/* ============================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ============================================ */
+
+@media (hover: none) and (pointer: coarse) {
+
+    /* Disable hover effects on touch */
+    .menu-btn:hover {
+        transform: none;
+    }
+
+    /* Active states for touch feedback */
+    .menu-btn:active {
+        transform: scale(0.98);
+        opacity: 0.9;
+    }
+
+    #sendButton:active {
+        transform: scale(0.95);
+    }
+
+    /* Improve tap targets */
+    .hamburger-btn {
+        min-width: 44px;
+        min-height: 44px;
     }
 }

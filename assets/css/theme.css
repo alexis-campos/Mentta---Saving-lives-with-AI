@@ -47,6 +47,78 @@
 
     /* Easing */
     --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* ============================================
+       DESIGN SYSTEM - Consistency Scale
+       ============================================ */
+
+    /* Border Radius Scale */
+    --radius-sm: 0.5rem;
+    /* 8px - small buttons, tags */
+    --radius-md: 1rem;
+    /* 16px - inputs, buttons, cards */
+    --radius-lg: 1.5rem;
+    /* 24px - large cards, modals */
+    --radius-xl: 2rem;
+    /* 32px - hero sections, panels */
+    --radius-full: 9999px;
+    /* pills, avatars */
+
+    /* Spacing Scale */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    --space-3xl: 4rem;
+
+    /* Premium Shadows */
+    --shadow-card: 0 4px 20px rgba(45, 58, 45, 0.03);
+    --shadow-hover: 0 10px 40px rgba(45, 58, 45, 0.08);
+    --shadow-elevated: 0 20px 60px rgba(45, 58, 45, 0.12);
+    --shadow-glow: 0 0 30px rgba(203, 170, 142, 0.15);
+
+    /* ============================================
+       MOBILE-FIRST RESPONSIVE SYSTEM
+       ============================================ */
+
+    /* Unified Breakpoints Reference:
+       - xs: 0-374px (small phones)
+       - sm: 375-479px (standard phones)
+       - md: 480-767px (large phones, phablets)
+       - lg: 768-1023px (tablets)
+       - xl: 1024-1279px (small desktops)
+       - 2xl: 1280px+ (large desktops)
+    */
+
+    /* Mobile-First Base Spacing */
+    --mobile-padding-x: 1rem;
+    --mobile-padding-y: 0.75rem;
+    --mobile-section-gap: 1.5rem;
+    --mobile-card-padding: 1.25rem;
+
+    /* Touch Target Minimums (WCAG 2.5.5) */
+    --touch-target-min: 44px;
+    --touch-target-comfortable: 48px;
+
+    /* Mobile Typography Scale */
+    --mobile-text-xs: 0.75rem;
+    /* 12px */
+    --mobile-text-sm: 0.8125rem;
+    /* 13px */
+    --mobile-text-base: 0.875rem;
+    /* 14px */
+    --mobile-text-lg: 1rem;
+    /* 16px */
+    --mobile-text-xl: 1.125rem;
+    /* 18px */
+    --mobile-text-2xl: 1.5rem;
+    /* 24px */
+    --mobile-text-3xl: 1.875rem;
+    /* 30px */
+    --mobile-text-4xl: 2.25rem;
+    /* 36px */
 }
 
 /* ============================================
@@ -378,16 +450,27 @@ body.loaded {
 
 .chat-history-item-date {
     font-size: 0.75rem;
-    color: var(--text-tertiary);
+    color: #666;
+    font-weight: 500;
 }
 
 .chat-history-item-title {
     font-size: 0.875rem;
-    color: var(--text-primary);
+    color: #2d3a2d;
+    font-weight: 500;
     flex: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 0.2s ease;
+}
+
+.chat-history-item:hover .chat-history-item-title {
+    color: #111;
+}
+
+.chat-history-item:hover .chat-history-item-date {
+    color: #444;
 }
 
 .chat-history-item-mood {
@@ -1120,4 +1203,459 @@ button:disabled:hover,
 
 .skip-link:focus {
     top: 0;
+}
+
+/* ============================================
+   DESIGN SYSTEM - Reusable Components
+   Use these classes for cross-page consistency
+   ============================================ */
+
+/* Premium Card Component */
+.mentta-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: var(--space-xl);
+    transition: all 0.4s var(--ease-lux);
+}
+
+.mentta-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+    border-color: rgba(45, 58, 45, 0.1);
+}
+
+.mentta-card--elevated {
+    box-shadow: var(--shadow-elevated);
+}
+
+/* Primary Button */
+.mentta-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--accent-primary);
+    color: var(--text-inverse);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.875rem 1.75rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-lux);
+    text-decoration: none;
+}
+
+.mentta-btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.mentta-btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Secondary Button */
+.mentta-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.875rem 1.75rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-lux);
+    text-decoration: none;
+}
+
+.mentta-btn-secondary:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Ghost Button */
+.mentta-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.25rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-lux);
+}
+
+.mentta-btn-ghost:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* Section Headers */
+.mentta-section-header {
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+}
+
+.mentta-section-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--text-tertiary);
+    margin-bottom: var(--space-md);
+    display: block;
+}
+
+.mentta-section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: var(--space-md);
+}
+
+.mentta-section-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Input Field */
+.mentta-input {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.mentta-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(45, 58, 45, 0.1);
+}
+
+.mentta-input::placeholder {
+    color: var(--text-tertiary);
+}
+
+/* Badge/Tag */
+.mentta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    background: var(--accent-light);
+    color: var(--accent-primary);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.mentta-badge--success {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.mentta-badge--warning {
+    background: var(--warning-light);
+    color: #8b6914;
+}
+
+.mentta-badge--danger {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+/* Glass Effect */
+.mentta-glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] .mentta-glass {
+    background: rgba(45, 58, 45, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   MOBILE-FIRST RESPONSIVE UTILITIES
+   These classes provide mobile-optimized defaults
+   that can be overridden at larger breakpoints
+   ============================================ */
+
+/* Touch-Friendly Buttons */
+.touch-target {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.touch-target-comfortable {
+    min-height: var(--touch-target-comfortable);
+    min-width: var(--touch-target-comfortable);
+}
+
+/* Mobile Form Inputs */
+.mobile-input {
+    width: 100%;
+    min-height: var(--touch-target-comfortable);
+    padding: 0.875rem 1rem;
+    font-size: 16px;
+    /* Prevents iOS zoom on focus */
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-input);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.mobile-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(45, 58, 45, 0.1);
+}
+
+.mobile-input::placeholder {
+    color: var(--text-tertiary);
+}
+
+/* Mobile Button Base */
+.mobile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--touch-target-comfortable);
+    padding: 0.875rem 1.5rem;
+    font-size: var(--mobile-text-base);
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-lux);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.mobile-btn:active {
+    transform: scale(0.98);
+}
+
+/* Mobile Layout Utilities */
+.mobile-container {
+    width: 100%;
+    padding-left: var(--mobile-padding-x);
+    padding-right: var(--mobile-padding-x);
+}
+
+.mobile-section {
+    padding-top: var(--mobile-section-gap);
+    padding-bottom: var(--mobile-section-gap);
+}
+
+.mobile-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.mobile-hide {
+    display: none;
+}
+
+/* Safe Area Insets for Notched Devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+    .safe-area-top {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .safe-area-all {
+        padding-top: env(safe-area-inset-top);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+    }
+}
+
+/* ============================================
+   RESPONSIVE MEDIA QUERIES
+   Mobile-first approach: base styles are mobile,
+   then progressively enhance for larger screens
+   ============================================ */
+
+/* Small Phones (375px+) */
+@media (min-width: 375px) {
+    :root {
+        --mobile-padding-x: 1.25rem;
+    }
+}
+
+/* Large Phones (480px+) */
+@media (min-width: 480px) {
+    :root {
+        --mobile-padding-x: 1.5rem;
+        --mobile-card-padding: 1.5rem;
+    }
+
+    .mobile-hide-sm {
+        display: none;
+    }
+
+    .mobile-show-sm {
+        display: block;
+    }
+}
+
+/* Tablets (768px+) */
+@media (min-width: 768px) {
+    :root {
+        --mobile-padding-x: 2rem;
+        --mobile-section-gap: 2rem;
+        --mobile-card-padding: 2rem;
+    }
+
+    .mobile-container {
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .mobile-hide {
+        display: block;
+    }
+
+    .tablet-hide {
+        display: none;
+    }
+
+    .mobile-stack {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    /* Tablet Grid */
+    .tablet-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-lg);
+    }
+}
+
+/* Small Desktops (1024px+) */
+@media (min-width: 1024px) {
+    :root {
+        --mobile-padding-x: 2.5rem;
+        --mobile-section-gap: 3rem;
+    }
+
+    .mobile-container {
+        max-width: 960px;
+    }
+
+    .desktop-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-xl);
+    }
+
+    .desktop-grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space-xl);
+    }
+}
+
+/* Large Desktops (1280px+) */
+@media (min-width: 1280px) {
+    .mobile-container {
+        max-width: 1200px;
+    }
+}
+
+/* ============================================
+   MOBILE ACCESSIBILITY IMPROVEMENTS
+   ============================================ */
+
+/* Prevent text selection on interactive elements */
+.no-select {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Smooth scrolling for mobile */
+.smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Mobile Typography Responsive */
+@media (max-width: 480px) {
+    .mentta-section-title {
+        font-size: var(--mobile-text-3xl);
+    }
+
+    .mentta-section-subtitle {
+        font-size: var(--mobile-text-base);
+    }
+
+    .mentta-btn-primary,
+    .mentta-btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Prevent horizontal overflow on mobile */
+html {
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
 }
