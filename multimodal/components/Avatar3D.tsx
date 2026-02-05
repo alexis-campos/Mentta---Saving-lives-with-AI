@@ -8,8 +8,8 @@ interface Avatar3DProps {
 
 /**
  * Animated Avatar Component
- * Uses CSS animations for a simple but effective avatar visualization
- * that works without external dependencies or 3D libraries
+ * Friendly face design with premium Antigravity aesthetics
+ * Warm colors, soft animations, and elegant styling
  */
 const Avatar3D: React.FC<Avatar3DProps> = ({ aiStatus, className = '' }) => {
     const isSpeaking = aiStatus === 'speaking';
@@ -31,92 +31,133 @@ const Avatar3D: React.FC<Avatar3DProps> = ({ aiStatus, className = '' }) => {
 
     return (
         <div className={`relative flex items-center justify-center ${className}`}>
-            {/* Background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/80 via-purple-900/60 to-slate-900" />
-
-            {/* Animated background circles */}
-            <div className="absolute inset-0 overflow-hidden">
-                <div className={`absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-indigo-500/20 blur-3xl ${isSpeaking ? 'animate-pulse' : ''}`} />
-                <div className={`absolute bottom-1/4 right-1/4 w-48 h-48 rounded-full bg-purple-500/20 blur-3xl ${isProcessing ? 'animate-pulse' : ''}`} />
-            </div>
+            {/* Clean cream background */}
+            <div
+                className="absolute inset-0"
+                style={{
+                    background: 'radial-gradient(circle at center, #FCFCFA 0%, #F5F5F3 100%)'
+                }}
+            />
 
             {/* Avatar Container */}
             <div className="relative z-10 flex flex-col items-center">
                 {/* Avatar Circle */}
                 <div className={`relative transition-transform duration-300 ${isSpeaking ? 'scale-105' : ''}`}>
-                    {/* Outer glow ring */}
-                    <div className={`absolute inset-0 rounded-full blur-md transition-all duration-300
-            ${isSpeaking ? 'bg-indigo-400/50 scale-110' :
-                            isListening ? 'bg-green-400/30 scale-105' :
-                                isProcessing ? 'bg-amber-400/30 scale-105 animate-pulse' :
-                                    'bg-slate-500/20'}`}
+
+                    {/* Outer ambient glow - warm terracotta tones */}
+                    <div
+                        className={`absolute inset-0 rounded-full blur-2xl transition-all duration-500`}
+                        style={{
+                            background: isSpeaking
+                                ? 'radial-gradient(circle, rgba(200, 85, 61, 0.12) 0%, transparent 70%)'
+                                : isListening
+                                    ? 'radial-gradient(circle, rgba(139, 157, 139, 0.1) 0%, transparent 70%)'
+                                    : 'radial-gradient(circle, rgba(0, 0, 0, 0.03) 0%, transparent 70%)',
+                            transform: isSpeaking ? 'scale(1.3)' : 'scale(1.2)'
+                        }}
                     />
 
-                    {/* Avatar face container */}
-                    <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-indigo-600 to-purple-700 shadow-2xl shadow-purple-900/50 overflow-hidden">
+                    {/* Avatar face container - soft gradient */}
+                    <div
+                        className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden transition-all duration-300"
+                        style={{
+                            background: 'linear-gradient(145deg, #F5E6D8 0%, #E8D5C4 50%, #DCC5B0 100%)',
+                            boxShadow: isSpeaking
+                                ? '0 30px 80px rgba(200, 85, 61, 0.15), 0 15px 40px rgba(0, 0, 0, 0.08), inset 0 -10px 30px rgba(0,0,0,0.05)'
+                                : '0 25px 60px rgba(0, 0, 0, 0.08), 0 12px 30px rgba(0, 0, 0, 0.04), inset 0 -10px 30px rgba(0,0,0,0.03)'
+                        }}
+                    >
                         {/* Face */}
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
 
                             {/* Eyes */}
-                            <div className="flex gap-8 md:gap-12 mb-4">
+                            <div className="flex gap-10 md:gap-14 mb-4">
                                 {/* Left eye */}
-                                <div className={`relative w-6 h-6 md:w-8 md:h-8 transition-all duration-150 ${isBlinking ? 'scale-y-[0.1]' : ''}`}>
-                                    <div className="absolute inset-0 bg-white rounded-full" />
-                                    <div className={`absolute inset-1 bg-slate-800 rounded-full transition-all duration-300
-                    ${isListening ? 'translate-x-1' : isSpeaking ? 'translate-y-0.5' : ''}`} />
-                                    <div className="absolute top-1 left-2 w-1.5 h-1.5 bg-white rounded-full" />
+                                <div className={`relative w-5 h-5 md:w-7 md:h-7 transition-all duration-150 ${isBlinking ? 'scale-y-[0.1]' : ''}`}>
+                                    <div
+                                        className="absolute inset-0 rounded-full"
+                                        style={{ backgroundColor: '#FFFFFF', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)' }}
+                                    />
+                                    <div
+                                        className={`absolute inset-1 rounded-full transition-all duration-300 ${isListening ? 'translate-x-0.5' : isSpeaking ? 'translate-y-0.5' : ''}`}
+                                        style={{ backgroundColor: '#3D3D3D' }}
+                                    />
+                                    <div
+                                        className="absolute top-1 left-1.5 w-1.5 h-1.5 md:w-2 md:h-2 rounded-full"
+                                        style={{ backgroundColor: '#FFFFFF' }}
+                                    />
                                 </div>
 
                                 {/* Right eye */}
-                                <div className={`relative w-6 h-6 md:w-8 md:h-8 transition-all duration-150 ${isBlinking ? 'scale-y-[0.1]' : ''}`}>
-                                    <div className="absolute inset-0 bg-white rounded-full" />
-                                    <div className={`absolute inset-1 bg-slate-800 rounded-full transition-all duration-300
-                    ${isListening ? 'translate-x-1' : isSpeaking ? 'translate-y-0.5' : ''}`} />
-                                    <div className="absolute top-1 left-2 w-1.5 h-1.5 bg-white rounded-full" />
+                                <div className={`relative w-5 h-5 md:w-7 md:h-7 transition-all duration-150 ${isBlinking ? 'scale-y-[0.1]' : ''}`}>
+                                    <div
+                                        className="absolute inset-0 rounded-full"
+                                        style={{ backgroundColor: '#FFFFFF', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)' }}
+                                    />
+                                    <div
+                                        className={`absolute inset-1 rounded-full transition-all duration-300 ${isListening ? 'translate-x-0.5' : isSpeaking ? 'translate-y-0.5' : ''}`}
+                                        style={{ backgroundColor: '#3D3D3D' }}
+                                    />
+                                    <div
+                                        className="absolute top-1 left-1.5 w-1.5 h-1.5 md:w-2 md:h-2 rounded-full"
+                                        style={{ backgroundColor: '#FFFFFF' }}
+                                    />
                                 </div>
                             </div>
 
                             {/* Mouth */}
-                            <div className="relative mt-2">
+                            <div className="relative mt-3">
                                 {isSpeaking ? (
-                                    // Talking mouth animation
-                                    <div className="flex gap-0.5">
+                                    // Talking mouth animation - soft bars
+                                    <div className="flex gap-1 items-end h-6">
                                         {[...Array(5)].map((_, i) => (
                                             <div
                                                 key={i}
-                                                className="w-2 md:w-3 bg-white rounded-full animate-bounce"
+                                                className="w-2 md:w-2.5 rounded-full animate-bounce"
                                                 style={{
-                                                    height: `${12 + Math.sin(Date.now() / 100 + i) * 8}px`,
-                                                    animationDelay: `${i * 0.1}s`,
-                                                    animationDuration: '0.3s'
+                                                    backgroundColor: '#C8553D',
+                                                    height: `${10 + Math.sin(Date.now() / 100 + i) * 6}px`,
+                                                    animationDelay: `${i * 0.08}s`,
+                                                    animationDuration: '0.35s'
                                                 }}
                                             />
                                         ))}
                                     </div>
                                 ) : isProcessing ? (
-                                    // Thinking mouth (small circle)
-                                    <div className="w-6 h-6 md:w-8 md:h-8 border-4 border-white rounded-full animate-pulse" />
+                                    // Thinking mouth - small circle
+                                    <div
+                                        className="w-6 h-6 md:w-8 md:h-8 rounded-full animate-pulse"
+                                        style={{ border: '3px solid #C8553D' }}
+                                    />
                                 ) : (
-                                    // Smiling mouth
-                                    <div className="w-12 h-6 md:w-16 md:h-8 border-b-4 border-white rounded-b-full" />
+                                    // Smiling mouth - warm color
+                                    <div
+                                        className="w-12 h-6 md:w-16 md:h-8 rounded-b-full"
+                                        style={{ borderBottom: '4px solid #C8553D' }}
+                                    />
                                 )}
                             </div>
                         </div>
 
-                        {/* Subtle shine effect */}
-                        <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/10 to-transparent" />
+                        {/* Subtle shine effect on top */}
+                        <div
+                            className="absolute top-0 left-0 right-0 h-1/3"
+                            style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, transparent 100%)' }}
+                        />
                     </div>
 
                     {/* Audio waves when speaking */}
                     {isSpeaking && (
-                        <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex gap-1">
+                        <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5">
                             {[...Array(5)].map((_, i) => (
                                 <div
                                     key={i}
-                                    className="w-1.5 bg-indigo-400 rounded-full animate-bounce"
+                                    className="w-1 rounded-full animate-bounce"
                                     style={{
-                                        height: `${8 + Math.random() * 16}px`,
-                                        animationDelay: `${i * 0.1}s`
+                                        backgroundColor: '#C8553D',
+                                        height: `${6 + Math.random() * 10}px`,
+                                        animationDelay: `${i * 0.1}s`,
+                                        animationDuration: '0.4s'
                                     }}
                                 />
                             ))}
@@ -124,21 +165,23 @@ const Avatar3D: React.FC<Avatar3DProps> = ({ aiStatus, className = '' }) => {
                     )}
                 </div>
 
-                {/* Name label */}
-                <div className="mt-6 md:mt-8">
-                    <div className={`px-6 py-2 rounded-full backdrop-blur-sm text-lg font-semibold transition-all duration-300
-            ${isSpeaking
-                            ? 'bg-indigo-500/40 text-white border border-indigo-400/50 shadow-lg shadow-indigo-500/30'
-                            : isProcessing
-                                ? 'bg-amber-500/30 text-amber-200 border border-amber-400/30'
-                                : isListening
-                                    ? 'bg-green-500/30 text-green-200 border border-green-400/30'
-                                    : 'bg-slate-800/50 text-slate-300 border border-slate-600/30'
-                        }`}>
-                        {isSpeaking ? '💬 Mentta habla' :
-                            isProcessing ? '🧠 Mentta piensa...' :
-                                isListening ? '👂 Mentta escucha' :
-                                    '🤖 Mentta'}
+                {/* Status label */}
+                <div className="mt-10 md:mt-12">
+                    <div
+                        className="px-6 py-2.5 rounded-full text-sm font-medium tracking-wide transition-all duration-300"
+                        style={{
+                            fontFamily: "'Inter', sans-serif",
+                            background: 'rgba(255, 255, 255, 0.95)',
+                            backdropFilter: 'blur(10px)',
+                            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.04)',
+                            border: '1px solid rgba(0, 0, 0, 0.04)',
+                            color: isSpeaking ? '#C8553D' : isListening ? '#2A2A2A' : '#888'
+                        }}
+                    >
+                        {isSpeaking ? 'Mentta responde' :
+                            isProcessing ? 'Pensando...' :
+                                isListening ? 'Escuchando' :
+                                    'Listo para ti'}
                     </div>
                 </div>
             </div>

@@ -9,40 +9,72 @@ interface RiskIndicatorProps {
 const RiskIndicator: React.FC<RiskIndicatorProps> = ({ level, emotion }) => {
   const getColor = (lvl: RiskLevel) => {
     switch (lvl) {
-      case RiskLevel.CRITICAL: return 'bg-red-600 animate-pulse shadow-[0_0_20px_rgba(220,38,38,0.7)]';
-      case RiskLevel.HIGH: return 'bg-orange-500';
-      case RiskLevel.MODERATE: return 'bg-yellow-500';
-      default: return 'bg-emerald-500';
+      case RiskLevel.CRITICAL: return '#C8553D';
+      case RiskLevel.HIGH: return '#C8553D';
+      case RiskLevel.MODERATE: return '#D4A574';
+      default: return '#8B9D8B';
     }
   };
 
   const getLabel = (lvl: RiskLevel) => {
     switch (lvl) {
-      case RiskLevel.CRITICAL: return 'RIESGO CRÍTICO DETECTADO';
-      case RiskLevel.HIGH: return 'Riesgo Alto';
-      case RiskLevel.MODERATE: return 'Riesgo Moderado';
+      case RiskLevel.CRITICAL: return 'Crítico';
+      case RiskLevel.HIGH: return 'Alto';
+      case RiskLevel.MODERATE: return 'Moderado';
       default: return 'Estable';
     }
   };
 
   return (
-    <div className="bg-gray-800/80 backdrop-blur-md rounded-xl p-4 border border-gray-700 w-full max-w-sm">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-gray-400 text-xs uppercase tracking-wider font-semibold">Análisis IA</span>
-        <div className={`h-2 w-2 rounded-full ${level >= RiskLevel.HIGH ? 'animate-ping bg-red-500' : 'bg-green-500'}`}></div>
+    <div className="w-full">
+      {/* Status Row */}
+      <div className="flex items-center gap-4 mb-4">
+        {/* Status Dot */}
+        <div
+          className={`w-2.5 h-2.5 rounded-full transition-all duration-500 ${level >= RiskLevel.HIGH ? 'animate-pulse' : ''}`}
+          style={{ backgroundColor: getColor(level) }}
+        />
+
+        {/* Status Label */}
+        <span
+          className="text-xs font-medium uppercase"
+          style={{
+            color: getColor(level),
+            letterSpacing: '0.15em'
+          }}
+        >
+          {getLabel(level)}
+        </span>
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className={`h-12 w-1 rounded-full ${getColor(level)} transition-all duration-500`}></div>
-        <div>
-          <h3 className="text-lg font-bold text-white leading-tight">{getLabel(level)}</h3>
-          <p className="text-sm text-gray-300 capitalize">Emoción detectada: <span className="text-white font-medium">{emotion || 'Neutral'}</span></p>
-        </div>
+      {/* Emotion Display */}
+      <div className="flex items-baseline gap-2">
+        <span
+          className="text-[9px] font-medium uppercase"
+          style={{ color: '#BBB', letterSpacing: '0.1em' }}
+        >
+          Emoción
+        </span>
+        <span
+          className="text-sm font-medium capitalize"
+          style={{ color: '#2A2A2A' }}
+        >
+          {emotion || 'Neutral'}
+        </span>
       </div>
 
+      {/* Alert for high risk */}
       {level >= RiskLevel.HIGH && (
-        <div className="mt-3 bg-red-900/30 border border-red-500/30 rounded p-2 text-xs text-red-200">
-          Protocolo activo: Psicólogo alertado. Llama al <strong>113</strong> si necesitas ayuda inmediata.
+        <div
+          className="mt-4 p-3 rounded-2xl text-[10px] font-medium"
+          style={{
+            background: 'rgba(200, 85, 61, 0.06)',
+            border: '1px solid rgba(200, 85, 61, 0.1)',
+            color: '#C8553D',
+            letterSpacing: '0.02em'
+          }}
+        >
+          Protocolo activo • Línea 113
         </div>
       )}
     </div>

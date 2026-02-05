@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import LiveSession from './components/LiveSession';
-import { Heart, Shield, Zap, Video } from 'lucide-react';
+import { Heart, Shield, Zap, Video, ArrowLeft } from 'lucide-react';
 import { MentalHealthState, RiskLevel } from './types';
 
 const App: React.FC = () => {
@@ -13,14 +13,34 @@ const App: React.FC = () => {
   const endSession = async (sessionData?: { maxRiskLevel: number; emotions: string[]; riskEvents: any[]; alertsTriggered: number }) => {
     setInSession(false);
 
-    // Get session token from parent window or sessionStorage
-    const sessionToken = window.parent?.sessionStorage?.getItem('liveSessionToken') ||
-      sessionStorage.getItem('liveSessionToken');
+    // Get session token safely (handles cross-origin security errors)
+    let sessionToken = null;
+    try {
+      sessionToken = window.parent?.sessionStorage?.getItem('liveSessionToken');
+    } catch (e) {
+      console.log('No se pudo acceder al sessionStorage del padre (cross-origin)');
+    }
+
+    if (!sessionToken) {
+      sessionToken = sessionStorage.getItem('liveSessionToken');
+    }
+
+    // Notify parent window to close overlay IMMEDIATELY for a snappy feel
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'MENTTA_LIVE_END' }, '*');
+    }
+
+    // Close window if opened as popup (fallback)
+    if (window.opener) {
+      window.close();
+    }
 
     if (sessionToken && sessionData) {
       try {
-        // Save session data to PHP backend
-        const response = await fetch('http://localhost/Mentta---Saving-lives-with-AI/api/live/save-session.php', {
+        console.log("Guardando datos de sesión...");
+        // Save session data to PHP backend (we don't wait for it to finish before notifying parent if we want it snappy, 
+        // but here we already notified the parent, so we can just do the work)
+        await fetch('http://localhost/Mentta---Saving-lives-with-AI/api/live/save-session.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -32,25 +52,12 @@ const App: React.FC = () => {
             alertsTriggered: sessionData.alertsTriggered
           })
         });
-
-        const result = await response.json();
-        console.log('Sesión guardada:', result);
       } catch (error) {
         console.error('Error guardando sesión:', error);
       }
     }
 
     console.log("Sesión terminada");
-
-    // Notify parent window to close overlay (when embedded in iframe)
-    if (window.parent !== window) {
-      window.parent.postMessage({ type: 'MENTTA_LIVE_END' }, '*');
-    }
-
-    // Close window if opened as popup (fallback)
-    if (window.opener) {
-      window.close();
-    }
   };
 
   if (inSession) {
@@ -58,60 +65,169 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(135deg, #F9F9F7 0%, #F2F2F0 100%)' }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        .font-serif {
+          font-family: 'Playfair Display', serif;
+        }
+        
+        .font-sans {
+          font-family: 'Inter', sans-serif;
+        }
+        
+        .frost-card {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+        }
+        
+        .shadow-bloom {
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 0, 0, 0.04);
+        }
+        
+        .shadow-bloom-intense {
+          box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12), 0 12px 30px rgba(0, 0, 0, 0.06);
+        }
+        
+        .glass-reflection {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .glass-reflection::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+          transition: left 0.5s;
+        }
+        
+        .glass-reflection:hover::before {
+          left: 100%;
+        }
+      `}</style>
+
+      <div className="max-w-2xl w-full relative">
+        {/* Back Button */}
+        <div className="absolute -top-16 left-0">
+          <button
+            onClick={() => endSession()}
+            className="flex items-center gap-3 px-6 py-3 rounded-full bg-white/50 hover:bg-white transition-all border border-black/5 shadow-sm group"
+          >
+            <ArrowLeft size={16} className="text-black/40 group-hover:text-black transition-colors" />
+            <span className="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-black/40 group-hover:text-black transition-colors">Regresar</span>
+          </button>
+        </div>
+
         {/* Header Logo */}
-        <div className="flex justify-center mb-8">
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 rounded-2xl shadow-xl shadow-purple-900/30">
-            <span className="text-3xl font-bold text-white tracking-tighter">Mentta</span>
+        <div className="flex justify-center mb-12">
+          <div className="flex items-center gap-3">
+            <div>
+              <h1 className="text-2xl font-bold font-serif" style={{ color: '#111', letterSpacing: '-0.02em' }}>
+                Mentta
+              </h1>
+              <p className="text-[8px] uppercase tracking-[0.3em] font-bold opacity-40">Elite Care</p>
+            </div>
           </div>
         </div>
 
-        {/* Card */}
-        <div className="bg-gray-800 rounded-3xl p-8 border border-gray-700 shadow-2xl">
-          <h1 className="text-2xl font-bold text-white mb-2 text-center">Habla con Mentta</h1>
-          <p className="text-gray-400 text-center mb-8">
-            Apoyo emocional inmediato por voz. Confidencial, empático y disponible 24/7.
-          </p>
+        {/* Main Card Container */}
+        <div className="bg-white rounded-[3rem] p-10 shadow-bloom-intense border border-black/5">
+          {/* Title Section */}
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-bold mb-4 font-serif" style={{ color: '#111', letterSpacing: '-0.02em' }}>
+              Habla con Mentta
+            </h1>
+            <p className="text-base font-sans font-light" style={{ color: '#666', letterSpacing: '0.02em' }}>
+              Apoyo emocional inmediato. Privado, empático y disponible siempre.
+            </p>
+          </div>
 
-          <div className="space-y-4 mb-8">
-            <div className="flex items-center gap-4 bg-gray-700/50 p-4 rounded-xl border border-gray-700">
-              <div className="bg-indigo-500/20 p-2 rounded-lg text-indigo-400"><Zap size={20} /></div>
-              <div>
-                <h3 className="text-white font-medium">Análisis en Tiempo Real</h3>
-                <p className="text-xs text-gray-400">Detecta emociones en tu voz y expresiones</p>
+          {/* Top Tier Cards - Larger with Frost Background */}
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="frost-card rounded-[2rem] p-5 border border-black/5 shadow-bloom transition-all hover:shadow-bloom-intense">
+              <div className="flex flex-col items-center text-center gap-3">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(200, 85, 61, 0.1)' }}>
+                  <Heart size={20} strokeWidth={1.5} style={{ color: '#C8553D' }} />
+                </div>
+                <div>
+                  <h3 className="font-sans font-semibold text-sm mb-1" style={{ color: '#2A2A2A', letterSpacing: '0.01em' }}>
+                    IA Empática
+                  </h3>
+                  <p className="text-[10px] font-sans" style={{ color: '#888', letterSpacing: '0.03em' }}>
+                    Escucha activa
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-gray-700/50 p-4 rounded-xl border border-gray-700">
-              <div className="bg-purple-500/20 p-2 rounded-lg text-purple-400"><Shield size={20} /></div>
-              <div>
-                <h3 className="text-white font-medium">Espacio Seguro</h3>
-                <p className="text-xs text-gray-400">Conexión privada y protegida</p>
+
+            <div className="frost-card rounded-[2rem] p-5 border border-black/5 shadow-bloom transition-all hover:shadow-bloom-intense">
+              <div className="flex flex-col items-center text-center gap-3">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(200, 85, 61, 0.1)' }}>
+                  <Shield size={20} strokeWidth={1.5} style={{ color: '#C8553D' }} />
+                </div>
+                <div>
+                  <h3 className="font-sans font-semibold text-sm mb-1" style={{ color: '#2A2A2A', letterSpacing: '0.01em' }}>
+                    Privacidad
+                  </h3>
+                  <p className="text-[10px] font-sans" style={{ color: '#888', letterSpacing: '0.03em' }}>
+                    100% Seguro
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-gray-700/50 p-4 rounded-xl border border-gray-700">
-              <div className="bg-pink-500/20 p-2 rounded-lg text-pink-400"><Heart size={20} /></div>
-              <div>
-                <h3 className="text-white font-medium">IA Empática</h3>
-                <p className="text-xs text-gray-400">Entrenada para escuchar y apoyar</p>
+
+            <div className="frost-card rounded-[2rem] p-5 border border-black/5 shadow-bloom transition-all hover:shadow-bloom-intense">
+              <div className="flex flex-col items-center text-center gap-3">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(200, 85, 61, 0.1)' }}>
+                  <Zap size={20} strokeWidth={1.5} style={{ color: '#C8553D' }} />
+                </div>
+                <div>
+                  <h3 className="font-sans font-semibold text-sm mb-1" style={{ color: '#2A2A2A', letterSpacing: '0.01em' }}>
+                    Análisis
+                  </h3>
+                  <p className="text-[10px] font-sans" style={{ color: '#888', letterSpacing: '0.03em' }}>
+                    Tiempo real
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
+          {/* Call to Action Button */}
           <button
             onClick={startSession}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-lg py-4 rounded-xl shadow-lg shadow-purple-900/40 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-3"
+            className="w-full py-5 rounded-[2rem] text-white font-sans font-bold text-sm uppercase tracking-[0.15em] transition-all transform hover:scale-[1.02] glass-reflection relative"
+            style={{
+              backgroundColor: '#C8553D',
+              boxShadow: '0 20px 50px rgba(200, 85, 61, 0.25), 0 10px 25px rgba(200, 85, 61, 0.15)',
+            }}
           >
-            <Video size={24} />
-            Iniciar Llamada
+            <div className="flex items-center justify-center gap-3 relative z-10">
+              <Video size={20} strokeWidth={2.5} />
+              <span>Iniciar Llamada</span>
+            </div>
           </button>
 
-          <p className="mt-4 text-center text-xs text-gray-500">
-            Si estás en peligro inmediato, llama al <strong className="text-red-400">113</strong> (Línea de Salud Mental) o <strong className="text-orange-400">106</strong> (SAMU).
-          </p>
+          {/* Footer disclaimer */}
+          <div className="mt-8 text-center">
+            <div className="flex justify-center gap-3 mb-3">
+              <span className="text-[9px] font-sans font-bold uppercase tracking-[0.3em]" style={{ color: 'rgba(0,0,0,0.2)' }}>Secure</span>
+              <span className="text-[9px] font-sans font-bold uppercase tracking-[0.3em]" style={{ color: 'rgba(0,0,0,0.2)' }}>•</span>
+              <span className="text-[9px] font-sans font-bold uppercase tracking-[0.3em]" style={{ color: 'rgba(0,0,0,0.2)' }}>Private</span>
+            </div>
+            <p className="text-[10px] font-sans font-light" style={{ color: '#999' }}>
+              En caso de emergencia, contacta la línea <strong style={{ color: '#C8553D' }}>113</strong>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

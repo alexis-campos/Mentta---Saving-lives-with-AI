@@ -1,7 +1,40 @@
+// ========================================
+// Elite Animations & Navigation Flow
+// ========================================
+
 /**
- * MENTTA - Utilidades JavaScript
- * Funciones auxiliares compartidas entre páginas
+ * Handle elegant page exit transitions
  */
+function navigateTo(url) {
+    document.body.classList.add('page-transitionING');
+    document.body.classList.add('page-exit');
+
+    setTimeout(() => {
+        window.location.href = url;
+    }, 500);
+}
+
+// Intercept internal links for cross-dissolve effect
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (link && link.href && link.href.includes(window.location.origin) && !link.target && !link.hasAttribute('download')) {
+        const urlObj = new URL(link.href);
+        if (urlObj.pathname !== window.location.pathname) {
+            e.preventDefault();
+            navigateTo(link.href);
+        }
+    }
+});
+
+// Polyfill for buttons that navigate via window.location (like goBack)
+const originalGoBack = window.goBack;
+if (typeof originalGoBack === 'function') {
+    window.goBack = () => {
+        document.body.classList.add('page-transitionING');
+        document.body.classList.add('page-exit');
+        setTimeout(() => originalGoBack(), 500);
+    };
+}
 
 // ========================================
 // Formateo de Fechas

@@ -36,23 +36,32 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             theme: {
                 extend: {
                     colors: {
+                        'mentta-primary': '#2d3a2d',
+                        'mentta-secondary': '#cbaa8e',
+                        'mentta-accent': '#8b9d8b',
+                        'mentta-light': '#f5f5f0',
                         mentta: {
-                            50: '#EEF2FF',
-                            100: '#E0E7FF',
-                            200: '#C7D2FE',
-                            300: '#A5B4FC',
-                            400: '#818CF8',
-                            500: '#6366F1',
-                            600: '#4F46E5',
-                            700: '#4338CA',
-                            800: '#3730A3',
-                            900: '#312E81'
+                            50: '#f0f2f0',
+                            100: '#e8f0e8',
+                            200: '#d1dbd1',
+                            300: '#b4c2b4',
+                            400: '#8b9d8b',
+                            500: '#2d3a2d',
+                            600: '#1e261e',
+                            700: '#151a15',
+                            800: '#0c0f0c',
+                            900: '#000000'
                         }
                     }
                 }
             }
         }
     </script>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
+        rel="stylesheet">
 
     <!-- Theme & Map Styles -->
     <link rel="stylesheet" href="assets/css/theme.css">
@@ -65,33 +74,40 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
     <?php endif; ?>
 
     <style>
-        /* Critical CSS inline for fast render */
+        :root {
+            --bg-antigravity: #F9F9F7;
+            --text-main: #111111;
+            --accent-lux: #AF8A6B;
+        }
+
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-antigravity);
+            color: var(--text-main);
         }
 
         .loading-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--bg-antigravity);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 1rem;
+            gap: 2rem;
             z-index: 9999;
         }
 
         .spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid #E5E7EB;
-            border-top-color: #6366F1;
+            width: 56px;
+            height: 56px;
+            border: 2px solid rgba(0, 0, 0, 0.03);
+            border-top-color: #111;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 1s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
 
         @keyframes spin {
@@ -99,10 +115,139 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                 transform: rotate(360deg);
             }
         }
+
+        .panel-sidebar {
+            background-color: #FDFDFB;
+            /* Light cream */
+            border-right: none;
+            z-index: 20;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .center-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            border-radius: 24px;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01);
+        }
+
+        .center-card:hover,
+        .center-card.active {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .center-card.active {
+            border-left: 4px solid #C8553D;
+            /* Soft Terracotta */
+        }
+
+        /* Mobile overrides for better visibility */
+        @media (max-width: 768px) {
+            .center-card {
+                padding: 1.25rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .center-card h4 {
+                font-size: 1.1rem;
+                /* Larger font for readability */
+                white-space: normal;
+                /* Allow text wrapping */
+                overflow: visible;
+            }
+
+            .floating-action {
+                width: 3.5rem;
+                height: 3.5rem;
+                /* Larger touch target */
+            }
+        }
+
+        .capsule-label {
+            display: inline-flex;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: rgba(0, 0, 0, 0.03);
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .capsule-label.urgency {
+            background: rgba(200, 85, 61, 0.08);
+            color: #C8553D;
+        }
+
+        .capsule-label.elite {
+            background: #111111;
+            color: white;
+        }
+
+        header {
+            background: rgba(249, 249, 247, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+        }
+
+        /* Ambient Glow for Urgency markers */
+        .urgency-pulse {
+            position: relative;
+        }
+
+        .urgency-pulse::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            background: #C8553D;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                transform: scale(1);
+                opacity: 0.2;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.2;
+            }
+        }
+
+        .floating-action {
+            background: white;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 
 <body class="antialiased bg-gray-100">
+    <script>
+        // Page reveal logic
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+                document.querySelectorAll('.initial-reveal-container').forEach(el => el.classList.add('active'));
+            }, 100);
+        });
+    </script>
+
 
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="loading-overlay">
@@ -111,165 +256,156 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
     </div>
 
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-30 bg-white border-b shadow-sm">
-        <div class="px-4 py-3 flex items-center justify-between">
-            <!-- Back Button -->
-            <button onclick="goBack()" class="flex items-center gap-2 text-gray-700 hover:text-indigo-600 transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+    <header class="fixed top-0 left-0 right-0 z-30 transition-all duration-500 h-[72px] initial-reveal-container">
+        <div class="px-4 md:px-8 py-4 flex items-center justify-between max-w-full mx-auto h-full">
+            <!-- Luxury Back Button -->
+            <button onclick="goBack()"
+                class="floating-action flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-[14px] md:rounded-[18px] text-[#111] hover:scale-105 active:scale-95 transition-all btn-bloom">
+                <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
                 </svg>
-                <span class="font-medium hidden sm:inline">Volver</span>
             </button>
 
-            <!-- Title -->
-            <h1 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                <span>🗺️</span>
-                <span class="hidden sm:inline">Centros de Salud Mental</span>
-                <span class="sm:hidden">Centros</span>
-            </h1>
+            <!-- Sophisticated Title (Visible on mobile now) -->
+            <div class="flex flex-col md:flex-row items-center gap-1 md:gap-4">
+                <h1 class="font-serif italic text-lg md:text-2xl text-[#111] font-bold tracking-tight">Mentta</h1>
+                <div class="hidden md:block w-px h-6 bg-black/10"></div>
+                <span
+                    class="text-[7px] md:text-[9px] font-bold text-black/40 uppercase tracking-[0.2em] md:tracking-[0.4em]">Localizador</span>
+            </div>
 
-            <!-- Search Toggle -->
-            <button id="search-toggle-btn" onclick="toggleSearch()"
-                class="p-2 hover:bg-gray-100 rounded-full transition" title="Buscar">
-                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            <!-- Search Trigger -->
+            <button id="search-toggle-btn" onclick="window.innerWidth < 768 ? toggleMobileSearch() : toggleSearch()"
+                class="floating-action w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[#111] rounded-[14px] md:rounded-[18px] hover:bg-black hover:text-white transition-all btn-bloom">
+                <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
             </button>
         </div>
 
-        <!-- Search Bar (hidden by default) -->
-        <div id="search-bar" class="hidden px-4 pb-3 animate-slideDown">
-            <div class="relative">
-                <input type="text" id="search-input" placeholder="Buscar por nombre, distrito o servicio..."
-                    class="w-full px-4 py-2.5 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800"
+        <!-- Search Bar Expansion -->
+        <div id="search-bar" class="hidden px-8 pb-6 animate-fade">
+            <div class="relative max-w-2xl mx-auto">
+                <input type="text" id="search-input" placeholder="Busca por nombre o distrito..."
+                    class="w-full bg-white/50 backdrop-blur-md px-12 py-4 rounded-[2rem] border border-black/5 focus:outline-none focus:ring-4 focus:ring-black/5 transition-all text-sm font-medium"
                     oninput="searchCenters(this.value)" autocomplete="off">
-                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none"
+                <svg class="w-5 h-5 text-black/30 absolute left-5 top-1/2 -translate-y-1/2" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
-                <button onclick="clearSearch()"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hidden"
-                    id="clear-search-btn">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
+            </div>
+        </div>
+
+        <!-- Mobile Search Overlay (Full Screen) -->
+        <div id="mobile-search-overlay"
+            class="fixed inset-0 bg-white z-[60] hidden flex-col p-6 animate-fade md:hidden">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-serif font-bold text-[#111]">Buscar</h2>
+                <button onclick="toggleMobileSearch()" class="p-2 rounded-full bg-gray-100">
+                    <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
+            <input type="text" id="mobile-search-input" placeholder="Nombre, distrito o especialidad..."
+                class="w-full bg-gray-50 px-6 py-5 rounded-2xl border-none focus:ring-2 focus:ring-black text-lg mb-4"
+                oninput="searchCenters(this.value)" autocomplete="off" autofocus>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest text-center">Resultados en tiempo real
+            </p>
         </div>
     </header>
 
     <!-- Main Container -->
-    <div class="flex flex-col md:flex-row h-screen pt-[60px]">
+    <div class="flex flex-col md:flex-row h-screen pt-[72px] overflow-hidden">
 
-        <!-- Side Panel (Desktop: Left | Mobile: Bottom) -->
-        <aside id="centers-panel" class="panel-sidebar">
-            <!-- Swipe Handle (Mobile only) -->
-            <div class="swipe-handle md:hidden" id="swipe-handle">
-                <div class="handle-bar"></div>
+        <!-- Side Panel (Desktop: Left | Mobile: Top Panel - Mobile First Design) -->
+        <aside id="centers-panel"
+            class="panel-sidebar md:w-[400px] w-full h-[45vh] md:h-full flex flex-col shadow-[0_20px_40px_-5px_rgba(0,0,0,0.15)] md:shadow-none bg-white z-40 relative rounded-b-[32px] md:rounded-none overflow-hidden shrink-0 initial-reveal-container transform transition-all duration-300"
+            style="transition-delay: 0.1s;">
+            <!-- Swipe Handle (Mobile only - Bottom of panel) -->
+            <div class="w-full flex justify-center pt-2 pb-3 md:hidden bg-white cursor-pointer absolute bottom-0 left-0 z-20 hover:bg-gray-50 transition-colors"
+                id="swipe-area" onclick="togglePanelHeight()">
+                <div class="w-12 h-1 bg-gray-300 rounded-full"></div>
             </div>
 
-            <!-- Location Info -->
-            <div class="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                        <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                clip-rule="evenodd"></path>
-                        </svg>
+            <!-- Location Aura Section (Compacted) -->
+            <div class="px-5 py-4 md:p-8 bg-black text-white relative overflow-hidden shrink-0">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-[#AF8A6B]/20 blur-[60px] rounded-full"></div>
+                <div class="relative z-10 flex flex-col md:block">
+                    <div class="flex items-center justify-between mb-1">
+                        <p class="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em]">Entorno Actual</p>
+                        <div class="flex items-center gap-2 md:hidden">
+                            <span class="w-1.5 h-1.5 bg-[#AF8A6B] rounded-full animate-pulse"></span>
+                            <p class="text-[9px] text-white/50 font-medium" id="user-city-text-mobile">En línea</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-semibold text-indigo-900" id="user-location-text">Detectando ubicación...
-                        </p>
-                        <p class="text-xs text-indigo-700" id="user-city-text">Obteniendo ciudad...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Filters -->
-            <div class="p-4 border-b bg-white">
-                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Filtrar por</p>
-                <div class="space-y-2">
-                    <label class="flex items-center gap-3 cursor-pointer group">
-                        <input type="radio" name="filter" value="all" checked onchange="applyFilter(this.value)"
-                            class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
-                        <span class="text-sm text-gray-700 group-hover:text-indigo-600 transition">Todos los
-                            centros</span>
-                    </label>
-                    <label class="flex items-center gap-3 cursor-pointer group">
-                        <input type="radio" name="filter" value="mentta" onchange="applyFilter(this.value)"
-                            class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
-                        <span class="text-sm text-gray-700 group-hover:text-indigo-600 transition">
-                            <span class="inline-flex items-center gap-1">
-                                <span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span>
-                                Centros con Mentta
-                            </span>
-                        </span>
-                    </label>
-                    <label class="flex items-center gap-3 cursor-pointer group">
-                        <input type="radio" name="filter" value="emergency" onchange="applyFilter(this.value)"
-                            class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
-                        <span class="text-sm text-gray-700 group-hover:text-indigo-600 transition">
-                            <span class="inline-flex items-center gap-1">
-                                <span class="w-2.5 h-2.5 bg-orange-500 rounded-full animate-pulse"></span>
-                                Emergencias 24h
-                            </span>
-                        </span>
-                    </label>
-                </div>
-            </div>
-
-            <!-- Centers List -->
-            <div class="flex-1 overflow-y-auto bg-gray-50">
-                <div class="p-4">
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                        <span id="centers-count">0</span> centros cercanos
-                    </p>
-                    <div id="centers-list" class="space-y-3">
-                        <!-- Centers will be populated by JavaScript -->
-                        <div class="text-center py-8 text-gray-400">
-                            <div class="spinner mx-auto mb-3" style="width:32px;height:32px;border-width:3px;"></div>
-                            <p class="text-sm">Buscando centros...</p>
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-serif italic text-xl md:text-2xl" id="user-location-text">Detectando...</h3>
+                        <div class="hidden md:flex items-center gap-2 mt-2">
+                            <span class="w-1.5 h-1.5 bg-[#AF8A6B] rounded-full animate-pulse"></span>
+                            <p class="text-[10px] text-white/50 font-medium whitespace-nowrap" id="user-city-text">
+                                Optimizado para ti</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Legend -->
-            <div class="p-3 bg-white border-t text-xs">
-                <div class="flex flex-wrap gap-3 justify-center text-gray-600">
-                    <span class="flex items-center gap-1">
-                        <span class="w-3 h-3 bg-blue-500 rounded-full"></span> Tu ubicación
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <span class="w-3 h-3 bg-green-500 rounded-full"></span> Mentta
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <span class="w-3 h-3 bg-orange-500 rounded-full"></span> 24h
-                    </span>
-                    <span class="flex items-center gap-1">
-                        <span class="w-3 h-3 bg-red-500 rounded-full"></span> Otros
-                    </span>
+            <!-- Filters: Antigravity Selection Style (Compacted) -->
+            <div class="py-2.5 px-4 md:p-8 border-b border-black/5 shrink-0 overflow-x-auto no-scrollbar">
+                <div class="flex flex-nowrap md:flex-wrap gap-3 min-w-max px-2 md:px-0">
+                    <label class="cursor-pointer group">
+                        <input type="radio" name="filter" value="all" checked onchange="applyFilter(this.value)"
+                            class="hidden peer">
+                        <div
+                            class="px-5 py-2 md:px-6 md:py-3.5 rounded-full border border-black/5 bg-white text-[11px] md:text-[11px] font-bold text-black/60 peer-checked:bg-[#111111] peer-checked:text-white peer-checked:border-[#111111] transition-all whitespace-nowrap shadow-sm">
+                            Todos</div>
+                    </label>
+                    <label class="cursor-pointer group">
+                        <input type="radio" name="filter" value="mentta" onchange="applyFilter(this.value)"
+                            class="hidden peer">
+                        <div
+                            class="px-5 py-2 md:px-6 md:py-3.5 rounded-full border border-black/5 bg-white text-[11px] md:text-[11px] font-bold text-black/60 peer-checked:bg-[#111111] peer-checked:text-white peer-checked:border-[#111111] transition-all whitespace-nowrap shadow-sm">
+                            Red Mentta</div>
+                    </label>
+                    <label class="cursor-pointer group">
+                        <input type="radio" name="filter" value="emergency" onchange="applyFilter(this.value)"
+                            class="hidden peer">
+                        <div
+                            class="px-5 py-2 md:px-6 md:py-3.5 rounded-full border border-black/5 bg-white text-[11px] md:text-[11px] font-bold text-black/60 peer-checked:bg-[#111111] peer-checked:text-white peer-checked:border-[#111111] transition-all whitespace-nowrap shadow-sm">
+                            24h</div>
+                    </label>
                 </div>
             </div>
+
+            <!-- Centers List with Elite Card Style -->
+            <div class="flex-1 overflow-y-auto px-4 py-5 md:px-6 md:py-6" style="background: white;">
+                <p class="text-[9px] font-bold text-black/30 uppercase tracking-[0.2em] mb-5 px-1">Resultados Cercanos
+                </p>
+                <div id="centers-list" class="space-y-4">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+
         </aside>
 
         <!-- Map Container -->
-        <main class="flex-1 relative">
+        <main class="flex-1 relative initial-reveal-container" style="transition-delay: 0.2s;">
             <div id="map" class="w-full h-full"></div>
 
-            <!-- Re-center Button (positioned above Google Maps controls) -->
+            <!-- Re-center Button: Floating Aesthetic - Smaller & Lower for easier reach -->
             <button id="recenter-btn" onclick="recenterMap()"
-                class="absolute bottom-24 right-3 bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 z-10"
+                class="absolute bottom-6 right-4 md:bottom-10 md:right-8 w-10 h-10 md:w-16 md:h-16 bg-white text-[#555] rounded-xl md:rounded-[1.8rem] shadow-[0_10px_30px_rgba(0,0,0,0.1)] hover:scale-110 active:scale-95 transition-all z-10 flex items-center justify-center border border-black/5 group btn-bloom"
                 title="Volver a mi ubicación">
-                <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <svg class="w-5 h-5 md:w-6 md:h-6 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.364-7.364l-1.414 1.414M7.05 16.95l-1.414 1.414m12.728 0l-1.414-1.414M7.05 7.05L5.636 5.636M12 12a3 3 0 100-6 3 3 0 000 6z" />
                 </svg>
             </button>
 
@@ -326,23 +462,23 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
 
             // Add markers
             centers.forEach(center => {
-                let color = '#EF4444'; // Red default
-                if (center.mentta) color = '#10B981'; // Green for Mentta
-                else if (center.emergency) color = '#F97316'; // Orange for 24h
+                let color = '#E69F8B'; // Soft Terracotta (Antigravity default)
+                if (center.mentta) color = '#AF8A6B'; // Luxury Beige for Mentta
+                else if (center.emergency) color = '#C8553D'; // Darker Terracotta for Emergency
 
                 const marker = L.marker([center.lat, center.lng], { icon: createIcon(color) }).addTo(map);
                 marker.bindPopup(`
                 <div style="min-width:200px">
-                    <h3 style="font-weight:600;margin-bottom:8px;">${center.name}</h3>
-                    <p style="color:#666;font-size:12px;margin-bottom:12px;">
-                        ${center.emergency ? '🏥 Emergencias 24h' : ''}
-                        ${center.mentta ? '✅ Usa Mentta' : ''}
-                    </p>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
-                       target="_blank" 
-                       style="display:inline-block;padding:8px 16px;background:#6366F1;color:white;border-radius:8px;text-decoration:none;font-size:13px;">
-                        Cómo llegar
-                    </a>
+                        <h3 style="font-family:'Playfair Display',serif;font-weight:700;margin-bottom:4px;color:#2d3a2d;">${center.name}</h3>
+                        <p style="color:#8b9d8b;font-size:11px;margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+                            ${center.emergency ? '🏥 Emergencias 24h' : ''}
+                            ${center.mentta ? '✅ Sistema Mentta' : ''}
+                        </p>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
+                           target="_blank" 
+                           style="display:block;text-align:center;padding:10px;background:#2d3a2d;color:white;border-radius:12px;text-decoration:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">
+                            Cómo llegar
+                        </a>
                 </div>
             `);
             });
@@ -352,16 +488,29 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             document.getElementById('user-city-text').textContent = 'Usando ubicación aproximada';
             document.getElementById('centers-count').textContent = centers.length;
 
-            // Populate centers list
-            document.getElementById('centers-list').innerHTML = centers.map(c => `
-            <div class="p-3 bg-white rounded-lg shadow-sm border cursor-pointer hover:shadow-md transition" 
-                 onclick="map.setView([${c.lat}, ${c.lng}], 16)">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full" style="background:${c.mentta ? '#10B981' : c.emergency ? '#F97316' : '#EF4444'}"></span>
-                    <span class="font-medium text-sm text-gray-800">${c.name}</span>
+            document.getElementById('centers-list').innerHTML = centers.map((c, index) => {
+                let indicatorColor = "#AF8A6B";
+                if (c.emergency) indicatorColor = "#C8553D";
+                if (c.mentta) indicatorColor = "#111";
+
+                return `
+                <div class="center-card group mb-4" onclick="map.panTo([${c.lat}, ${c.lng}]); map.setZoom(16);">
+                    <div class="flex items-center gap-5">
+                        <div class="w-12 h-12 rounded-[20px] bg-[#FDFDFB] border border-black/5 flex items-center justify-center transition-all group-hover:border-[#C8553D]/20">
+                            <span class="font-serif italic text-lg text-[#111]">${index + 1}</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-serif italic text-[16px] text-[#111] font-bold truncate">${c.name}</h4>
+                            <div class="flex items-center gap-2 mt-1.5">
+                                <span class="capsule-label ${c.mentta ? 'elite' : c.emergency ? 'urgency' : ''}">
+                                    ${c.mentta ? 'Red Elite' : c.emergency ? 'Urgencia 24h' : 'Centro Salud'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+            }).join('');
 
             // Functions
             window.goBack = () => history.back() || (location.href = 'chat.php');
@@ -369,7 +518,30 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             window.toggleSearch = () => document.getElementById('search-bar').classList.toggle('hidden');
             window.applyFilter = (filter) => console.log('Filter:', filter);
             window.searchCenters = (q) => console.log('Search:', q);
+            window.searchCenters = (q) => console.log('Search:', q);
             window.clearSearch = () => { document.getElementById('search-input').value = ''; };
+            window.toggleMobileSearch = () => {
+                const el = document.getElementById('mobile-search-overlay');
+                el.classList.toggle('hidden');
+                el.classList.toggle('flex');
+                if (!el.classList.contains('hidden')) {
+                    setTimeout(() => document.getElementById('mobile-search-input').focus(), 100);
+                }
+            };
+
+            // Simple mobile panel interactions
+            let isPanelExpanded = false;
+            window.togglePanelHeight = () => {
+                const panel = document.getElementById('centers-panel');
+                if (isPanelExpanded) {
+                    panel.style.height = '55vh';
+                    panel.classList.remove('h-[85vh]');
+                } else {
+                    panel.style.height = '85vh';
+                    panel.classList.add('h-[85vh]');
+                }
+                isPanelExpanded = !isPanelExpanded;
+            };
         </script>
     <?php endif; ?>
 
