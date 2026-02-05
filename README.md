@@ -1,10 +1,11 @@
 # Mentta - AI-Powered Mental Health Support 💜
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.5.3-blue.svg" alt="Version 0.5.3">
+  <img src="https://img.shields.io/badge/version-1.0.0-green.svg" alt="Version 1.0.0">
+  <img src="https://img.shields.io/badge/status-Demo-yellow.svg" alt="Demo">
   <img src="https://img.shields.io/badge/PHP-8.0%2B-777BB4.svg" alt="PHP 8.0+">
   <img src="https://img.shields.io/badge/MySQL-8.0%2B-4479A1.svg" alt="MySQL 8.0+">
-  <img src="https://img.shields.io/badge/AI-Google%20Gemini%203.0-FF6F00.svg" alt="Google Gemini 3.0">
+  <img src="https://img.shields.io/badge/AI-Google%20Gemini%303.0-FF6F00.svg" alt="Google Gemini 3.0">
   <img src="https://img.shields.io/badge/Maps-Leaflet%20%2B%20Google-34A853.svg" alt="Maps">
 </p>
 
@@ -18,41 +19,11 @@
 
 ---
 
-## 🆕 What's New in v0.5.3
+## 🎉 Version 1.0.0 - Demo Release
 
-### 🔧 Major Bug Fixes & Improvements
+This is the **official demo version** of Mentta, featuring a complete working system ready for demonstration and testing purposes.
 
-| Category | Fix | Description |
-|----------|-----|-------------|
-| 🤖 **AI** | Circuit Breaker | Fallback to file storage when DB is unavailable |
-| 🗺️ **Maps** | Leaflet Fallback | Works without Google Maps API key (OpenStreetMap) |
-| ⚡ **Performance** | Rate Limiter | Probabilistic cleanup (1% of requests) |
-| 🌐 **i18n** | Translations | 50+ strings in Spanish & English |
-| 🔒 **Security** | Input Validation | Message length validation (5000 chars max) |
-| 🎨 **UX** | Search History | Filter chat conversations by title |
-| 🛡️ **Reliability** | Error Handling | Standardized error responses across API |
-
-### 🎨 UI/UX Enhancements
-
-- **🫁 Interactive Breathing Timer** - 4-7-8 technique with animated circle
-- **🧠 Grounding Checklist** - Interactive 5-4-3-2-1 technique
-- **👋 Personalized Welcome** - Time-based greeting (morning/afternoon/evening)
-- **🔍 Chat Search** - Filter previous conversations in sidebar
-- **💓 Panic Button** - Enhanced visibility with pulse animation
-- **📊 Improved Loading** - Multi-state indicator (thinking → analyzing → writing)
-- **📱 Sentiment Indicator** - Now visible for 20 seconds (was 8s)
-
-### 🛡️ Security Hardening
-
-- Session regeneration on role verification
-- SQL whitelist for dynamic inserts
-- Blocked `/test/` directory in production
-- Proper IP validation
-- Session invalidation on logout
-
----
-
-## ⚡ Features
+### ✨ Key Features
 
 | Feature | Description |
 |---------|-------------|
@@ -66,7 +37,42 @@
 | 👥 **Professional Dashboard** | Psychologists monitor patients and respond to alerts |
 | 📱 **Mobile-First** | Beautiful responsive design for all devices |
 | 🌙 **Dark Mode** | Automatic theme based on system preference |
-| 🇪🇸🇺🇸 **Bilingual** | Full Spanish & English support |
+| 🇺🇸🇪🇸 **Bilingual** | Full English & Spanish support |
+
+---
+
+## 🆕 What's New in v1.0.0
+
+### 🎨 Landing Page & UX
+
+- **Professional Landing Page** - Impact statistics, how it works, features, testimonials, FAQ sections
+- **Smooth Animations** - Fade-in effects and interactive elements
+- **Responsive Design** - Optimized for all screen sizes
+- **Call-to-Action Sections** - Encouraging user engagement
+
+### 🗺️ Interactive Map
+
+- **Full-page Map** - Mental health centers with search functionality
+- **Dual Map Support** - Google Maps with Leaflet fallback
+- **Mobile-Optimized** - Collapsible search panel, touch-friendly interface
+- **Location-based** - Find nearby mental health centers
+
+### 🔧 Technical Improvements
+
+| Category | Improvement |
+|----------|-------------|
+| 🤖 **AI** | Circuit breaker with file fallback for resilience |
+| 🛡️ **Security** | Session regeneration, input validation, CSRF protection |
+| ⚡ **Performance** | Rate limiter with probabilistic cleanup |
+| 🌐 **i18n** | 50+ translation strings in English & Spanish |
+| 📱 **UX** | Enhanced panic button, breathing exercises, grounding techniques |
+
+### 🧘 Wellness Tools
+
+- **🫁 Breathing Timer** - 4-7-8 technique with animated circle
+- **🧠 Grounding Checklist** - Interactive 5-4-3-2-1 technique
+- **👋 Personalized Welcome** - Time-based greeting
+- **💓 Panic Button** - Enhanced visibility with pulse animation
 
 ---
 
@@ -89,9 +95,9 @@ Patient sends message
    │                                     │
    │  3. Memory Extraction               │
    │     - People mentioned              │
-   │     - Relationships (Ana → hermana) │
-   │     - Events (perdió su trabajo)    │
-   │     - Places (Lima, parque)         │
+   │     - Relationships (Ana → sister)  │
+   │     - Events (lost their job)       │
+   │     - Places (Lima, park)           │
    │     - Topics detected               │
    │                                     │
    │  4. Safe Life Mode Decision         │
@@ -108,9 +114,9 @@ Patient sends message
 
 | Message | Old (Keywords) | New (AI) |
 |---------|---------------|----------|
-| "Me quiero morir de risa" | 🚨 CRITICAL | ✅ None (colloquial) |
-| "Todo es gris, sin sentido" | ✅ None | 🚨 High (implicit hopelessness) |
-| "Mi amigo se cortó ayer" | 🚨 HIGH | ⚠️ Low (about someone else) |
+| "I could die laughing" | 🚨 CRITICAL | ✅ None (colloquial) |
+| "Everything is gray, meaningless" | ✅ None | 🚨 High (implicit hopelessness) |
+| "My friend cut himself yesterday" | 🚨 HIGH | ⚠️ Low (about someone else) |
 
 ---
 
@@ -126,7 +132,7 @@ Patient sends message
 ### API Keys (Optional)
 
 | Service | Purpose | Get Free Key |
-|---------|---------|--------------|
+|---------|---------|-----------------|
 | Google Gemini | AI responses | [aistudio.google.com](https://aistudio.google.com) |
 | Google Maps | Map with directions | [console.cloud.google.com](https://console.cloud.google.com) |
 
@@ -192,7 +198,7 @@ For **Apache** (vhost):
 http://localhost/mentta/login.php
 ```
 
-**Test Credentials:**
+**Demo Credentials:**
 | Role | Email | Password |
 |------|-------|----------|
 | Patient | carlos@test.com | password123 |
@@ -270,14 +276,13 @@ mentta/
 │   │   ├── chat.js             # Chat logic + indicators
 │   │   ├── menu.js             # Hamburger menu + modals
 │   │   ├── dashboard.js        # Psychologist dashboard
-│   │   ├── map.js              # Google Maps integration
+│   │   ├── map.js              # Maps integration
 │   │   └── utils.js            # Shared utilities
 │   └── sounds/
 │       └── alert.mp3           # Alert notification
 ├── database/
 │   ├── schema.sql              # Full database schema
-│   ├── seed.sql                # Test data
-│   └── migrations/             # Migration files
+│   └── seed.sql                # Test data
 ├── includes/
 │   ├── config.php              # App configuration
 │   ├── db.php                  # Database helper
@@ -287,7 +292,7 @@ mentta/
 │   ├── ai-analyzer.php         # Risk/sentiment analysis
 │   ├── circuit-breaker.php     # Fault tolerance
 │   └── risk-detector.php       # Risk level mapping
-├── multimodal/                 # 🆕 Mentta Live (React/TypeScript)
+├── multimodal/                 # Mentta Live (React/TypeScript)
 │   ├── App.tsx                 # Video call interface
 │   └── components/
 ├── tests/                      # PHPUnit tests
@@ -301,7 +306,6 @@ mentta/
 ├── index.php                   # Landing page
 ├── .env.example                # Environment template
 ├── .htaccess                   # Apache rewrite rules
-├── phpunit.xml                 # Test configuration
 └── README.md
 ```
 
@@ -356,7 +360,20 @@ The map page shows nearby mental health centers with two modes:
 
 ## 🔄 Changelog
 
-### v0.5.3 (Current)
+### v1.0.0 (Current - Demo Release)
+**First Official Demo Version**
+- Complete landing page with professional sections
+- Full bilingual support (English as primary, Spanish as secondary)
+- Interactive mental health map with mobile optimization
+- AI-powered chat with contextual risk detection
+- Psychologist dashboard with real-time alerts
+- Safe Life Mode for crisis situations
+- Wellness tools (breathing exercises, grounding techniques)
+- Circuit breaker for AI resilience
+- Session security improvements
+- Mobile-responsive design across all pages
+
+### v0.5.3
 **Major Bug Fixes & Stability**
 - Circuit breaker with file fallback for AI failures
 - Leaflet map fallback when no Google Maps API key
@@ -366,10 +383,7 @@ The map page shows nearby mental health centers with two modes:
 - Chat history search functionality
 - Interactive breathing exercises (4-7-8)
 - Interactive grounding checklist (5-4-3-2-1)
-- Personalized time-based welcome message
 - Enhanced panic button visibility
-- Session security improvements
-- PHPUnit test structure
 
 ### v0.5.2
 **Interactive Map of Mental Health Centers**
@@ -404,7 +418,7 @@ The map page shows nearby mental health centers with two modes:
 
 ---
 
-## 🛡️ Security Notes
+## 🛡️ Security Features
 
 | Feature | Implementation |
 |---------|----------------|
@@ -415,6 +429,7 @@ The map page shows nearby mental health centers with two modes:
 | CSRF | Session tokens |
 | Rate Limiting | Per-user limits with sliding window |
 | Session | Secure cookies, regeneration on login |
+| Origin Validation | Cross-origin request protection |
 | Alerts | Silent (patient never knows) |
 | Test Directory | Blocked in production via `.htaccess` |
 
@@ -440,10 +455,33 @@ composer require --dev phpunit/phpunit:^10
 
 ---
 
+## 🚧 Demo Limitations
+
+This demo version includes the following limitations:
+- Test database with sample data
+- Limited to demonstration purposes
+- Some features may require API key configuration
+
+For production deployment, please contact the development team.
+
+---
+
+## 📞 Support
+
+For questions or support regarding this demo:
+- Create an issue in this repository
+- Contact the Mentta development team
+
+---
+
 <p align="center">
   <strong>Mentta</strong> - Saving lives with AI 💜
 </p>
 
 <p align="center">
   <sub>Built with ❤️ by the Mentta Team</sub>
+</p>
+
+<p align="center">
+  <sub>Version 1.0.0 - Demo Release - February 2026</sub>
 </p>
