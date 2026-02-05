@@ -134,7 +134,7 @@ const LiveSession: React.FC<LiveSessionProps> = ({ onEndSession }) => {
       inputContextRef.current = new AudioContext({ sampleRate: SAMPLE_RATE_INPUT });
       outputContextRef.current = new AudioContext({ sampleRate: SAMPLE_RATE_OUTPUT });
 
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
       sessionPromiseRef.current = ai.live.connect({
         model: MODEL_NAME,
@@ -302,7 +302,7 @@ NUNCA:
                     const sessionToken = window.opener?.sessionStorage?.getItem('liveSessionToken') ||
                       sessionStorage.getItem('liveSessionToken');
                     if (sessionToken) {
-                      fetch('http://localhost/Mentta---Saving-lives-with-AI/api/live/trigger-alert.php', {
+                      fetch(`${import.meta.env.VITE_API_URL || ''}/api/live/trigger-alert.php`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ sessionToken, riskLevel, emotion, reason })

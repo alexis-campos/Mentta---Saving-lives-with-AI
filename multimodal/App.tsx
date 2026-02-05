@@ -74,7 +74,7 @@ const App: React.FC = () => {
     if (token && sessionData) {
       try {
         console.log("Guardando datos de sesión con token:", token.substring(0, 10) + "...");
-        const response = await fetch('http://localhost/Mentta---Saving-lives-with-AI/api/live/save-session.php', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/live/save-session.php`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
