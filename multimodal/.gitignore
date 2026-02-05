@@ -8,7 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-# dist - Uncommenting to allow Railway to serve built files
+dist
 dist-ssr
 *.local
 
