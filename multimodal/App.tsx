@@ -1,10 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LiveSession from './components/LiveSession';
 import { Heart, Shield, Zap, Video, ArrowLeft } from 'lucide-react';
 import { MentalHealthState, RiskLevel } from './types';
 
 const App: React.FC = () => {
   const [inSession, setInSession] = useState(false);
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+
+  // Listen for session token from parent window (cross-origin communication)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data.type === 'MENTTA_SESSION_TOKEN') {
+        console.log('Recibido token de sesión del padre');
+        setSessionToken(event.data.sessionToken);
+        setSessionId(event.data.sessionId);
+        // Also store in local sessionStorage as backup
+        sessionStorage.setItem('liveSessionToken', event.data.sessionToken);
+        sessionStorage.setItem('liveSessionId', event.data.sessionId);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    // Request token from parent (fallback if we loaded before parent sent it)
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'MENTTA_REQUEST_TOKEN' }, '*');
+    }
+
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
   const startSession = () => {
     setInSession(true);
@@ -13,17 +38,8 @@ const App: React.FC = () => {
   const endSession = async (sessionData?: { maxRiskLevel: number; emotions: string[]; riskEvents: any[]; alertsTriggered: number }) => {
     setInSession(false);
 
-    // Get session token safely (handles cross-origin security errors)
-    let sessionToken = null;
-    try {
-      sessionToken = window.parent?.sessionStorage?.getItem('liveSessionToken');
-    } catch (e) {
-      console.log('No se pudo acceder al sessionStorage del padre (cross-origin)');
-    }
-
-    if (!sessionToken) {
-      sessionToken = sessionStorage.getItem('liveSessionToken');
-    }
+    // Get session token from local sessionStorage (received via postMessage from parent)
+    const token = sessionStorage.getItem('liveSessionToken');
 
     // Notify parent window to close overlay IMMEDIATELY for a snappy feel
     if (window.parent !== window) {
@@ -35,16 +51,14 @@ const App: React.FC = () => {
       window.close();
     }
 
-    if (sessionToken && sessionData) {
+    if (token && sessionData) {
       try {
-        console.log("Guardando datos de sesión...");
-        // Save session data to PHP backend (we don't wait for it to finish before notifying parent if we want it snappy, 
-        // but here we already notified the parent, so we can just do the work)
-        await fetch('http://localhost/Mentta---Saving-lives-with-AI/api/live/save-session.php', {
+        console.log("Guardando datos de sesión con token:", token.substring(0, 10) + "...");
+        const response = await fetch('http://localhost/Mentta---Saving-lives-with-AI/api/live/save-session.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            sessionToken,
+            sessionToken: token,
             summary: `Sesión de videollamada. Emoción predominante: ${sessionData.emotions[0] || 'Neutral'}. Nivel de riesgo máximo: ${sessionData.maxRiskLevel}.`,
             maxRiskLevel: sessionData.maxRiskLevel,
             emotions: sessionData.emotions,
@@ -52,9 +66,17 @@ const App: React.FC = () => {
             alertsTriggered: sessionData.alertsTriggered
           })
         });
+        const result = await response.json();
+        if (result.success) {
+          console.log("✅ Sesión guardada exitosamente:", result);
+        } else {
+          console.error("❌ Error del servidor:", result.error);
+        }
       } catch (error) {
         console.error('Error guardando sesión:', error);
       }
+    } else {
+      console.warn("⚠️ No se pudo guardar: token=", !!token, "sessionData=", !!sessionData);
     }
 
     console.log("Sesión terminada");

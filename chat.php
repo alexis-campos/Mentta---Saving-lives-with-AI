@@ -774,6 +774,10 @@ if ($hour >= 5 && $hour < 12) {
 
     <!-- Live Call Fullscreen Overlay -->
     <div id="live-overlay" class="fixed inset-0 z-[100] bg-zinc-950 hidden">
+        <!-- Session Timer -->
+        <div id="live-timer" class="absolute top-4 left-1/2 -translate-x-1/2 z-20 px-6 py-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white font-mono text-lg tracking-wider shadow-lg">
+            00:00
+        </div>
         <!-- Close button floating -- Reduced by ~50% -->
         <button onclick="closeLiveOverlay()"
             class="absolute top-4 right-4 z-20 text-white/50 hover:text-white transition-colors p-2 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-xl border border-white/10"
@@ -832,10 +836,13 @@ if ($hour >= 5 && $hour < 12) {
         // Update timer display
         function updateLiveTimer() {
             if (!liveStartTime) return;
+            const timerElement = document.getElementById('live-timer');
+            if (!timerElement) return;
+            
             const elapsed = Math.floor((Date.now() - liveStartTime) / 1000);
             const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
             const seconds = (elapsed % 60).toString().padStart(2, '0');
-            document.getElementById('live-timer').textContent = `${minutes}:${seconds}`;
+            timerElement.textContent = `${minutes}:${seconds}`;
         }
 
         // Start Live Call - Opens in overlay iframe
@@ -869,8 +876,17 @@ if ($hour >= 5 && $hour < 12) {
                 document.body.style.overflow = 'hidden';
 
                 // Set iframe source (dev: localhost:3000, prod: /multimodal/)
-                const liveAppUrl = 'http://localhost:3000';
+                const liveAppUrl = 'http://localhost:3001';
                 iframe.src = liveAppUrl;
+
+                // When iframe loads, send the session token via postMessage
+                iframe.onload = function() {
+                    iframe.contentWindow.postMessage({
+                        type: 'MENTTA_SESSION_TOKEN',
+                        sessionToken: data.sessionToken,
+                        sessionId: data.sessionId
+                    }, '*');
+                };
 
                 // Start timer
                 liveStartTime = Date.now();
@@ -882,10 +898,24 @@ if ($hour >= 5 && $hour < 12) {
             }
         }
 
-        // Listen for messages from iframe (when session ends)
+        // Listen for messages from iframe
         window.addEventListener('message', function (event) {
+            // When session ends
             if (event.data.type === 'MENTTA_LIVE_END') {
                 closeLiveOverlay();
+            }
+            // If iframe requests the token (fallback)
+            if (event.data.type === 'MENTTA_REQUEST_TOKEN') {
+                const iframe = document.getElementById('live-iframe');
+                const token = sessionStorage.getItem('liveSessionToken');
+                const sessionId = sessionStorage.getItem('liveSessionId');
+                if (iframe && token) {
+                    iframe.contentWindow.postMessage({
+                        type: 'MENTTA_SESSION_TOKEN',
+                        sessionToken: token,
+                        sessionId: sessionId
+                    }, '*');
+                }
             }
         });
     </script>

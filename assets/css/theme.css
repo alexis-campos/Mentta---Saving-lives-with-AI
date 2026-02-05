@@ -12,23 +12,23 @@
     --bg-secondary: #ffffff;
     --bg-tertiary: #ebebe0;
     --bg-input: #ffffff;
-    
+
     /* Text */
     --text-primary: #2d3a2d;
     --text-secondary: #4a5a4a;
     --text-tertiary: #8b9d8b;
     --text-inverse: #ffffff;
-    
+
     /* Borders */
     --border-color: #e1e1d1;
     --border-focus: #2d3a2d;
-    
+
     /* Accent Colors (Green/Sand Palette) */
     --accent-primary: #2d3a2d;
     --accent-secondary: #cbaa8e;
     --accent-hover: #1e261e;
     --accent-light: #f0f2f0;
-    
+
     /* Status Colors */
     --success: #6b8e6b;
     --success-light: #e8f0e8;
@@ -36,14 +36,17 @@
     --warning-light: #f7f1ec;
     --danger: #9e4a4a;
     --danger-light: #fceaea;
-    
+
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgba(45, 58, 45, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(45, 58, 45, 0.08);
     --shadow-lg: 0 10px 15px -3px rgba(45, 58, 45, 0.1);
-    
+
     /* Backdrop */
     --backdrop-color: rgba(45, 58, 45, 0.3);
+
+    /* Easing */
+    --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ============================================
@@ -55,23 +58,23 @@
     --bg-secondary: #242d24;
     --bg-tertiary: #2d3a2d;
     --bg-input: #2d3a2d;
-    
+
     /* Text */
     --text-primary: #f5f5f0;
     --text-secondary: #cbaa8e;
     --text-tertiary: #8b9d8b;
     --text-inverse: #1a211a;
-    
+
     /* Borders */
     --border-color: #3d4d3d;
     --border-focus: #cbaa8e;
-    
+
     /* Accent Colors */
     --accent-primary: #cbaa8e;
     --accent-secondary: #8b9d8b;
     --accent-hover: #dec7b4;
     --accent-light: rgba(203, 170, 142, 0.1);
-    
+
     /* Status Colors */
     --success: #8b9d8b;
     --success-light: rgba(139, 157, 139, 0.1);
@@ -79,12 +82,12 @@
     --warning-light: rgba(203, 170, 142, 0.1);
     --danger: #cf6666;
     --danger-light: rgba(207, 102, 102, 0.1);
-    
+
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.6);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.7);
-    
+
     /* Backdrop */
     --backdrop-color: rgba(0, 0, 0, 0.8);
 }
