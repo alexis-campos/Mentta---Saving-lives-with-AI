@@ -243,7 +243,7 @@
         .ig-avatar-inner {
             width: 100%;
             height: 100%;
-            background-image: url('images/Menta icono.jpg');
+            background-image: url('images/Menta_icono.jpg');
             background-size: cover;
             background-position: center;
             border-radius: 50%;

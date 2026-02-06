@@ -123,7 +123,7 @@ if ($hour >= 5 && $hour < 12) {
     <script src="assets/js/translations.js"></script>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="images/Menta icono.jpg">
+    <link rel="icon" type="image/jpeg" href="images/Menta_icono.jpg">
 </head>
 
 <body class="antialiased" style="background-color: #FAFAFA;">
@@ -148,7 +148,7 @@ if ($hour >= 5 && $hour < 12) {
             <div class="text-center w-full">
                 <div
                     class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border border-white p-0.5 bg-white shadow-xl">
-                    <img src="Images/Menta icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
+                    <img src="images/Menta_icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
                 </div>
                 <h3
                     style="color: #111; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.5rem; margin-bottom: 0.5rem;">
@@ -274,7 +274,7 @@ if ($hour >= 5 && $hour < 12) {
 
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full overflow-hidden border border-white p-0.5 bg-white shadow-md">
-                        <img src="Images/Menta icono.jpg" alt="M" class="w-full h-full object-cover rounded-full">
+                        <img src="images/Menta_icono.jpg" alt="M" class="w-full h-full object-cover rounded-full">
                     </div>
                     <div>
                         <h1 class="text-base font-bold"
@@ -320,7 +320,7 @@ if ($hour >= 5 && $hour < 12) {
                         <div class="relative z-10 text-center">
                             <div
                                 class="w-12 h-12 md:w-16 md:h-16 mx-auto mb-6 md:mb-10 rounded-full overflow-hidden border border-white p-0.5 bg-white shadow-xl">
-                                <img src="Images/Menta icono.jpg" alt="Mentta Logo"
+                                <img src="images/Menta_icono.jpg" alt="Mentta Logo"
                                     class="w-full h-full object-cover rounded-full">
                             </div>
                             <h2 class="text-2xl md:text-4xl font-bold mb-4 md:mb-6"

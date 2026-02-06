@@ -113,7 +113,7 @@ logout();
         <div class="mb-10 inline-block relative">
             <div
                 class="w-20 h-20 mx-auto rounded-full overflow-hidden border border-mentta-border p-1 bg-white shadow-xl shadow-black/5">
-                <img src="Images/Menta icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
+                <img src="images/Menta_icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
             </div>
             <!-- Checkmark badge -->
             <div

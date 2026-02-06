@@ -8,11 +8,7 @@
 -- ==========================================================
 
 -- 1. CONFIGURACIÓN INICIAL DE BASE DE DATOS
-CREATE DATABASE IF NOT EXISTS mentta 
-    CHARACTER SET utf8mb4 
-    COLLATE utf8mb4_unicode_ci;
 
-USE mentta;
 
 -- ==========================================================
 -- 2. TABLAS PRINCIPALES DE USUARIOS Y CONFIGURACIÓN

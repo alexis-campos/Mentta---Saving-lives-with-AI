@@ -50,7 +50,7 @@ if ($user['role'] !== 'psychologist') {
                 <div class="flex items-center gap-3">
                     <div
                         class="w-10 h-10 rounded-full overflow-hidden border border-white p-0.5 bg-white shadow-premium">
-                        <img src="Images/Menta icono.jpg" alt="Mentta" class="w-full h-full object-cover rounded-full">
+                        <img src="images/Menta_icono.jpg" alt="Mentta" class="w-full h-full object-cover rounded-full">
                     </div>
                     <div>
                         <h1 class="text-xl font-bold font-serif"
@@ -165,7 +165,7 @@ if ($user['role'] !== 'psychologist') {
                             <!-- Floating badge -->
                             <div
                                 class="absolute -top-4 -right-4 w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg animate-bounce duration-[3000ms]">
-                                <img src="Images/Menta icono.jpg" alt="" class="w-12 h-12 rounded-full">
+                                <img src="images/Menta_icono.jpg" alt="" class="w-12 h-12 rounded-full">
                             </div>
                         </div>
 
@@ -208,7 +208,7 @@ if ($user['role'] !== 'psychologist') {
                         <!-- Watermark Isotype -->
                         <div
                             class="absolute -right-10 -bottom-10 w-48 h-48 opacity-[0.03] select-none pointer-events-none">
-                            <img src="Images/Menta icono.jpg" alt="" class="w-full h-full grayscale">
+                            <img src="images/Menta_icono.jpg" alt="" class="w-full h-full grayscale">
                         </div>
 
                         <div class="flex items-start justify-between relative z-10">

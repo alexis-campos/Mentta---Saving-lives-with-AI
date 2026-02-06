@@ -118,7 +118,7 @@
             <a href="index.php" class="inline-block">
                 <div
                     class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border border-mentta-border p-1 bg-white">
-                    <img src="Images/Menta icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
+                    <img src="images/Menta_icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
                 </div>
                 <h1 class="text-3xl font-serif font-bold tracking-tight text-mentta-fg">MENTTA</h1>
                 <p class="text-[10px] uppercase tracking-[0.4em] text-mentta-muted mt-2">Sophisticated Clarity</p>
