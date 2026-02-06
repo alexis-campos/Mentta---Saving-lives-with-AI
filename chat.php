@@ -150,13 +150,18 @@ if ($hour >= 5 && $hour < 12) {
                     class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border border-white p-0.5 bg-white shadow-xl">
                     <img src="images/Menta_icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
                 </div>
-                <h3
-                    style="color: #111; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.5rem; margin-bottom: 0.5rem;">
-                    <?= htmlspecialchars($user['name']) ?>
-                </h3>
-                <p style="color: #888; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.02em;">
-                    <?= htmlspecialchars($user['email']) ?>
-                </p>
+                <a href="profile.php" class="block cursor-pointer hover:opacity-80 transition-opacity" title="Mi Configuración">
+                    <h3
+                        style="color: #111; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.5rem; margin-bottom: 0.5rem;">
+                        <?= htmlspecialchars($user['name']) ?>
+                    </h3>
+                    <p style="color: #888; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.02em;">
+                        <?= htmlspecialchars($user['email']) ?>
+                    </p>
+                    <span style="font-size: 0.65rem; color: #cbaa8e; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 0.5rem;">
+                        ⚙️ Mi Configuración
+                    </span>
+                </a>
                 <div class="mood-badge"
                     style="background: white; border: 1px solid rgba(0,0,0,0.05); padding: 8px 16px; border-radius: 99px; margin-top: 1.5rem; display: inline-flex; align-items: center; gap: 8px; shadow: var(--shadow-sm);">
                     <span style="font-size: 1.1rem;"><?= $moodEmoji ?></span>
