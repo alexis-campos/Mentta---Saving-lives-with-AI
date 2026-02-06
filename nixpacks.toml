@@ -2,7 +2,7 @@
 # JSON extension is built-in since PHP 8.0, no need to install separately
 
 [phases.setup]
-nixPkgs = ["php84", "php84Extensions.pdo", "php84Extensions.pdo_mysql", "php84Extensions.mbstring", "php84Extensions.curl"]
+nixPkgs = ["php84", "php84Extensions.pdo", "php84Extensions.pdo_mysql", "php84Extensions.mysqlnd", "php84Extensions.mbstring", "php84Extensions.curl", "php84Extensions.openssl"]
 
 [phases.install]
 cmds = ["mkdir -p /var/log/apache2", "mkdir -p /var/run/apache2"]
