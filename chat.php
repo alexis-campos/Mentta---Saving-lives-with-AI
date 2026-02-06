@@ -59,17 +59,18 @@ if ($weekMood !== null) {
 
 // UX-002: Determinar saludo según hora del día
 $hour = (int) date('H');
-$greeting = 'Hola';
-$contextMessage = '¿Cómo te sientes hoy?';
+// Use translation keys - will be translated by JS
+$greetingKey = 'greetings.morning';
+$contextKey = 'greetings.howAreYouMorning';
 if ($hour >= 5 && $hour < 12) {
-    $greeting = 'Buenos días';
-    $contextMessage = '¿Cómo amaneciste hoy?';
+    $greetingKey = 'greetings.morning';
+    $contextKey = 'greetings.howAreYouMorning';
 } elseif ($hour >= 12 && $hour < 18) {
-    $greeting = 'Buenas tardes';
-    $contextMessage = '¿Cómo va tu día?';
+    $greetingKey = 'greetings.afternoon';
+    $contextKey = 'greetings.howAreYouAfternoon';
 } elseif ($hour >= 18 || $hour < 5) {
-    $greeting = 'Buenas noches';
-    $contextMessage = '¿Cómo te encuentras esta noche?';
+    $greetingKey = 'greetings.evening';
+    $contextKey = 'greetings.howAreYouEvening';
 }
 ?>
 <!DOCTYPE html>
@@ -159,14 +160,14 @@ if ($hour >= 5 && $hour < 12) {
                         <?= htmlspecialchars($user['email']) ?>
                     </p>
                     <span style="font-size: 0.65rem; color: #cbaa8e; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 0.5rem;">
-                        ⚙️ Mi Configuración
+                        ⚙️ <span data-i18n="profile.mySettings">Mi Configuración</span>
                     </span>
                 </a>
                 <div class="mood-badge"
                     style="background: white; border: 1px solid rgba(0,0,0,0.05); padding: 8px 16px; border-radius: 99px; margin-top: 1.5rem; display: inline-flex; align-items: center; gap: 8px; shadow: var(--shadow-sm);">
                     <span style="font-size: 1.1rem;"><?= $moodEmoji ?></span>
                     <span
-                        style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: #111;">Weekly
+                        style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: #111;" data-i18n="chat.weeklyVitality">Weekly
                         Vitality</span>
                 </div>
             </div>
@@ -186,7 +187,7 @@ if ($hour >= 5 && $hour < 12) {
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                         </svg>
                     </span>
-                    <span class="font-bold text-black text-sm tracking-tight">Nuevo Chat</span>
+                    <span class="font-bold text-black text-sm tracking-tight" data-i18n="chat.newChat">Nuevo Chat</span>
                 </button>
                 <button class="menu-btn group" onclick="window.location.href='map.php'"
                     style="background: white; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 0.75rem;">
@@ -197,7 +198,7 @@ if ($hour >= 5 && $hour < 12) {
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </span>
-                    <span class="font-bold text-mentta-primary text-sm">Mapa de Centros</span>
+                    <span class="font-bold text-mentta-primary text-sm" data-i18n="chat.centersMap">Mapa de Centros</span>
                 </button>
                 <button class="menu-btn menu-btn-crisis group" onclick="openCrisisModal()"
                     style="background-color: #fef2f2; border: 2px solid #fee2e2; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1); margin-bottom: 0.75rem;">
@@ -207,7 +208,7 @@ if ($hour >= 5 && $hour < 12) {
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     </span>
-                    <span class="font-black text-red-700 uppercase tracking-tighter text-xs">Ayuda Inmediata</span>
+                    <span class="font-black text-red-700 uppercase tracking-tighter text-xs" data-i18n="chat.immediateHelp">Ayuda Inmediata</span>
                 </button>
                 <button class="menu-btn group" onclick="openResourcesModal()"
                     style="background: white; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 1.5rem;">
@@ -217,7 +218,7 @@ if ($hour >= 5 && $hour < 12) {
                                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
                     </span>
-                    <span class="font-bold text-mentta-primary text-sm">Recursos de Bienestar</span>
+                    <span class="font-bold text-mentta-primary text-sm" data-i18n="chat.wellnessResources">Recursos de Bienestar</span>
                 </button>
                 <button class="menu-btn menu-btn-live hover:brightness-110" onclick="openLiveCallModal()"
                     style="background: #cbaa8e; color: white; border-radius: 1.25rem; box-shadow: 0 15px 30px -5px rgba(203, 170, 142, 0.5); border: 2px solid rgba(255,255,255,0.2); padding: 1.25rem; justify-content: center;">
@@ -227,14 +228,14 @@ if ($hour >= 5 && $hour < 12) {
                                 d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                     </span>
-                    <span class="font-bold tracking-[0.25em] text-[10px] uppercase">Mentta Live Session</span>
+                    <span class="font-bold tracking-[0.25em] text-[10px] uppercase" data-i18n="chat.liveSession">Mentta Live Session</span>
                 </button>
             </div>
 
             <!-- Notifications (if any) -->
             <?php if ($notifCount > 0): ?>
                 <div class="notifications-section">
-                    <div class="sidebar-section-title">Novedades</div>
+                    <div class="sidebar-section-title" data-i18n="chat.notifications">Novedades</div>
                     <div id="notifications-list">
                         <!-- Populated by JS -->
                     </div>
@@ -243,16 +244,16 @@ if ($hour >= 5 && $hour < 12) {
 
             <!-- Chat History -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">Historial</div>
+                <div class="sidebar-section-title" data-i18n="chat.history">Historial</div>
                 <div class="px-3 mb-3">
-                    <input type="text" id="chat-search" placeholder="Reflexiones pasadas..."
+                    <input type="text" id="chat-search" data-i18n-placeholder="chat.searchHistory" placeholder="Reflexiones pasadas..."
                         oninput="Menu.filterChatHistory(this.value)" class="w-full px-4 py-2.5 rounded-xl text-xs"
                         style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); focus: outline: none;">
                 </div>
                 <div id="chat-history-list" class="chat-history-list">
                     <!-- Populated by JS -->
                     <div class="px-4 py-3 text-center">
-                        <p style="color: var(--text-tertiary); font-size: 0.75rem;">Cargando historial...</p>
+                        <p style="color: var(--text-tertiary); font-size: 0.75rem;" data-i18n="chat.loadingHistory">Cargando historial...</p>
                     </div>
                 </div>
             </div>
@@ -327,22 +328,21 @@ if ($hour >= 5 && $hour < 12) {
                             </div>
                             <h2 class="text-2xl md:text-4xl font-bold mb-4 md:mb-6"
                                 style="color: #111; font-family: 'Playfair Display', serif; letter-spacing: -0.02em; line-height: 1.2;">
-                                <?= htmlspecialchars($greeting) ?>,<br>
+                                <span data-i18n="<?= htmlspecialchars($greetingKey) ?>"></span>,<br>
                                 <span
                                     class="italic font-normal"><?= htmlspecialchars(explode(' ', $user['name'])[0]) ?></span>
                             </h2>
                             <p style="color: #666;"
                                 class="text-base md:text-lg leading-relaxed font-sans font-light mb-6 md:mb-10">
-                                <?= htmlspecialchars($contextMessage) ?> Tómate tu tiempo, este es tu refugio de
-                                claridad.
+                                <span data-i18n="<?= htmlspecialchars($contextKey) ?>"></span> <span data-i18n="greetings.takeYourTime"></span>
                             </p>
 
                             <div class="flex justify-center gap-4">
                                 <span
-                                    class="text-[9px] font-bold uppercase tracking-[0.4em] text-black/20">Secure</span>
+                                    class="text-[9px] font-bold uppercase tracking-[0.4em] text-black/20" data-i18n="common.secure">Secure</span>
                                 <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-black/20">•</span>
                                 <span
-                                    class="text-[9px] font-bold uppercase tracking-[0.4em] text-black/20">Private</span>
+                                    class="text-[9px] font-bold uppercase tracking-[0.4em] text-black/20" data-i18n="common.private">Private</span>
                             </div>
                         </div>
                     </div>
@@ -357,7 +357,7 @@ if ($hour >= 5 && $hour < 12) {
     <div id="sentimentIndicator" class="fixed bottom-36 left-1/2 transform -translate-x-1/2 hidden z-40">
         <div class="glass-card rounded-full px-5 py-2.5 shadow-xl flex items-center gap-4"
             style="border: 1px solid var(--border-color);">
-            <span class="text-[10px] font-bold uppercase tracking-widest text-mentta-accent">Tu Energía</span>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-mentta-accent" data-i18n="chat.yourEnergy">Your Energy</span>
             <div class="flex gap-1.5">
                 <div id="moodDot1" class="w-1.5 h-1.5 rounded-full transition-all duration-500 bg-gray-200"></div>
                 <div id="moodDot2" class="w-1.5 h-1.5 rounded-full transition-all duration-500 bg-gray-200"></div>
@@ -380,7 +380,7 @@ if ($hour >= 5 && $hour < 12) {
                     style="animation-duration: 0.8s; animation-delay: 400ms"></div>
             </div>
             <span id="loadingText"
-                class="text-xs font-bold text-mentta-primary uppercase tracking-widest">Analizando...</span>
+                class="text-xs font-bold text-mentta-primary uppercase tracking-widest" data-i18n="chat.analyzing">Analyzing...</span>
         </div>
     </div>
 
@@ -391,7 +391,7 @@ if ($hour >= 5 && $hour < 12) {
             <div class="rounded-2xl shadow-sm transition-all overflow-hidden border border-black/5"
                 style="background-color: white;">
                 <div class="flex items-center gap-2 md:gap-4 p-2 md:p-4">
-                    <textarea id="messageInput" placeholder="Escribe aquí..."
+                    <textarea id="messageInput" data-i18n-placeholder="chat.inputPlaceholder" placeholder="Write here..."
                         class="flex-1 bg-transparent resize-none focus:outline-none px-3 py-3 md:px-4 min-h-[48px] md:min-h-[56px] max-h-[140px] text-sm md:text-base leading-relaxed"
                         style="color: #111;" rows="1" onkeydown="handleKeyDown(event)"
                         oninput="autoResize(this)"></textarea>
@@ -406,8 +406,8 @@ if ($hour >= 5 && $hour < 12) {
                 </div>
             </div>
             <p
-                class="hidden md:block text-center text-[8px] font-bold uppercase tracking-[0.4em] mt-3 md:mt-6 text-black/20">
-                ESPACIO PRIVADO • ENCRIPTADO • SEGURO
+                class="hidden md:block text-center text-[8px] font-bold uppercase tracking-[0.4em] mt-3 md:mt-6 text-black/20" data-i18n="chat.privateSpace">
+                PRIVATE SPACE • ENCRYPTED • SECURE
             </p>
         </div>
     </div>
@@ -422,17 +422,16 @@ if ($hour >= 5 && $hour < 12) {
     <div id="logoutModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 24rem;">
             <div class="modal-body text-center py-6">
-                <h3 class="text-2xl font-serif font-bold mb-3" style="color: var(--text-primary);">Concluir Sesión</h3>
-                <p style="color: var(--text-secondary);" class="mb-8 leading-relaxed">Siempre puedes volver cuando
-                    necesites un momento de claridad. Cuídate mucho. 🌿</p>
+                <h3 class="text-2xl font-serif font-bold mb-3" style="color: var(--text-primary);" data-i18n="logout.title">End Session</h3>
+                <p style="color: var(--text-secondary);" class="mb-8 leading-relaxed" data-i18n="logout.message">You can always come back when you need a moment of clarity. Take care. 🌿</p>
                 <div class="flex gap-3">
                     <button onclick="closeLogoutModal()" class="flex-1 py-2.5 px-4 rounded-xl transition-colors"
-                        style="border: 1px solid var(--border-color); color: var(--text-primary); background-color: var(--bg-tertiary);">
-                        Cancelar
+                        style="border: 1px solid var(--border-color); color: var(--text-primary); background-color: var(--bg-tertiary);" data-i18n="logout.cancel">
+                        Cancel
                     </button>
                     <button onclick="logout()"
-                        class="flex-1 py-2.5 px-4 rounded-xl bg-mentta-500 text-white hover:bg-mentta-600 transition-colors">
-                        Salir
+                        class="flex-1 py-2.5 px-4 rounded-xl bg-mentta-500 text-white hover:bg-mentta-600 transition-colors" data-i18n="logout.confirm">
+                        Log out
                     </button>
                 </div>
             </div>

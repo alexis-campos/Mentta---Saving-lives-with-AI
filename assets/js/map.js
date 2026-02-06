@@ -49,7 +49,7 @@ function initMap() {
                 };
 
                 console.log('📍 User location detected:', userLocation);
-                updateLocationText('Tu ubicación actual');
+                updateLocationText(typeof i18n !== 'undefined' ? i18n.t('map.yourLocation') : 'Tu ubicación actual');
 
                 // Get city name from coordinates (reverse geocoding)
                 reverseGeocode(userLocation);
@@ -153,7 +153,8 @@ function handleGeolocationError() {
     userLocation = defaultLocation;
 
     console.log('📍 Using default location (Lima):', defaultLocation);
-    updateLocationText('Lima (ubicación predeterminada)');
+    const defaultLocText = typeof i18n !== 'undefined' ? i18n.t('map.defaultLocation') : 'Lima (ubicación predeterminada)';
+    updateLocationText(defaultLocText);
     updateCityText('Lima, Perú');
     createMap(defaultLocation);
     addUserMarker(defaultLocation);
@@ -390,11 +391,14 @@ function showCenterInfo(center, marker) {
 
     // Build badges with brand colors
     let badges = '';
+    const menttaEliteText = typeof i18n !== 'undefined' ? i18n.t('map.menttaElite') : 'Mentta Elite';
+    const emergencyText = typeof i18n !== 'undefined' ? i18n.t('map.emergency24h') : 'Urgencias 24h';
+
     if (center.has_mentta) {
-        badges += '<span style="display:inline-block;background:#2d3a2d;color:#cbaa8e;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;margin-right:6px;">✨ Sistema Mentta</span>';
+        badges += `<span style="display:inline-block;background:#2d3a2d;color:#cbaa8e;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;margin-right:6px;">✨ ${menttaEliteText}</span>`;
     }
     if (center.emergency_24h) {
-        badges += '<span style="display:inline-block;background:#fef3c7;color:#92400E;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;">🚨 Emergencias 24h</span>';
+        badges += `<span style="display:inline-block;background:#fef3c7;color:#92400E;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;">🚨 ${emergencyText}</span>`;
     }
 
     // Build rating stars
@@ -441,13 +445,13 @@ function showCenterInfo(center, marker) {
                 ${center.phone ? `
                     <a href="tel:${center.phone}" 
                        style="flex:1; display:flex; align-items:center; justify-content:center; background:#111; color:white; padding:14px; border-radius:16px; text-decoration:none; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; transition:all 0.3s ease;">
-                        Llamar
+                        ${typeof i18n !== 'undefined' ? i18n.t('map.call') : 'Llamar'}
                     </a>
                 ` : ''}
                 <a href="https://www.google.com/maps/dir/?api=1&destination=${center.latitude},${center.longitude}" 
                    target="_blank"
                    style="flex:1; display:flex; align-items:center; justify-content:center; background:#F9F9F7; color:#111; padding:14px; border-radius:16px; text-decoration:none; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; border:1px solid rgba(0,0,0,0.05);">
-                    Ruta
+                    ${typeof i18n !== 'undefined' ? i18n.t('map.directions') : 'Ruta'}
                 </a>
             </div>
         </div>
@@ -467,7 +471,7 @@ function renderCentersList(centers) {
     container.innerHTML = '';
 
     if (!centers || !centers.length) {
-        showNoCentersMessage('No se encontraron centros');
+        showNoCentersMessage(typeof i18n !== 'undefined' ? i18n.t('map.noResults') : 'No se encontraron centros');
         return;
     }
 

@@ -1568,19 +1568,27 @@
 
 <body>
 
+    <!-- Language Selector -->
+    <div style="position: absolute; top: 20px; right: 20px; z-index: 100;">
+        <select id="languageSelector" onchange="changeLanguage(this.value)" style="padding: 8px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); cursor: pointer; font-family: var(--font-main); font-size: 14px; color: var(--fg); outline: none;">
+            <option value="es">Español</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-bg-img"></div>
 
         <div class="hero-content">
-            <p class="hero-top-text">SOPHISTICATED MENTAL CLARITY</p>
-            <h1 class="hero-title">MENTTA</h1>
-            <p class="hero-subtitle">
+            <p class="hero-top-text" data-i18n="landing.topText">SOPHISTICATED MENTAL CLARITY</p>
+            <h1 class="hero-title" data-i18n="landing.title">MENTTA</h1>
+            <p class="hero-subtitle" data-i18n="landing.subtitle">
                 Support for your mind, anytime. A serene and intuitive space for mental well-being and personal growth.
             </p>
             <div class="hero-btns">
-                <a href="login.php" class="btn btn-outline">LOGIN</a>
-                <a href="register.php" class="btn btn-solid">REGISTER</a>
+                <a href="login.php" class="btn btn-outline" data-i18n="landing.login">LOGIN</a>
+                <a href="register.php" class="btn btn-solid" data-i18n="landing.register">REGISTER</a>
             </div>
         </div>
     </section>
@@ -1771,25 +1779,25 @@
     <!-- Impact Statistics Section -->
     <section class="statistics">
         <div class="statistics-header">
-            <p class="statistics-label">Our Impact</p>
-            <h2 class="statistics-title">Numbers That Matter</h2>
+            <p class="statistics-label" data-i18n="landing.statsLabel">Our Impact</p>
+            <h2 class="statistics-title" data-i18n="landing.statsTitle">Numbers That Matter</h2>
         </div>
         <div class="stats-grid">
             <div class="stat-item">
                 <div class="stat-number">10K+</div>
-                <div class="stat-label">Active Users</div>
+                <div class="stat-label" data-i18n="landing.activeUsers">Active Users</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number">50K+</div>
-                <div class="stat-label">Sessions Completed</div>
+                <div class="stat-label" data-i18n="landing.sessionsCompleted">Sessions Completed</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number">98%</div>
-                <div class="stat-label">User Satisfaction</div>
+                <div class="stat-label" data-i18n="landing.userSatisfaction">User Satisfaction</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number">24/7</div>
-                <div class="stat-label">Always Available</div>
+                <div class="stat-label" data-i18n="landing.alwaysAvailable">Always Available</div>
             </div>
         </div>
     </section>
@@ -1797,25 +1805,25 @@
     <!-- How It Works Section -->
     <section class="how-it-works">
         <div class="hiw-header">
-            <p class="hiw-label">Simple Process</p>
-            <h2 class="hiw-title">How Mentta Works</h2>
-            <p class="hiw-subtitle">Begin your journey to mental clarity in three simple steps</p>
+            <p class="hiw-label" data-i18n="landing.hiwLabel">Simple Process</p>
+            <h2 class="hiw-title" data-i18n="landing.hiwTitle">How Mentta Works</h2>
+            <p class="hiw-subtitle" data-i18n="landing.hiwSubtitle">Begin your journey to mental clarity in three simple steps</p>
         </div>
         <div class="steps-grid">
             <div class="step-card">
                 <div class="step-number">1</div>
-                <h3 class="step-title">Create Your Account</h3>
-                <p class="step-desc">Sign up in seconds with just your email. Your privacy is our priority from day one.</p>
+                <h3 class="step-title" data-i18n="landing.step1Title">Create Your Account</h3>
+                <p class="step-desc" data-i18n="landing.step1Desc">Sign up in seconds with just your email. Your privacy is our priority from day one.</p>
             </div>
             <div class="step-card">
                 <div class="step-number">2</div>
-                <h3 class="step-title">Start a Conversation</h3>
-                <p class="step-desc">Open a chat with our AI companion. It's trained to listen, understand, and support without judgment.</p>
+                <h3 class="step-title" data-i18n="landing.step2Title">Start a Conversation</h3>
+                <p class="step-desc" data-i18n="landing.step2Desc">Open a chat with our AI companion. It's trained to listen, understand, and support without judgment.</p>
             </div>
             <div class="step-card">
                 <div class="step-number">3</div>
-                <h3 class="step-title">Receive Personalized Support</h3>
-                <p class="step-desc">Get insights, techniques, and real-time emotional support tailored to your unique needs.</p>
+                <h3 class="step-title" data-i18n="landing.step3Title">Receive Personalized Support</h3>
+                <p class="step-desc" data-i18n="landing.step3Desc">Get insights, techniques, and real-time emotional support tailored to your unique needs.</p>
             </div>
         </div>
     </section>
@@ -1823,51 +1831,51 @@
     <!-- Features Grid Section -->
     <section class="features-section">
         <div class="features-header">
-            <p class="features-label">Capabilities</p>
-            <h2 class="features-title">What Makes Us Different</h2>
+            <p class="features-label" data-i18n="landing.featuresLabel">Capabilities</p>
+            <h2 class="features-title" data-i18n="landing.featuresTitle">What Makes Us Different</h2>
         </div>
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2m0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16m-1 4h2v4h2l-3 4-3-4h2V8z"/></svg>
                 </div>
-                <h3 class="feature-card-title">AI Emotional Analysis</h3>
-                <p class="feature-card-desc">Advanced algorithms detect emotional patterns and provide real-time insights to support your wellbeing.</p>
+                <h3 class="feature-card-title" data-i18n="landing.feature1Title">AI Emotional Analysis</h3>
+                <p class="feature-card-desc" data-i18n="landing.feature1Desc">Advanced algorithms detect emotional patterns and provide real-time insights to support your wellbeing.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </div>
-                <h3 class="feature-card-title">Crisis Detection</h3>
-                <p class="feature-card-desc">Intelligent monitoring identifies signs of distress and provides immediate resources when you need them most.</p>
+                <h3 class="feature-card-title" data-i18n="landing.feature2Title">Crisis Detection</h3>
+                <p class="feature-card-desc" data-i18n="landing.feature2Desc">Intelligent monitoring identifies signs of distress and provides immediate resources when you need them most.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24"><path d="M15 10l4.55-2.28A1 1 0 0 1 21 8.62v6.76a1 1 0 0 1-1.45.89L15 14M5 18h8a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"/></svg>
                 </div>
-                <h3 class="feature-card-title">Mentta Live Sessions</h3>
-                <p class="feature-card-desc">Connect through video calls for a more personal, human-like experience with our AI companion.</p>
+                <h3 class="feature-card-title" data-i18n="landing.feature3Title">Mentta Live Sessions</h3>
+                <p class="feature-card-desc" data-i18n="landing.feature3Desc">Connect through video calls for a more personal, human-like experience with our AI companion.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24"><path d="M16 4a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4h8m0-2H8a6 6 0 0 0-6 6v8a6 6 0 0 0 6 6h8a6 6 0 0 0 6-6V8a6 6 0 0 0-6-6z"/><path d="M12 8v8M8 12h8"/></svg>
                 </div>
-                <h3 class="feature-card-title">Professional Connection</h3>
-                <p class="feature-card-desc">Seamlessly connect with licensed psychologists when you need human expertise beyond AI support.</p>
+                <h3 class="feature-card-title" data-i18n="landing.feature4Title">Professional Connection</h3>
+                <p class="feature-card-desc" data-i18n="landing.feature4Desc">Seamlessly connect with licensed psychologists when you need human expertise beyond AI support.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12V11c0 4.52-2.98 8.69-7 9.93-4.02-1.24-7-5.41-7-9.93V6.3l7-3.12zM11 7v6h2V7h-2zm0 8v2h2v-2h-2z"/></svg>
                 </div>
-                <h3 class="feature-card-title">Bank-Level Security</h3>
-                <p class="feature-card-desc">End-to-end encryption ensures your conversations remain private and protected at all times.</p>
+                <h3 class="feature-card-title" data-i18n="landing.feature5Title">Bank-Level Security</h3>
+                <p class="feature-card-desc" data-i18n="landing.feature5Desc">End-to-end encryption ensures your conversations remain private and protected at all times.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                 </div>
-                <h3 class="feature-card-title">24/7 Availability</h3>
-                <p class="feature-card-desc">Mental health support doesn't wait. Mentta is here for you anytime, day or night, holidays included.</p>
+                <h3 class="feature-card-title" data-i18n="landing.feature6Title">24/7 Availability</h3>
+                <p class="feature-card-desc" data-i18n="landing.feature6Desc">Mental health support doesn't wait. Mentta is here for you anytime, day or night, holidays included.</p>
             </div>
         </div>
     </section>
@@ -1875,40 +1883,40 @@
     <!-- Testimonials Section -->
     <section class="testimonials">
         <div class="testimonials-header">
-            <p class="testimonials-label">Stories</p>
-            <h2 class="testimonials-title">What Our Users Say</h2>
+            <p class="testimonials-label" data-i18n="landing.testimonialsLabel">Stories</p>
+            <h2 class="testimonials-title" data-i18n="landing.testimonialsTitle">What Our Users Say</h2>
         </div>
         <div class="testimonials-grid">
             <div class="testimonial-card">
                 <div class="testimonial-quote">"</div>
-                <p class="testimonial-text">Mentta helped me through my darkest moments. Having someone to talk to at 3 AM when anxiety hits is invaluable.</p>
+                <p class="testimonial-text" data-i18n="landing.testimonial1">Mentta helped me through my darkest moments. Having someone to talk to at 3 AM when anxiety hits is invaluable.</p>
                 <div class="testimonial-author">
                     <div class="testimonial-avatar">A</div>
                     <div class="testimonial-info">
-                        <h4>Anonymous User</h4>
-                        <p>Member since 2025</p>
+                        <h4 data-i18n="landing.testimonial1Author">Anonymous User</h4>
+                        <p data-i18n="landing.testimonial1Meta">Member since 2025</p>
                     </div>
                 </div>
             </div>
             <div class="testimonial-card">
                 <div class="testimonial-quote">"</div>
-                <p class="testimonial-text">I was skeptical about AI therapy, but Mentta truly understands context. It remembers our conversations and builds on them.</p>
+                <p class="testimonial-text" data-i18n="landing.testimonial2">I was skeptical about AI therapy, but Mentta truly understands context. It remembers our conversations and builds on them.</p>
                 <div class="testimonial-author">
                     <div class="testimonial-avatar">M</div>
                     <div class="testimonial-info">
-                        <h4>M. García</h4>
-                        <p>3 months with Mentta</p>
+                        <h4 data-i18n="landing.testimonial2Author">M. García</h4>
+                        <p data-i18n="landing.testimonial2Meta">3 months with Mentta</p>
                     </div>
                 </div>
             </div>
             <div class="testimonial-card">
                 <div class="testimonial-quote">"</div>
-                <p class="testimonial-text">The breathing exercises and grounding techniques have become part of my daily routine. Simple but life-changing.</p>
+                <p class="testimonial-text" data-i18n="landing.testimonial3">The breathing exercises and grounding techniques have become part of my daily routine. Simple but life-changing.</p>
                 <div class="testimonial-author">
                     <div class="testimonial-avatar">C</div>
                     <div class="testimonial-info">
-                        <h4>Carlos R.</h4>
-                        <p>Active user</p>
+                        <h4 data-i18n="landing.testimonial3Author">Carlos R.</h4>
+                        <p data-i18n="landing.testimonial3Meta">Active user</p>
                     </div>
                 </div>
             </div>
@@ -1918,52 +1926,52 @@
     <!-- FAQ Section -->
     <section class="faq">
         <div class="faq-header">
-            <p class="faq-label">Questions</p>
-            <h2 class="faq-title">Frequently Asked</h2>
+            <p class="faq-label" data-i18n="landing.faqLabel">Questions</p>
+            <h2 class="faq-title" data-i18n="landing.faqTitle">Frequently Asked</h2>
         </div>
         <div class="faq-container">
             <div class="faq-item">
                 <button class="faq-question" onclick="toggleFaq(this)">
-                    Is my information secure and private?
+                    <span data-i18n="landing.q1">Is my information secure and private?</span>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Absolutely. We use bank-level encryption for all data. Your conversations are never shared, sold, or used for advertising. You can delete your data at any time from your profile settings.</p>
+                    <p data-i18n="landing.a1">Absolutely. We use bank-level encryption for all data. Your conversations are never shared, sold, or used for advertising. You can delete your data at any time from your profile settings.</p>
                 </div>
             </div>
             <div class="faq-item">
                 <button class="faq-question" onclick="toggleFaq(this)">
-                    How does the AI understand my emotions?
+                    <span data-i18n="landing.q2">How does the AI understand my emotions?</span>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Our AI is trained on clinical psychology protocols and uses advanced natural language processing to detect emotional cues, context, and patterns in your messages. It continuously learns from our conversations to better support you.</p>
+                    <p data-i18n="landing.a2">Our AI is trained on clinical psychology protocols and uses advanced natural language processing to detect emotional cues, context, and patterns in your messages. It continuously learns from our conversations to better support you.</p>
                 </div>
             </div>
             <div class="faq-item">
                 <button class="faq-question" onclick="toggleFaq(this)">
-                    What happens if I'm in a crisis?
+                    <span data-i18n="landing.q3">What happens if I'm in a crisis?</span>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Mentta has built-in crisis detection. If we identify you may be in danger, we'll provide immediate access to emergency hotlines (like 113), calming exercises, and—if you've set it up—notify your emergency contacts or linked psychologist.</p>
+                    <p data-i18n="landing.a3">Mentta has built-in crisis detection. If we identify you may be in danger, we'll provide immediate access to emergency hotlines (like 113), calming exercises, and—if you've set it up—notify your emergency contacts or linked psychologist.</p>
                 </div>
             </div>
             <div class="faq-item">
                 <button class="faq-question" onclick="toggleFaq(this)">
-                    Is Mentta free to use?
+                    <span data-i18n="landing.q4">Is Mentta free to use?</span>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Yes, Mentta offers a free tier with full access to our AI companion, chat history, and wellness resources. Premium features like Mentta Live video sessions and professional psychologist connections may have associated costs.</p>
+                    <p data-i18n="landing.a4">Yes, Mentta offers a free tier with full access to our AI companion, chat history, and wellness resources. Premium features like Mentta Live video sessions and professional psychologist connections may have associated costs.</p>
                 </div>
             </div>
         </div>
@@ -1972,14 +1980,14 @@
     <!-- Final CTA Section -->
     <section class="final-cta">
         <div class="cta-content">
-            <p class="cta-label">Ready to Begin?</p>
-            <h2 class="cta-title">Your Journey to Clarity Starts Now</h2>
-            <p class="cta-desc">Join thousands who have found solace, understanding, and growth with Mentta. Your mental well-being deserves attention.</p>
+            <p class="cta-label" data-i18n="landing.ctaLabel">Ready to Begin?</p>
+            <h2 class="cta-title" data-i18n="landing.ctaTitle">Your Journey to Clarity Starts Now</h2>
+            <p class="cta-desc" data-i18n="landing.ctaDesc">Join thousands who have found solace, understanding, and growth with Mentta. Your mental well-being deserves attention.</p>
             <div class="cta-buttons">
-                <a href="register.php" class="btn-cta">Create Free Account</a>
-                <a href="login.php" class="btn-cta btn-cta-outline">Sign In</a>
+                <a href="register.php" class="btn-cta" data-i18n="landing.createAccount">Create Free Account</a>
+                <a href="login.php" class="btn-cta btn-cta-outline" data-i18n="landing.signIn">Sign In</a>
             </div>
-            <p class="cta-emergency">In case of emergency, call <strong>113</strong> or <strong>106</strong> immediately.</p>
+            <p class="cta-emergency" data-i18n="landing.emergencyText">In case of emergency, call <strong>113</strong> or <strong>106</strong> immediately.</p>
         </div>
     </section>
 
@@ -1988,7 +1996,7 @@
         <div class="footer-left">
             <div class="footer-logo">MENTTA</div>
             <div class="footer-address">
-                GLOBAL HEADQUARTERS<br>
+                <span data-i18n="landing.footer.hq">GLOBAL HEADQUARTERS</span><br>
                 Lima, Lima<br>
                 Peru
             </div>
@@ -2004,14 +2012,39 @@
         <div class="footer-bottom">
             <div>© 2026 MENTTA SYSTEMS</div>
             <div class="footer-utility">
-                <a href="#">LEGAL</a>
-                <a href="#">SECURITY</a>
-                <a href="#">PRIVACY POLICY</a>
+                <a href="#" data-i18n="landing.footer.legal">LEGAL</a>
+                <a href="#" data-i18n="landing.footer.security">SECURITY</a>
+                <a href="#" data-i18n="landing.footer.privacy">PRIVACY POLICY</a>
             </div>
         </div>
     </footer>
 
+    <script src="assets/js/utils.js?v=<?= time() ?>"></script>
+    <script src="assets/js/translations.js?v=<?= time() ?>"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize i18n
+            if (typeof i18n !== 'undefined') {
+                const savedLang = localStorage.getItem('mentta_language') || 'es';
+                i18n.setLanguage(savedLang);
+                
+                // Update selector
+                const selector = document.getElementById('languageSelector');
+                if (selector) selector.value = savedLang;
+                
+                i18n.applyTranslations();
+            }
+        });
+
+        function changeLanguage(lang) {
+            if (typeof i18n !== 'undefined') {
+                i18n.setLanguage(lang);
+                // i18n.applyTranslations() is called inside setLanguage via notify listeners
+                // But force apply to be sure
+                i18n.applyTranslations();
+            }
+        }
+
         // Parallax and mouse effect for hero
         const hero = document.querySelector('.hero');
         const bgImg = document.querySelector('.hero-bg-img');

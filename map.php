@@ -20,7 +20,7 @@ $theme = $user['theme_preference'] ?? 'light';
 $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
 ?>
 <!DOCTYPE html>
-<html lang="es" data-theme="<?= htmlspecialchars($theme) ?>">
+<html lang="<?= htmlspecialchars($user['language'] ?? 'es') ?>" data-theme="<?= htmlspecialchars($theme) ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -477,7 +477,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="loading-overlay">
         <div class="spinner"></div>
-        <p class="text-gray-600 font-medium">Cargando mapa...</p>
+        <p class="text-gray-600 font-medium" data-i18n="map.loading">Loading map...</p>
     </div>
 
     <!-- Header -->
@@ -497,7 +497,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                 <h1 class="font-serif italic text-lg md:text-2xl text-[#111] font-bold tracking-tight">Mentta</h1>
                 <div class="hidden md:block w-px h-6 bg-black/10"></div>
                 <span
-                    class="text-[7px] md:text-[9px] font-bold text-black/40 uppercase tracking-[0.2em] md:tracking-[0.4em]">Localizador</span>
+                    class="text-[7px] md:text-[9px] font-bold text-black/40 uppercase tracking-[0.2em] md:tracking-[0.4em]" data-i18n="map.locator">Locator</span>
             </div>
 
             <!-- Search Trigger -->
@@ -514,7 +514,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
         <!-- Search Bar Expansion -->
         <div id="search-bar" class="hidden px-8 pb-6 animate-fade">
             <div class="relative max-w-2xl mx-auto">
-                <input type="text" id="search-input" placeholder="Busca por nombre o distrito..."
+                <input type="text" id="search-input" data-i18n-placeholder="map.searchInputPlaceholder" placeholder="Search by name or district..."
                     class="w-full bg-white/50 backdrop-blur-md px-12 py-4 rounded-[2rem] border border-black/5 focus:outline-none focus:ring-4 focus:ring-black/5 transition-all text-sm font-medium"
                     oninput="searchCenters(this.value)" autocomplete="off">
                 <svg class="w-5 h-5 text-black/30 absolute left-5 top-1/2 -translate-y-1/2" fill="none"
@@ -529,7 +529,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
         <div id="mobile-search-overlay"
             class="fixed inset-0 bg-white z-[60] hidden flex-col p-6 animate-fade md:hidden">
             <div class="flex items-center justify-between mb-8">
-                <h2 class="text-2xl font-serif font-bold text-[#111]">Buscar</h2>
+                <h2 class="text-2xl font-serif font-bold text-[#111]" data-i18n="map.search">Search</h2>
                 <button onclick="toggleMobileSearch()" class="p-2 rounded-full bg-gray-100">
                     <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -537,10 +537,10 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                     </svg>
                 </button>
             </div>
-            <input type="text" id="mobile-search-input" placeholder="Nombre, distrito o especialidad..."
+            <input type="text" id="mobile-search-input" data-i18n-placeholder="map.mobileSearchInputPlaceholder" placeholder="Name, district or specialty..."
                 class="w-full bg-gray-50 px-6 py-5 rounded-2xl border-none focus:ring-2 focus:ring-black text-lg mb-4"
                 oninput="searchCenters(this.value)" autocomplete="off" autofocus>
-            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest text-center">Resultados en tiempo real
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest text-center" data-i18n="map.realTimeResults">Real-time results
             </p>
         </div>
     </header>
@@ -568,18 +568,18 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                 <div class="absolute -top-10 -right-10 w-40 h-40 bg-[#AF8A6B]/20 blur-[60px] rounded-full"></div>
                 <div class="relative z-10 flex flex-col md:block">
                     <div class="flex items-center justify-between mb-1">
-                        <p class="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em]">Entorno Actual</p>
+                        <p class="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em]" data-i18n="map.currentEnvironment">Current Environment</p>
                         <div class="flex items-center gap-2 md:hidden">
                             <span class="w-1.5 h-1.5 bg-[#AF8A6B] rounded-full animate-pulse"></span>
-                            <p class="text-[9px] text-white/50 font-medium" id="user-city-text-mobile">En línea</p>
+                            <p class="text-[9px] text-white/50 font-medium" id="user-city-text-mobile" data-i18n="map.online">Online</p>
                         </div>
                     </div>
                     <div class="flex items-center justify-between">
-                        <h3 class="font-serif italic text-xl md:text-2xl" id="user-location-text">Detectando...</h3>
+                        <h3 class="font-serif italic text-xl md:text-2xl" id="user-location-text" data-i18n="map.detecting">Detecting...</h3>
                         <div class="hidden md:flex items-center gap-2 mt-2">
                             <span class="w-1.5 h-1.5 bg-[#AF8A6B] rounded-full animate-pulse"></span>
-                            <p class="text-[10px] text-white/50 font-medium whitespace-nowrap" id="user-city-text">
-                                Optimizado para ti</p>
+                            <p class="text-[10px] text-white/50 font-medium whitespace-nowrap" id="user-city-text" data-i18n="map.optimizedForYou">
+                                Optimized for you</p>
                         </div>
                     </div>
                 </div>
@@ -592,21 +592,21 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                         <input type="radio" name="filter" value="all" checked onchange="applyFilter(this.value)"
                             class="hidden peer">
                         <div
-                            class="px-5 py-2 md:px-6 md:py-3.5 rounded-full border border-black/5 bg-white text-[11px] md:text-[11px] font-bold text-black/60 peer-checked:bg-[#111111] peer-checked:text-white peer-checked:border-[#111111] transition-all whitespace-nowrap shadow-sm">
-                            Todos</div>
+                            class="px-5 py-2 md:px-6 md:py-3.5 rounded-full border border-black/5 bg-white text-[11px] md:text-[11px] font-bold text-black/60 peer-checked:bg-[#111111] peer-checked:text-white peer-checked:border-[#111111] transition-all whitespace-nowrap shadow-sm" data-i18n="map.filters.all">
+                            All</div>
                     </label>
                     <label class="cursor-pointer group">
                         <input type="radio" name="filter" value="mentta" onchange="applyFilter(this.value)"
                             class="hidden peer">
                         <div
-                            class="px-5 py-2 md:px-6 md:py-3.5 rounded-full border border-black/5 bg-white text-[11px] md:text-[11px] font-bold text-black/60 peer-checked:bg-[#111111] peer-checked:text-white peer-checked:border-[#111111] transition-all whitespace-nowrap shadow-sm">
-                            Red Mentta</div>
+                            class="px-5 py-2 md:px-6 md:py-3.5 rounded-full border border-black/5 bg-white text-[11px] md:text-[11px] font-bold text-black/60 peer-checked:bg-[#111111] peer-checked:text-white peer-checked:border-[#111111] transition-all whitespace-nowrap shadow-sm" data-i18n="map.filters.menttaNetwork">
+                            Mentta Network</div>
                     </label>
                     <label class="cursor-pointer group">
                         <input type="radio" name="filter" value="emergency" onchange="applyFilter(this.value)"
                             class="hidden peer">
                         <div
-                            class="px-5 py-2 md:px-6 md:py-3.5 rounded-full border border-black/5 bg-white text-[11px] md:text-[11px] font-bold text-black/60 peer-checked:bg-[#111111] peer-checked:text-white peer-checked:border-[#111111] transition-all whitespace-nowrap shadow-sm">
+                            class="px-5 py-2 md:px-6 md:py-3.5 rounded-full border border-black/5 bg-white text-[11px] md:text-[11px] font-bold text-black/60 peer-checked:bg-[#111111] peer-checked:text-white peer-checked:border-[#111111] transition-all whitespace-nowrap shadow-sm" data-i18n="map.filters.emergency">
                             24h</div>
                     </label>
                 </div>
@@ -614,7 +614,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
 
             <!-- Centers List with Elite Card Style -->
             <div class="flex-1 overflow-y-auto px-4 py-5 md:px-6 md:py-6" style="background: white;">
-                <p class="text-[9px] font-bold text-black/30 uppercase tracking-[0.2em] mb-5 px-1">Resultados Cercanos
+                <p class="text-[9px] font-bold text-black/30 uppercase tracking-[0.2em] mb-5 px-1" data-i18n="map.nearbyResults">Nearby Results
                 </p>
                 <div id="centers-list" class="space-y-4">
                     <!-- Populated by JS -->
@@ -1148,7 +1148,21 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
 
     <!-- Utility Scripts -->
     <script src="assets/js/utils.js?v=<?= time() ?>"></script>
+    <script src="assets/js/translations.js?v=<?= time() ?>"></script>
     <script src="assets/js/map.js?v=<?= time() ?>"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof i18n !== 'undefined') {
+                i18n.applyTranslations();
+                
+                // Subscribe to language changes to reload map markers if needed
+                i18n.onLanguageChange((lang) => {
+                    // Refresh page to re-render map with new language
+                    window.location.reload();
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

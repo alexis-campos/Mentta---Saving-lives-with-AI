@@ -56,7 +56,7 @@ try {
 }
 ?>
 <!DOCTYPE html>
-<html lang="es" data-theme="<?= htmlspecialchars($theme) ?>">
+<html lang="<?= htmlspecialchars($userLanguage) ?>" data-theme="<?= htmlspecialchars($theme) ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -464,7 +464,7 @@ try {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
-            <h1 class="text-lg font-semibold" style="color: var(--text-primary);">Mi Cuenta</h1>
+            <h1 class="text-lg font-semibold" style="color: var(--text-primary);" data-i18n="profile.myAccount">My Account</h1>
         </div>
     </header>
 
@@ -474,39 +474,37 @@ try {
 
             <!-- Personal Info Section -->
             <section class="profile-section">
-                <h2 class="profile-section-title">👤 Información Personal</h2>
+                <h2 class="profile-section-title">👤 <span data-i18n="profile.personalInfo">Personal Information</span></h2>
 
                 <form id="profile-form" onsubmit="Profile.updateProfile(event)">
                     <div class="form-group">
-                        <label class="form-label" for="name">Nombre</label>
+                        <label class="form-label" for="name" data-i18n="profile.name">Name</label>
                         <input type="text" id="name" name="name" class="form-input"
                             value="<?= htmlspecialchars($user['name']) ?>" required>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="email">Correo electrónico</label>
+                        <label class="form-label" for="email" data-i18n="profile.email">Email</label>
                         <input type="email" id="email" class="form-input"
                             value="<?= htmlspecialchars($user['email']) ?>" disabled>
-                        <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">
-                            El correo no puede ser modificado
-                        </p>
+                            El correo no puede ser modificado</p>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="age">Edad</label>
+                        <label class="form-label" for="age" data-i18n="profile.age">Age</label>
                         <input type="number" id="age" name="age" class="form-input" value="<?= $user['age'] ?? '' ?>"
-                            min="13" max="120" placeholder="Opcional">
+                            min="13" max="120" data-i18n-placeholder="profile.optional" placeholder="Optional">
                     </div>
 
-                    <button type="submit" class="btn-primary">
-                        Guardar cambios
+                    <button type="submit" class="btn-primary" data-i18n="profile.saveChanges">
+                        Save Changes
                     </button>
                 </form>
             </section>
 
             <!-- Change Password Section -->
             <section class="profile-section">
-                <h2 class="profile-section-title">🔐 Cambiar Contraseña</h2>
+                <h2 class="profile-section-title">🔐 <span data-i18n="profile.changePassword">Change Password</span></h2>
 
                 <form id="password-form" onsubmit="Profile.changePassword(event)">
                     <div class="form-group">
@@ -641,13 +639,13 @@ try {
 
             <!-- Preferences Section -->
             <section class="profile-section">
-                <h2 class="profile-section-title">⚙️ Preferencias</h2>
+                <h2 class="profile-section-title">⚙️ <span data-i18n="profile.preferences">Preferences</span></h2>
 
                 <!-- Theme Toggle -->
                 <div class="preference-item">
                     <div class="preference-info">
-                        <h4>🌙 Modo Oscuro</h4>
-                        <p>Reduce la fatiga visual en ambientes con poca luz</p>
+                        <h4>🌙 <span data-i18n="profile.darkMode">Dark Mode</span></h4>
+                        <p data-i18n="profile.reducesEyeStrain">Reduces eye strain in low-light environments</p>
                     </div>
                     <label class="toggle-switch">
                         <input type="checkbox" id="theme-toggle" <?= $theme === 'dark' ? 'checked' : '' ?>
@@ -659,8 +657,8 @@ try {
                 <!-- Language Selector -->
                 <div class="preference-item">
                     <div class="preference-info">
-                        <h4>🌐 Idioma / Language</h4>
-                        <p>Elige tu idioma preferido para la interfaz</p>
+                        <h4>🌐 <span data-i18n="profile.languageLabel">Language</span></h4>
+                        <p data-i18n="profile.chooseLanguage">Choose your preferred language for the interface</p>
                     </div>
                     <select id="language-select" 
                         class="form-input" 
@@ -674,8 +672,8 @@ try {
                 <!-- Pause Analysis Toggle -->
                 <div class="preference-item">
                     <div class="preference-info">
-                        <h4>⏸️ Pausar Análisis Emocional</h4>
-                        <p>Desactiva temporalmente el análisis de emociones y alertas automáticas por 24 horas</p>
+                        <h4>⏸️ <span data-i18n="profile.pauseAnalysis">Pause Emotional Analysis</span></h4>
+                        <p data-i18n="profile.pauseAnalysisDesc">Temporarily disable emotion analysis and automatic alerts for 24 hours</p>
 
                         <?php if ($analysisPaused): ?>
                             <div class="analysis-warning">
@@ -695,20 +693,20 @@ try {
 
             <!-- Privacy Section -->
             <section class="profile-section">
-                <h2 class="profile-section-title">🔒 Privacidad</h2>
+                <h2 class="profile-section-title">🔒 <span data-i18n="profile.privacy">Privacy</span></h2>
 
                 <button class="btn-secondary btn-danger" style="width: 100%;" onclick="Profile.confirmDeleteHistory()">
-                    🗑️ Eliminar historial de conversaciones
+                    🗑️ <span data-i18n="profile.deleteHistory">Delete conversation history</span>
                 </button>
-                <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.5rem; text-align: center;">
-                    Esta acción no se puede deshacer
+                <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.5rem; text-align: center;" data-i18n="profile.cannotUndo">
+                    This action cannot be undone
                 </p>
             </section>
 
             <!-- Logout Section -->
             <section class="profile-section" style="border-color: transparent; background: transparent; padding: 0;">
                 <button class="btn-primary" style="background-color: #000;" onclick="Profile.logout()">
-                    🚪 Cerrar Sesión
+                    🚪 <span data-i18n="profile.logout">Log Out</span>
                 </button>
             </section>
 
@@ -824,11 +822,17 @@ try {
     <!-- JavaScript -->
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/theme.js"></script>
+    <script src="assets/js/translations.js"></script>
     <script src="assets/js/profile.js"></script>
 
     <!-- Crisis Preferences Initialization -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Apply translations
+            if (typeof i18n !== 'undefined') {
+                i18n.applyTranslations();
+            }
+            
             // Load crisis preferences
             Profile.loadCrisisPreferences();
         });
