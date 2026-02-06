@@ -983,7 +983,7 @@ if ($hour >= 5 && $hour < 12) {
                 document.body.style.overflow = 'hidden';
 
                 // Set iframe source - Uses MENTTA_LIVE_URL from config or production URL
-                const liveAppUrl = '<?= defined('MENTTA_LIVE_URL') ? MENTTA_LIVE_URL : (APP_ENV === 'production' ? 'https://mentta-live-production.up.railway.app' : 'http://localhost:3001') ?>';
+                const liveAppUrl = '<?= defined('MENTTA_LIVE_URL') ? MENTTA_LIVE_URL : (APP_ENV === 'production' ? 'https://mentta-saving-lives-with-ai-production-e1d5.up.railway.app' : 'http://localhost:3001') ?>';
                 iframe.src = liveAppUrl;
 
                 // When iframe loads, send the session token via postMessage
@@ -1012,7 +1012,7 @@ if ($hour >= 5 && $hour < 12) {
             window.location.origin,                    // Current page origin (works in prod & dev)
             'http://localhost:3001',                   // Vite dev server
             'http://localhost',                        // XAMPP local
-            'https://mentta-live-production.up.railway.app',  // Railway production
+            'https://mentta-saving-lives-with-ai-production-e1d5.up.railway.app',  // Railway production
             '<?= defined('MENTTA_LIVE_URL') ? MENTTA_LIVE_URL : '' ?>',  // Custom from config
         ].filter(Boolean);
         
