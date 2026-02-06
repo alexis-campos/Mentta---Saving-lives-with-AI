@@ -147,7 +147,8 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
         }
 
         /* ============================================
-           MOBILE BOTTOM SHEET - Complete Rewrite
+           MOBILE BOTTOM SHEET - Professional 3-State UX
+           States: peek (15vh), half (45vh), full (85vh)
            ============================================ */
         @media (max-width: 767px) {
             /* Hide desktop order classes on mobile */
@@ -173,89 +174,174 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                 z-index: 1;
             }
             
-            #map {
+            #map, #leaflet-map {
                 height: 100% !important;
                 width: 100% !important;
             }
             
-            /* Bottom Sheet Panel */
+            /* ============================================
+               Bottom Sheet Panel - iOS-style transitions
+               ============================================ */
             #centers-panel {
                 position: absolute !important;
                 bottom: 0 !important;
                 left: 0 !important;
                 right: 0 !important;
                 top: auto !important;
-                height: 40vh;
-                max-height: 85vh;
-                min-height: 120px;
+                height: 45vh; /* Default: half state */
+                max-height: 90vh;
+                min-height: 100px;
                 z-index: 100 !important;
                 background: white !important;
-                border-radius: 24px 24px 0 0 !important;
-                box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12) !important;
+                border-radius: 20px 20px 0 0 !important;
+                box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.1), 
+                            0 -1px 0 rgba(0, 0, 0, 0.05) !important;
                 display: flex;
                 flex-direction: column;
-                transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 overflow: hidden;
+                /* Smooth iOS-like spring animation */
+                transition: height 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+                            transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+                will-change: height, transform;
             }
             
-            /* Panel expanded state */
-            #centers-panel.expanded {
-                height: 75vh;
-            }
-            
-            /* Panel collapsed state */
-            #centers-panel.collapsed {
+            /* State: Peek (collapsed) - shows just handle + location */
+            #centers-panel.state-peek {
                 height: 140px;
             }
             
-            /* Drag handle area */
+            /* State: Half - shows filters + some centers */
+            #centers-panel.state-half {
+                height: 45vh;
+            }
+            
+            /* State: Full - shows all content */
+            #centers-panel.state-full {
+                height: 85vh;
+            }
+            
+            /* Dragging state - disable transitions for smooth drag */
+            #centers-panel.dragging {
+                transition: none !important;
+            }
+            
+            /* ============================================
+               Drag Handle - Professional touch target
+               ============================================ */
             #swipe-area {
                 flex-shrink: 0;
                 padding: 12px 0 8px 0;
                 cursor: grab;
                 touch-action: none;
+                -webkit-user-select: none;
+                user-select: none;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
             }
             
             #swipe-area:active {
                 cursor: grabbing;
             }
             
-            /* Drag handle bar */
-            #swipe-area > div {
-                width: 40px;
-                height: 4px;
-                background: #D1D5DB;
-                border-radius: 2px;
+            /* Drag handle pill */
+            .drag-handle {
+                width: 36px;
+                height: 5px;
+                background: #E0E0E0;
+                border-radius: 3px;
+                transition: all 0.2s ease;
             }
             
-            /* Location header - more compact */
-            #centers-panel > div:nth-child(2) {
+            #centers-panel.dragging .drag-handle,
+            #swipe-area:active .drag-handle {
+                width: 44px;
+                background: #BDBDBD;
+            }
+            
+            /* State indicator dots */
+            .state-dots {
+                display: flex;
+                gap: 6px;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            #centers-panel.dragging .state-dots {
+                opacity: 1;
+            }
+            
+            .state-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: #E0E0E0;
+                transition: all 0.2s ease;
+            }
+            
+            .state-dot.active {
+                background: #111;
+                transform: scale(1.2);
+            }
+            
+            /* ============================================
+               Location Header - Compact on mobile
+               ============================================ */
+            .location-header {
                 padding: 12px 16px !important;
-            }
-            
-            #centers-panel > div:nth-child(2) h3 {
-                font-size: 1.125rem !important;
-            }
-            
-            /* Filters - horizontal scroll */
-            #centers-panel > div:nth-child(3) {
-                padding: 8px 12px !important;
                 flex-shrink: 0;
             }
             
-            /* Centers list - scrollable */
-            #centers-panel > div:nth-child(4) {
+            .location-header h3 {
+                font-size: 1.125rem !important;
+            }
+            
+            /* ============================================
+               Filters - Horizontal scrollable
+               ============================================ */
+            .filters-section {
+                padding: 8px 12px !important;
+                flex-shrink: 0;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* Hide scrollbar but keep functionality */
+            .filters-section::-webkit-scrollbar {
+                display: none;
+            }
+            
+            /* ============================================
+               Centers List - Scrollable content
+               ============================================ */
+            .centers-content {
                 flex: 1;
                 overflow-y: auto;
                 padding: 12px !important;
                 -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
             }
             
-            /* Center cards - more compact */
+            /* Fade effect when in peek state */
+            #centers-panel.state-peek .centers-content {
+                opacity: 0.3;
+                pointer-events: none;
+            }
+            
+            /* Center cards - touch optimized */
             .center-card {
-                padding: 12px !important;
-                margin-bottom: 8px !important;
+                padding: 14px !important;
+                margin-bottom: 10px !important;
                 border-radius: 16px !important;
+                border: 1px solid rgba(0,0,0,0.04) !important;
+                background: #FAFAFA !important;
+                transition: transform 0.15s ease, background 0.15s ease !important;
+            }
+            
+            .center-card:active {
+                transform: scale(0.98) !important;
+                background: #F0F0F0 !important;
             }
             
             .center-card h4 {
@@ -264,50 +350,46 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                 line-height: 1.3;
             }
             
-            /* Ensure white background fills entire panel */
+            /* Centers list background */
             #centers-list {
                 background: white !important;
                 min-height: 100%;
-                padding-bottom: 20px !important;
+                padding-bottom: 40px !important;
             }
             
-            /* Panel inner sections all white */
+            /* Panel sections styling */
             #centers-panel > div {
                 background: white !important;
             }
             
-            /* Keep location section black */
+            /* Keep location section dark */
             #centers-panel > div:nth-child(2) {
                 background: #111 !important;
             }
             
-            /* Recenter button - above panel */
+            /* ============================================
+               Recenter Button - Follows panel state
+               ============================================ */
             #recenter-btn {
-                bottom: calc(40vh + 16px) !important;
-                right: 16px !important;
                 z-index: 90;
-                width: 44px !important;
-                height: 44px !important;
-                transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                width: 48px !important;
+                height: 48px !important;
+                transition: bottom 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+                            transform 0.2s ease,
+                            opacity 0.2s ease;
             }
+            
+            /* Position based on panel state */
+            #recenter-btn.state-peek { bottom: 156px !important; }
+            #recenter-btn.state-half { bottom: calc(45vh + 16px) !important; }
+            #recenter-btn.state-full { bottom: calc(85vh + 16px) !important; opacity: 0.5; }
             
             /* Header floating buttons */
             .floating-action {
-                width: 40px !important;
-                height: 40px !important;
+                width: 44px !important;
+                height: 44px !important;
                 min-width: 44px;
                 min-height: 44px;
-            }
-            
-            /* Touch device - disable hover */
-            .center-card:hover {
-                transform: none !important;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01) !important;
-            }
-            
-            .center-card:active {
-                transform: scale(0.98) !important;
-                background: #F9FAFB !important;
             }
         }
 
@@ -470,10 +552,15 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
         <aside id="centers-panel"
             class="panel-sidebar md:w-[400px] w-full h-[35vh] md:h-full flex flex-col shadow-[0_-10px_40px_-5px_rgba(0,0,0,0.15)] md:shadow-none bg-white z-40 relative rounded-t-[32px] md:rounded-none overflow-hidden shrink-0 initial-reveal-container transform transition-all duration-300 order-2 md:order-1"
             style="transition-delay: 0.1s;">
-            <!-- Swipe Handle (Mobile only - Top of panel) -->
-            <div class="w-full flex justify-center py-2 md:hidden bg-white cursor-pointer z-20 hover:bg-gray-50 transition-colors"
-                id="swipe-area" onclick="togglePanelHeight()">
-                <div class="w-12 h-1 bg-gray-300 rounded-full"></div>
+            <!-- Swipe Handle (Mobile only - Professional drag handle) -->
+            <div class="w-full flex flex-col items-center py-3 md:hidden bg-white cursor-grab z-20 select-none"
+                id="swipe-area">
+                <div class="drag-handle"></div>
+                <div class="state-dots mt-2">
+                    <div class="state-dot" data-state="peek"></div>
+                    <div class="state-dot active" data-state="half"></div>
+                    <div class="state-dot" data-state="full"></div>
+                </div>
             </div>
 
             <!-- Location Aura Section (Compacted) -->
@@ -869,14 +956,190 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                 }
             };
             
-            let isPanelExpanded = false;
-            window.togglePanelHeight = () => {
-                const panel = document.getElementById('centers-panel');
-                if (panel) {
-                    isPanelExpanded = !isPanelExpanded;
-                    panel.style.height = isPanelExpanded ? '85vh' : '55vh';
+            // ============================================
+            // PROFESSIONAL 3-STATE BOTTOM SHEET
+            // States: peek (140px), half (45vh), full (85vh)
+            // ============================================
+            const BottomSheet = {
+                panel: null,
+                swipeArea: null,
+                recenterBtn: null,
+                
+                // State definitions
+                states: {
+                    peek: { height: 140, name: 'peek' },
+                    half: { height: window.innerHeight * 0.45, name: 'half' },
+                    full: { height: window.innerHeight * 0.85, name: 'full' }
+                },
+                
+                currentState: 'half',
+                startY: 0,
+                startHeight: 0,
+                isDragging: false,
+                
+                init() {
+                    this.panel = document.getElementById('centers-panel');
+                    this.swipeArea = document.getElementById('swipe-area');
+                    this.recenterBtn = document.getElementById('recenter-btn');
+                    
+                    if (!this.panel || !this.swipeArea) return;
+                    
+                    // Update state heights on resize
+                    window.addEventListener('resize', () => {
+                        this.states.half.height = window.innerHeight * 0.45;
+                        this.states.full.height = window.innerHeight * 0.85;
+                    });
+                    
+                    // Touch events
+                    this.swipeArea.addEventListener('touchstart', (e) => this.onTouchStart(e), { passive: true });
+                    this.swipeArea.addEventListener('touchmove', (e) => this.onTouchMove(e), { passive: false });
+                    this.swipeArea.addEventListener('touchend', (e) => this.onTouchEnd(e));
+                    
+                    // Mouse events for desktop testing
+                    this.swipeArea.addEventListener('mousedown', (e) => this.onMouseDown(e));
+                    
+                    // Tap to toggle
+                    this.swipeArea.addEventListener('click', (e) => {
+                        if (!this.isDragging) this.cycleState();
+                    });
+                    
+                    // Initialize state
+                    this.setState('half', false);
+                },
+                
+                onTouchStart(e) {
+                    this.startDrag(e.touches[0].clientY);
+                },
+                
+                onTouchMove(e) {
+                    if (!this.isDragging) return;
+                    e.preventDefault();
+                    this.onDrag(e.touches[0].clientY);
+                },
+                
+                onTouchEnd(e) {
+                    this.endDrag();
+                },
+                
+                onMouseDown(e) {
+                    this.startDrag(e.clientY);
+                    
+                    const onMouseMove = (e) => this.onDrag(e.clientY);
+                    const onMouseUp = () => {
+                        this.endDrag();
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                    };
+                    
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                },
+                
+                startDrag(y) {
+                    this.isDragging = true;
+                    this.startY = y;
+                    this.startHeight = this.panel.offsetHeight;
+                    this.panel.classList.add('dragging');
+                },
+                
+                onDrag(y) {
+                    if (!this.isDragging) return;
+                    
+                    const deltaY = this.startY - y;
+                    const newHeight = Math.max(100, Math.min(this.startHeight + deltaY, window.innerHeight * 0.9));
+                    
+                    this.panel.style.height = newHeight + 'px';
+                    
+                    // Update state indicator dots during drag
+                    this.updateStateDots(newHeight);
+                },
+                
+                endDrag() {
+                    if (!this.isDragging) return;
+                    
+                    this.isDragging = false;
+                    this.panel.classList.remove('dragging');
+                    
+                    const currentHeight = this.panel.offsetHeight;
+                    const thresholds = [
+                        { state: 'peek', height: this.states.peek.height },
+                        { state: 'half', height: this.states.half.height },
+                        { state: 'full', height: this.states.full.height }
+                    ];
+                    
+                    // Find closest state
+                    let closestState = 'half';
+                    let minDiff = Infinity;
+                    
+                    thresholds.forEach(t => {
+                        const diff = Math.abs(currentHeight - t.height);
+                        if (diff < minDiff) {
+                            minDiff = diff;
+                            closestState = t.state;
+                        }
+                    });
+                    
+                    // Velocity-based adjustment (if dragged quickly, go to next state)
+                    const dragDistance = this.startHeight - currentHeight;
+                    if (Math.abs(dragDistance) > 50) {
+                        if (dragDistance > 0 && closestState !== 'peek') {
+                            closestState = closestState === 'full' ? 'half' : 'peek';
+                        } else if (dragDistance < 0 && closestState !== 'full') {
+                            closestState = closestState === 'peek' ? 'half' : 'full';
+                        }
+                    }
+                    
+                    this.setState(closestState);
+                },
+                
+                setState(state, animate = true) {
+                    this.currentState = state;
+                    const height = this.states[state].height;
+                    
+                    // Remove inline height and let CSS take over
+                    this.panel.classList.remove('state-peek', 'state-half', 'state-full');
+                    this.panel.classList.add(`state-${state}`);
+                    this.panel.style.height = '';
+                    
+                    // Update recenter button position
+                    if (this.recenterBtn) {
+                        this.recenterBtn.classList.remove('state-peek', 'state-half', 'state-full');
+                        this.recenterBtn.classList.add(`state-${state}`);
+                    }
+                    
+                    // Update state dots
+                    this.updateStateDots(height);
+                    
+                    console.log(`📱 Panel state: ${state}`);
+                },
+                
+                updateStateDots(height) {
+                    const dots = document.querySelectorAll('.state-dot');
+                    let activeState = 'half';
+                    
+                    if (height <= 200) activeState = 'peek';
+                    else if (height >= window.innerHeight * 0.65) activeState = 'full';
+                    
+                    dots.forEach(dot => {
+                        dot.classList.toggle('active', dot.dataset.state === activeState);
+                    });
+                },
+                
+                cycleState() {
+                    const order = ['peek', 'half', 'full'];
+                    const currentIndex = order.indexOf(this.currentState);
+                    const nextIndex = (currentIndex + 1) % order.length;
+                    this.setState(order[nextIndex]);
                 }
             };
+            
+            // Initialize on load
+            if (window.innerWidth < 768) {
+                BottomSheet.init();
+            }
+            
+            // Global function for compatibility
+            window.togglePanelHeight = () => BottomSheet.cycleState();
             
             // Initialize
             initGeolocation();

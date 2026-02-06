@@ -865,40 +865,195 @@ function togglePanel(expand) {
 }
 
 /**
- * Toggle panel height - called from swipe handle click
- * Cycles through: collapsed -> normal -> expanded -> collapsed
+ * ============================================
+ * PROFESSIONAL 3-STATE BOTTOM SHEET
+ * States: peek (140px), half (45vh), full (85vh)
+ * ============================================
+ */
+const BottomSheet = {
+    panel: null,
+    swipeArea: null,
+    recenterBtn: null,
+
+    // State definitions
+    states: {
+        peek: { height: 140, name: 'peek' },
+        half: { height: window.innerHeight * 0.45, name: 'half' },
+        full: { height: window.innerHeight * 0.85, name: 'full' }
+    },
+
+    currentState: 'half',
+    startY: 0,
+    startHeight: 0,
+    isDragging: false,
+
+    init() {
+        this.panel = document.getElementById('centers-panel');
+        this.swipeArea = document.getElementById('swipe-area');
+        this.recenterBtn = document.getElementById('recenter-btn');
+
+        if (!this.panel || !this.swipeArea) return;
+
+        // Update state heights on resize
+        window.addEventListener('resize', () => {
+            this.states.half.height = window.innerHeight * 0.45;
+            this.states.full.height = window.innerHeight * 0.85;
+        });
+
+        // Touch events
+        this.swipeArea.addEventListener('touchstart', (e) => this.onTouchStart(e), { passive: true });
+        this.swipeArea.addEventListener('touchmove', (e) => this.onTouchMove(e), { passive: false });
+        this.swipeArea.addEventListener('touchend', (e) => this.onTouchEnd(e));
+
+        // Mouse events for desktop testing
+        this.swipeArea.addEventListener('mousedown', (e) => this.onMouseDown(e));
+
+        // Tap to toggle
+        this.swipeArea.addEventListener('click', (e) => {
+            if (!this.isDragging) this.cycleState();
+        });
+
+        // Initialize state
+        this.setState('half', false);
+    },
+
+    onTouchStart(e) {
+        this.startDrag(e.touches[0].clientY);
+    },
+
+    onTouchMove(e) {
+        if (!this.isDragging) return;
+        e.preventDefault();
+        this.onDrag(e.touches[0].clientY);
+    },
+
+    onTouchEnd(e) {
+        this.endDrag();
+    },
+
+    onMouseDown(e) {
+        this.startDrag(e.clientY);
+
+        const onMouseMove = (e) => this.onDrag(e.clientY);
+        const onMouseUp = () => {
+            this.endDrag();
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        };
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    },
+
+    startDrag(y) {
+        this.isDragging = true;
+        this.startY = y;
+        this.startHeight = this.panel.offsetHeight;
+        this.panel.classList.add('dragging');
+    },
+
+    onDrag(y) {
+        if (!this.isDragging) return;
+
+        const deltaY = this.startY - y;
+        const newHeight = Math.max(100, Math.min(this.startHeight + deltaY, window.innerHeight * 0.9));
+
+        this.panel.style.height = newHeight + 'px';
+
+        // Update state indicator dots during drag
+        this.updateStateDots(newHeight);
+    },
+
+    endDrag() {
+        if (!this.isDragging) return;
+
+        this.isDragging = false;
+        this.panel.classList.remove('dragging');
+
+        const currentHeight = this.panel.offsetHeight;
+        const thresholds = [
+            { state: 'peek', height: this.states.peek.height },
+            { state: 'half', height: this.states.half.height },
+            { state: 'full', height: this.states.full.height }
+        ];
+
+        // Find closest state
+        let closestState = 'half';
+        let minDiff = Infinity;
+
+        thresholds.forEach(t => {
+            const diff = Math.abs(currentHeight - t.height);
+            if (diff < minDiff) {
+                minDiff = diff;
+                closestState = t.state;
+            }
+        });
+
+        // Velocity-based adjustment (if dragged quickly, go to next state)
+        const dragDistance = this.startHeight - currentHeight;
+        if (Math.abs(dragDistance) > 50) {
+            if (dragDistance > 0 && closestState !== 'peek') {
+                closestState = closestState === 'full' ? 'half' : 'peek';
+            } else if (dragDistance < 0 && closestState !== 'full') {
+                closestState = closestState === 'peek' ? 'half' : 'full';
+            }
+        }
+
+        this.setState(closestState);
+    },
+
+    setState(state, animate = true) {
+        this.currentState = state;
+        const height = this.states[state].height;
+
+        // Remove inline height and let CSS take over
+        this.panel.classList.remove('state-peek', 'state-half', 'state-full');
+        this.panel.classList.add(`state-${state}`);
+        this.panel.style.height = '';
+
+        // Update recenter button position
+        if (this.recenterBtn) {
+            this.recenterBtn.classList.remove('state-peek', 'state-half', 'state-full');
+            this.recenterBtn.classList.add(`state-${state}`);
+        }
+
+        // Update state dots
+        this.updateStateDots(height);
+
+        console.log(`📱 Panel state: ${state}`);
+    },
+
+    updateStateDots(height) {
+        const dots = document.querySelectorAll('.state-dot');
+        let activeState = 'half';
+
+        if (height <= 200) activeState = 'peek';
+        else if (height >= window.innerHeight * 0.65) activeState = 'full';
+
+        dots.forEach(dot => {
+            dot.classList.toggle('active', dot.dataset.state === activeState);
+        });
+    },
+
+    cycleState() {
+        const order = ['peek', 'half', 'full'];
+        const currentIndex = order.indexOf(this.currentState);
+        const nextIndex = (currentIndex + 1) % order.length;
+        this.setState(order[nextIndex]);
+    }
+};
+
+// Initialize on mobile only
+if (window.innerWidth < 768) {
+    document.addEventListener('DOMContentLoaded', () => BottomSheet.init());
+}
+
+/**
+ * Toggle panel height - Global function for compatibility
+ * Cycles through: peek -> half -> full -> peek
  */
 function togglePanelHeight() {
-    const panel = document.getElementById('centers-panel');
-    if (!panel) return;
-
-    const isExpanded = panel.classList.contains('expanded');
-    const isCollapsed = panel.classList.contains('collapsed');
-    const recenterBtn = document.getElementById('recenter-btn');
-
-    if (isCollapsed) {
-        // collapsed -> normal
-        panel.classList.remove('collapsed');
-        panelExpanded = false;
-        if (recenterBtn && window.innerWidth < 768) {
-            recenterBtn.style.bottom = 'calc(40vh + 16px)';
-        }
-    } else if (!isExpanded && !isCollapsed) {
-        // normal -> expanded
-        panel.classList.add('expanded');
-        panelExpanded = true;
-        if (recenterBtn && window.innerWidth < 768) {
-            recenterBtn.style.bottom = 'calc(75vh + 16px)';
-        }
-    } else {
-        // expanded -> collapsed
-        panel.classList.remove('expanded');
-        panel.classList.add('collapsed');
-        panelExpanded = false;
-        if (recenterBtn && window.innerWidth < 768) {
-            recenterBtn.style.bottom = 'calc(140px + 16px)';
-        }
-    }
+    BottomSheet.cycleState();
 }
 
 // ============================================
