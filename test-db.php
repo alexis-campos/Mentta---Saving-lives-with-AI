@@ -35,7 +35,9 @@ try {
     
     $pdo = new PDO($dsn, DB_USER, DB_PASS, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_TIMEOUT => 10
+        PDO::ATTR_TIMEOUT => 10,
+        PDO::MYSQL_ATTR_SSL_CA => '',
+        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false
     ]);
     
     echo "\n✅ CONNECTION SUCCESSFUL!\n";
