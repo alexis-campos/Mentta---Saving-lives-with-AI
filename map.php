@@ -580,7 +580,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
             // Leaflet fallback map
             document.getElementById('loading-overlay').style.display = 'none';
 
-            const map = L.map('leaflet-map').setView([-12.0464, -77.0428], 13);
+            window.map = L.map('leaflet-map').setView([-12.0464, -77.0428], 13);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -628,8 +628,10 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
 
             // Update location text
             document.getElementById('user-location-text').textContent = 'Lima, Perú';
-            document.getElementById('user-city-text').textContent = 'Usando ubicación aproximada';
-            document.getElementById('centers-count').textContent = centers.length;
+            const cityTextEl = document.getElementById('user-city-text');
+            if (cityTextEl) cityTextEl.textContent = 'Usando ubicación aproximada';
+            const countsEl = document.getElementById('centers-count');
+            if (countsEl) countsEl.textContent = centers.length;
 
             document.getElementById('centers-list').innerHTML = centers.map((c, index) => {
                 let indicatorColor = "#AF8A6B";
@@ -637,7 +639,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                 if (c.mentta) indicatorColor = "#111";
 
                 return `
-                <div class="center-card group mb-4" onclick="map.panTo([${c.lat}, ${c.lng}]); map.setZoom(16);">
+                <div class="center-card group mb-4" onclick="window.map.panTo([${c.lat}, ${c.lng}]); window.map.setZoom(16);">
                     <div class="flex items-center gap-5">
                         <div class="w-12 h-12 rounded-[20px] bg-[#FDFDFB] border border-black/5 flex items-center justify-center transition-all group-hover:border-[#C8553D]/20">
                             <span class="font-serif italic text-lg text-[#111]">${index + 1}</span>
@@ -657,7 +659,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
 
             // Functions
             window.goBack = () => history.back() || (location.href = 'chat.php');
-            window.recenterMap = () => map.setView([-12.0464, -77.0428], 13);
+            window.recenterMap = () => window.map.setView([-12.0464, -77.0428], 13);
             window.toggleSearch = () => document.getElementById('search-bar').classList.toggle('hidden');
             window.applyFilter = (filter) => console.log('Filter:', filter);
             window.searchCenters = (q) => console.log('Search:', q);
