@@ -539,7 +539,9 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
 
         <!-- Map Container -->
         <main class="flex-1 relative initial-reveal-container" style="transition-delay: 0.2s;">
-            <div id="map" class="w-full h-full"></div>
+            <?php if (!empty($mapsApiKey)): ?>
+                <div id="map" class="w-full h-full"></div>
+            <?php endif; ?>
 
             <!-- Re-center Button: Floating Aesthetic - Smaller & Lower for easier reach -->
             <button id="recenter-btn" onclick="recenterMap()"
@@ -554,7 +556,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
 
             <!-- DEV-004 FIXED: Leaflet fallback when no Google Maps API key -->
             <?php if (empty($mapsApiKey)): ?>
-                <div id="leaflet-map" class="w-full h-full z-10"></div>
+                <div id="leaflet-map" class="absolute inset-0 w-full h-full"></div>
             <?php endif; ?>
         </main>
     </div>
