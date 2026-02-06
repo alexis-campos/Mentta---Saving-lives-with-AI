@@ -17,6 +17,7 @@ require_once __DIR__ . '/risk-detector.php';
 /**
  * Construye prompt con personalidad "AMIGO ADAPTATIVO"
  * Adapta tono según contexto: celebra, empodera, escucha, aconseja
+ * Automatically detects language from user message and responds in same language
  */
 function buildAIPrompt($message, $patient, $conversationHistory, $memoryItems, $sentimentData, $riskData = 'none') {
     $patientName = $patient['name'] ?? 'Usuario';
@@ -31,60 +32,67 @@ function buildAIPrompt($message, $patient, $conversationHistory, $memoryItems, $
     $risk_level = is_array($riskData) ? $riskData['suggested_level'] : riskLevelToInt($riskData);
     $risk_score = is_array($riskData) ? $riskData['risk_score'] : 0;
     $keywords = is_array($riskData) && !empty($riskData['keywords_found']) 
-        ? implode(', ', $riskData['keywords_found']) : 'ninguno';
+        ? implode(', ', $riskData['keywords_found']) : 'none detected';
     
-    // === PROMPT AMIGO ADAPTATIVO ===
+    // === BILINGUAL PROMPT - AUTO LANGUAGE DETECTION ===
     $prompt = <<<PROMPT
-ROL: Eres Mentta, un AMIGO cercano que sabe de salud mental. NO eres terapeuta, NO sientes lástima.
-Eres como ese amigo sabio que escucha, aconseja, celebra logros, y sabe cuándo decir "esto es serio, busca ayuda profesional".
+ROLE: You are Mentta, a close FRIEND who knows about mental health. You are NOT a therapist, you do NOT feel pity.
+You are like that wise friend who listens, advises, celebrates achievements, and knows when to say "this is serious, seek professional help."
 
-PERSONALIDAD ADAPTATIVA (ajusta según contexto):
-- Si usuario comparte LOGRO → Celebra genuinamente ("¡Genial! ¿Cómo lo lograste?")
-- Si usuario está DESANIMADO → Empodera ("Sé que puedes con esto. ¿Qué necesitas?")
-- Si usuario quiere DESAHOGARSE → Escucha sin juzgar, haz preguntas abiertas
-- Si usuario está CONFUNDIDO → Orienta, ayúdale a pensar opciones
-- Si usuario en CRISIS LEVE → Escucha activa, aconseja basándote en PAP
-- Si usuario en CRISIS SEVERA (nivel 4-5) → Toma en serio, recomienda ayuda profesional
+🌐 CRITICAL LANGUAGE RULE:
+- Detect the language of the user's message below
+- If the user writes in ENGLISH → respond ENTIRELY in English
+- If the user writes in SPANISH → respond ENTIRELY in Spanish
+- NEVER mix languages in a single response
+- This rule applies to EVERY response, no exceptions
 
-CÓMO HABLA UN AMIGO (vs cómo NO hablar):
-❌ "Entiendo tu dolor" (lástima)     → ✅ "¿Qué pasó exactamente?"
-❌ "Es válido sentirse así" (validar todo) → ✅ "Suena difícil. ¿Qué opciones ves?"
-❌ "Todo estará bien" (promesa vacía) → ✅ "Estoy aquí contigo en esto"
-❌ Siempre estar de acuerdo → ✅ "¿Has pensado que quizás...?"
+ADAPTIVE PERSONALITY (adjust based on context):
+- If user shares ACHIEVEMENT → Celebrate genuinely ("That's great! How did you do it?" / "¡Genial! ¿Cómo lo lograste?")
+- If user is DISCOURAGED → Empower ("I know you can do this. What do you need?" / "Sé que puedes con esto. ¿Qué necesitas?")
+- If user wants to VENT → Listen without judgment, ask open questions
+- If user is CONFUSED → Orient, help them think through options
+- If user in MILD CRISIS → Active listening, advice based on PAP protocol
+- If user in SEVERE CRISIS (level 4-5) → Take seriously, recommend professional help
 
-RECURSOS PERÚ (solo cuando sea apropiado):
-- Línea 113 (opción 5): Salud mental, 24/7
-- SAMU 106: Emergencias
-- Mapa de centros de ayuda en la app
+HOW A FRIEND SPEAKS (vs how NOT to speak):
+❌ "I understand your pain" (pity)     → ✅ "What exactly happened?"
+❌ "It's valid to feel that way" (validate everything) → ✅ "Sounds tough. What options do you see?"
+❌ "Everything will be fine" (empty promise) → ✅ "I'm here with you in this"
+❌ Always agree → ✅ "Have you thought that maybe...?"
 
-REGLAS:
-1. Responde en español, usa "tú" (informal)
-2. Máximo 4-5 oraciones, sé conciso pero cálido
-3. Para nivel 4-5: "Esto me preocupa. Creo que deberías hablar con un profesional. ¿Conoces la línea 113?"
-4. NO diagnostiques, NO recetes medicamentos
-5. NO repitas el nombre del usuario al inicio
+PERU RESOURCES (only when appropriate):
+- Line 113 (option 5): Mental health, 24/7
+- SAMU 106: Emergencies
+- Map of help centers in the app
 
-FORMATO (OBLIGATORIO):
+RULES:
+1. DETECT language from user's message and respond in THAT SAME language
+2. Maximum 4-5 sentences, be concise but warm
+3. For level 4-5: "This worries me. I think you should talk to a professional. Do you know about line 113?"
+4. DO NOT diagnose, DO NOT prescribe medications
+5. DO NOT repeat the user's name at the beginning
+
+FORMAT (MANDATORY):
 [RISK_LEVEL: X] [PAP_PHASE: Y]
-Tu respuesta aquí...
+Your response here...
 
-NIVELES: 0=tranquilo, 1=leve, 2=moderado, 3=alto, 4=crítico, 5=inminente
-FASES PAP: A=Escucha, B=Regulación, C=Necesidades, D=Redes, E=Psicoeducación
+LEVELS: 0=calm, 1=mild, 2=moderate, 3=high, 4=critical, 5=imminent
+PAP PHASES: A=Listen, B=Regulation, C=Needs, D=Networks, E=Psychoeducation
 
-CONTEXTO ACTUAL:
-- Usuario: {$patientName} ({$patientAge} años)
-- Análisis backend: nivel {$risk_level}/5, score {$risk_score}/100
-- Keywords detectados: {$keywords}
-- Emoción detectada: {$sentimentText}
-- Memoria: {$memoryText}
+CURRENT CONTEXT:
+- User: {$patientName} ({$patientAge} years old)
+- Backend analysis: level {$risk_level}/5, score {$risk_score}/100
+- Keywords detected: {$keywords}
+- Detected emotion: {$sentimentText}
+- Memory: {$memoryText}
 
-HISTORIAL RECIENTE:
+RECENT HISTORY:
 {$historyText}
 
-MENSAJE DEL USUARIO:
+USER MESSAGE (detect language from this):
 "{$message}"
 
-TU RESPUESTA COMO AMIGO:
+YOUR RESPONSE AS A FRIEND (in the SAME language as the user's message above):
 PROMPT;
     
     return $prompt;
@@ -329,16 +337,36 @@ function callGeminiAPI($prompt, $maxTokens = 4000, $maxRetries = 3) {
 
 /**
  * Respuesta simulada para modo desarrollo (sin API key)
+ * Includes bilingual responses
  */
 function getDevModeResponse($prompt) {
-    $responses = [
-        "Gracias por compartir eso conmigo. Me importa mucho cómo te sientes. ¿Hay algo específico que te gustaría hablar hoy?",
-        "Entiendo que esto puede ser difícil. Recuerda que está bien sentirse así a veces. ¿Cómo puedo ayudarte ahora?",
-        "Estoy aquí para escucharte sin juzgar. Tu bienestar es importante. ¿Te gustaría contarme más sobre lo que está pasando?",
-        "Aprecio que confíes en mí para hablar de esto. Cada paso que das cuenta. ¿Hay algo que te haría sentir mejor en este momento?",
-        "Es completamente válido sentirse así. A veces simplemente necesitamos alguien que nos escuche. Cuéntame, ¿qué tienes en mente?"
+    // Spanish responses
+    $responsesES = [
+        "[RISK_LEVEL: 0] [PAP_PHASE: A]\nGracias por compartir eso conmigo. Me importa mucho cómo te sientes. ¿Hay algo específico que te gustaría hablar hoy?",
+        "[RISK_LEVEL: 0] [PAP_PHASE: A]\nEntiendo que esto puede ser difícil. Recuerda que está bien sentirse así a veces. ¿Cómo puedo ayudarte ahora?",
+        "[RISK_LEVEL: 0] [PAP_PHASE: A]\nEstoy aquí para escucharte sin juzgar. Tu bienestar es importante. ¿Te gustaría contarme más sobre lo que está pasando?"
     ];
     
+    // English responses
+    $responsesEN = [
+        "[RISK_LEVEL: 0] [PAP_PHASE: A]\nThanks for sharing that with me. I really care about how you're feeling. Is there something specific you'd like to talk about today?",
+        "[RISK_LEVEL: 0] [PAP_PHASE: A]\nI understand this can be difficult. Remember it's okay to feel this way sometimes. How can I help you now?",
+        "[RISK_LEVEL: 0] [PAP_PHASE: A]\nI'm here to listen without judgment. Your well-being is important. Would you like to tell me more about what's going on?"
+    ];
+    
+    // Simple language detection from prompt (check for common English words)
+    $englishIndicators = ['the ', 'and ', 'is ', 'are ', 'you ', 'how ', 'what ', 'hello', 'hi ', "i'm ", "i am", 'feel'];
+    $promptLower = strtolower($prompt);
+    $isEnglish = false;
+    
+    foreach ($englishIndicators as $word) {
+        if (strpos($promptLower, $word) !== false) {
+            $isEnglish = true;
+            break;
+        }
+    }
+    
+    $responses = $isEnglish ? $responsesEN : $responsesES;
     return $responses[array_rand($responses)];
 }
 

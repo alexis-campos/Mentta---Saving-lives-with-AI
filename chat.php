@@ -290,9 +290,6 @@ if ($hour >= 5 && $hour < 12) {
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <!-- Language Switcher -->
-                <div id="headerLangSwitcher" class="hidden md:block"></div>
-                
                 <!-- Logout Button -->
                 <button onclick="openLogoutModal()"
                     class="w-10 h-10 rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center hover:bg-gray-50 transition-colors group"
@@ -1051,10 +1048,7 @@ if ($hour >= 5 && $hour < 12) {
         // Initialize on DOM Ready
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize language switcher
-            i18n.createLanguageSwitcher('headerLangSwitcher');
-            
-            // Apply translations
+            // Apply translations (language is set in profile settings)
             i18n.applyTranslations();
             
             // Set initial ARIA states on modals

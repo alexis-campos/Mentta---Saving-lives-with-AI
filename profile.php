@@ -13,6 +13,7 @@ $user = requireAuth('patient');
 
 // Obtener preferencias del usuario
 $theme = $user['theme_preference'] ?? 'light';
+$userLanguage = $user['language'] ?? 'es';
 
 // Obtener datos adicionales
 $db = getDB();
@@ -655,6 +656,21 @@ try {
                     </label>
                 </div>
 
+                <!-- Language Selector -->
+                <div class="preference-item">
+                    <div class="preference-info">
+                        <h4>🌐 Idioma / Language</h4>
+                        <p>Elige tu idioma preferido para la interfaz</p>
+                    </div>
+                    <select id="language-select" 
+                        class="form-input" 
+                        style="width: auto; min-width: 120px; padding: 0.5rem 1rem;"
+                        onchange="Profile.changeLanguage(this.value)">
+                        <option value="es" <?= $userLanguage === 'es' ? 'selected' : '' ?>>Español</option>
+                        <option value="en" <?= $userLanguage === 'en' ? 'selected' : '' ?>>English</option>
+                    </select>
+                </div>
+
                 <!-- Pause Analysis Toggle -->
                 <div class="preference-item">
                     <div class="preference-info">
@@ -875,6 +891,36 @@ try {
             document.getElementById('consent-modal').classList.remove('active');
             Profile.saveCrisisPreferences();
             Utils.toast('Ayuda de emergencia activada');
+        };
+
+        // Language change handler
+        Profile.changeLanguage = async function (language) {
+            try {
+                const response = await fetch('api/user/set-language.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ language: language })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update localStorage for translations.js
+                    localStorage.setItem('mentta_language', language);
+                    
+                    // Show success message in the new language
+                    Utils.toast(language === 'es' ? 'Idioma actualizado a Español' : 'Language updated to English');
+                    
+                    // Reload page to apply translations
+                    setTimeout(() => window.location.reload(), 500);
+                } else {
+                    Utils.toast('Error: ' + (data.error || 'Error al cambiar idioma'));
+                    // Revert select
+                    document.getElementById('language-select').value = language === 'es' ? 'en' : 'es';
+                }
+            } catch (error) {
+                console.error('Error changing language:', error);
+                Utils.toast('Error de conexión');
+            }
         };
     </script>
 </body>
