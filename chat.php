@@ -982,8 +982,8 @@ if ($hour >= 5 && $hour < 12) {
                 overlay.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
 
-                // Set iframe source (dev: localhost:3001)
-                const liveAppUrl = 'http://localhost:3001';
+                // Set iframe source - Uses MENTTA_LIVE_URL from config or production URL
+                const liveAppUrl = '<?= defined('MENTTA_LIVE_URL') ? MENTTA_LIVE_URL : (APP_ENV === 'production' ? 'https://mentta-live-production.up.railway.app' : 'http://localhost:3001') ?>';
                 iframe.src = liveAppUrl;
 
                 // When iframe loads, send the session token via postMessage
@@ -1012,8 +1012,8 @@ if ($hour >= 5 && $hour < 12) {
             window.location.origin,                    // Current page origin (works in prod & dev)
             'http://localhost:3001',                   // Vite dev server
             'http://localhost',                        // XAMPP local
-            // Add your production domains here if iframe is on different subdomain:
-            // 'https://live.mentta.com',
+            'https://mentta-live-production.up.railway.app',  // Railway production
+            '<?= defined('MENTTA_LIVE_URL') ? MENTTA_LIVE_URL : '' ?>',  // Custom from config
         ].filter(Boolean);
         
         window.addEventListener('message', function (event) {
