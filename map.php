@@ -579,116 +579,307 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <script>
-            // Leaflet fallback map
-            document.getElementById('loading-overlay').style.display = 'none';
-
-            window.map = L.map('leaflet-map').setView([-12.0464, -77.0428], 13);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-
-            // Sample mental health centers in Lima
-            const centers = [
-                { name: 'Hospital Larco Herrera', lat: -12.0970, lng: -77.0486, type: 'hospital', emergency: true },
-                { name: 'Instituto Nacional de Salud Mental Noguchi', lat: -12.0389, lng: -77.0581, type: 'hospital', mentta: true },
-                { name: 'Centro de Salud Mental Comunitario Jesús María', lat: -12.0757, lng: -77.0454, type: 'csmc', mentta: true },
-                { name: 'Centro de Salud Mental Lince', lat: -12.0842, lng: -77.0336, type: 'csmc' },
-                { name: 'Hospital Hermilio Valdízan', lat: -12.0559, lng: -76.9644, type: 'hospital', emergency: true }
-            ];
-
-            // Custom icons
-            const createIcon = (color) => L.divIcon({
+            // ============================================
+            // LEAFLET FALLBACK - Premium Map Experience
+            // ============================================
+            
+            // Global state
+            let userLocation = null;
+            let centerMarkers = [];
+            let currentFilter = 'all';
+            const BASE_URL = decodeURIComponent(window.location.pathname.replace(/\/[^\/]*$/, '')).trim();
+            
+            // Initialize map with Carto Positron (luxury white style)
+            window.map = L.map('leaflet-map', {
+                zoomControl: true
+            }).setView([-12.0464, -77.0428], 13);
+            
+            // CartoDB Positron - Clean, luxury white style (similar to Google Maps custom style)
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(window.map);
+            
+            // Custom icon creator
+            const createIcon = (color, size = 24) => L.divIcon({
                 className: 'custom-marker',
-                html: `<div style="background:${color};width:24px;height:24px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>`,
-                iconSize: [24, 24],
-                iconAnchor: [12, 12]
+                html: `<div style="background:${color};width:${size}px;height:${size}px;border-radius:50%;border:3px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.15);"></div>`,
+                iconSize: [size, size],
+                iconAnchor: [size/2, size/2]
             });
-
-            // Add markers
-            centers.forEach(center => {
-                let color = '#E69F8B'; // Soft Terracotta (Antigravity default)
-                if (center.mentta) color = '#AF8A6B'; // Luxury Beige for Mentta
-                else if (center.emergency) color = '#C8553D'; // Darker Terracotta for Emergency
-
-                const marker = L.marker([center.lat, center.lng], { icon: createIcon(color) }).addTo(map);
-                marker.bindPopup(`
-                <div style="min-width:200px">
-                        <h3 style="font-family:'Playfair Display',serif;font-weight:700;margin-bottom:4px;color:#2d3a2d;">${center.name}</h3>
-                        <p style="color:#8b9d8b;font-size:11px;margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
-                            ${center.emergency ? '🏥 Emergencias 24h' : ''}
-                            ${center.mentta ? '✅ Sistema Mentta' : ''}
-                        </p>
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
-                           target="_blank" 
-                           style="display:block;text-align:center;padding:10px;background:#2d3a2d;color:white;border-radius:12px;text-decoration:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">
-                            Cómo llegar
-                        </a>
-                </div>
-            `);
-            });
-
-            // Update location text
-            document.getElementById('user-location-text').textContent = 'Lima, Perú';
-            const cityTextEl = document.getElementById('user-city-text');
-            if (cityTextEl) cityTextEl.textContent = 'Usando ubicación aproximada';
-            const countsEl = document.getElementById('centers-count');
-            if (countsEl) countsEl.textContent = centers.length;
-
-            document.getElementById('centers-list').innerHTML = centers.map((c, index) => {
-                let indicatorColor = "#AF8A6B";
-                if (c.emergency) indicatorColor = "#C8553D";
-                if (c.mentta) indicatorColor = "#111";
-
-                return `
-                <div class="center-card group mb-4" onclick="window.map.panTo([${c.lat}, ${c.lng}]); window.map.setZoom(16);">
-                    <div class="flex items-center gap-5">
-                        <div class="w-12 h-12 rounded-[20px] bg-[#FDFDFB] border border-black/5 flex items-center justify-center transition-all group-hover:border-[#C8553D]/20">
-                            <span class="font-serif italic text-lg text-[#111]">${index + 1}</span>
+            
+            // User location marker
+            let userMarker = null;
+            let userCircle = null;
+            
+            function addUserMarker(location) {
+                if (userMarker) window.map.removeLayer(userMarker);
+                if (userCircle) window.map.removeLayer(userCircle);
+                
+                userMarker = L.marker([location.lat, location.lng], {
+                    icon: L.divIcon({
+                        className: 'user-marker',
+                        html: `<div style="background:#4285F4;width:16px;height:16px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(66,133,244,0.5);"></div>`,
+                        iconSize: [16, 16],
+                        iconAnchor: [8, 8]
+                    }),
+                    zIndexOffset: 1000
+                }).addTo(window.map);
+                
+                userCircle = L.circle([location.lat, location.lng], {
+                    color: '#4285F4',
+                    fillColor: '#4285F4',
+                    fillOpacity: 0.15,
+                    radius: 150,
+                    weight: 2,
+                    opacity: 0.4
+                }).addTo(window.map);
+            }
+            
+            // Geolocation
+            function initGeolocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            userLocation = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            };
+                            console.log('📍 User location detected:', userLocation);
+                            window.map.setView([userLocation.lat, userLocation.lng], 13);
+                            addUserMarker(userLocation);
+                            updateLocationText('Tu ubicación actual');
+                            loadNearbyCenters(userLocation.lat, userLocation.lng);
+                            document.getElementById('loading-overlay').style.display = 'none';
+                        },
+                        (error) => {
+                            console.warn('Geolocation error:', error.message);
+                            handleGeolocationError();
+                        },
+                        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+                    );
+                } else {
+                    handleGeolocationError();
+                }
+            }
+            
+            function handleGeolocationError() {
+                userLocation = { lat: -12.0464, lng: -77.0428 };
+                window.map.setView([userLocation.lat, userLocation.lng], 13);
+                addUserMarker(userLocation);
+                updateLocationText('Lima, Perú');
+                updateCityText('Usando ubicación aproximada');
+                loadNearbyCenters(userLocation.lat, userLocation.lng);
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+            
+            // Load centers from API
+            async function loadNearbyCenters(lat, lng) {
+                const apiUrl = `${BASE_URL}/api/map/get-nearby-centers.php?lat=${lat}&lng=${lng}&radius=100&filter=${currentFilter}`;
+                console.log('🔍 Fetching nearby centers from:', apiUrl);
+                
+                try {
+                    const response = await fetch(apiUrl);
+                    const data = await response.json();
+                    
+                    if (data.success && data.data.centers && data.data.centers.length > 0) {
+                        renderCentersOnMap(data.data.centers);
+                        renderCentersList(data.data.centers);
+                        console.log(`✅ Loaded ${data.data.count} centers`);
+                    } else {
+                        showNoCentersMessage('No hay centros registrados cerca de tu ubicación.');
+                    }
+                } catch (error) {
+                    console.error('Error loading centers:', error);
+                    showNoCentersMessage('Error al cargar centros');
+                }
+            }
+            
+            // Render markers on map
+            function renderCentersOnMap(centers) {
+                centerMarkers.forEach(m => window.map.removeLayer(m));
+                centerMarkers = [];
+                
+                const bounds = L.latLngBounds();
+                if (userLocation) bounds.extend([userLocation.lat, userLocation.lng]);
+                
+                centers.forEach((center, index) => {
+                    const lat = parseFloat(center.latitude);
+                    const lng = parseFloat(center.longitude);
+                    bounds.extend([lat, lng]);
+                    
+                    let color = '#AF8A6B'; // Luxury Sand
+                    let size = 22;
+                    if (center.has_mentta) { color = '#111111'; size = 26; }
+                    else if (center.emergency_24h) { color = '#C8553D'; }
+                    
+                    const marker = L.marker([lat, lng], { icon: createIcon(color, size) }).addTo(window.map);
+                    
+                    const distanceText = center.distance ? `${center.distance} km` : '';
+                    marker.bindPopup(`
+                        <div style="min-width:220px;font-family:'Inter',sans-serif;">
+                            <h3 style="font-family:'Playfair Display',serif;font-weight:700;font-size:16px;margin:0 0 8px 0;color:#111;">${escapeHtml(center.name)}</h3>
+                            <div style="margin-bottom:12px;">
+                                ${center.has_mentta ? '<span style="display:inline-block;background:#111;color:white;padding:3px 8px;border-radius:12px;font-size:9px;font-weight:700;margin-right:4px;">✨ MENTTA</span>' : ''}
+                                ${center.emergency_24h ? '<span style="display:inline-block;background:#C8553D;color:white;padding:3px 8px;border-radius:12px;font-size:9px;font-weight:700;">🚨 24H</span>' : ''}
+                            </div>
+                            <p style="color:#666;font-size:12px;margin:0 0 12px 0;">${escapeHtml(center.address || '')}</p>
+                            ${center.phone ? `<a href="tel:${center.phone}" style="display:block;text-align:center;padding:10px;background:#111;color:white;border-radius:10px;text-decoration:none;font-size:11px;font-weight:700;margin-bottom:8px;">📞 Llamar</a>` : ''}
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" style="display:block;text-align:center;padding:10px;background:#F5F5F0;color:#111;border-radius:10px;text-decoration:none;font-size:11px;font-weight:700;">🧭 Cómo llegar</a>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <h4 class="font-serif italic text-[16px] text-[#111] font-bold truncate">${c.name}</h4>
-                            <div class="flex items-center gap-2 mt-1.5">
-                                <span class="capsule-label ${c.mentta ? 'elite' : c.emergency ? 'urgency' : ''}">
-                                    ${c.mentta ? 'Red Elite' : c.emergency ? 'Urgencia 24h' : 'Centro Salud'}
-                                </span>
+                    `);
+                    
+                    marker.on('click', () => highlightListItem(center.id));
+                    marker.centerData = center;
+                    marker.centerIndex = index;
+                    centerMarkers.push(marker);
+                });
+                
+                if (centers.length > 0) {
+                    window.map.fitBounds(bounds, { padding: [50, 50] });
+                }
+            }
+            
+            // Render centers list
+            function renderCentersList(centers) {
+                const container = document.getElementById('centers-list');
+                if (!container) return;
+                
+                container.innerHTML = centers.map((center, index) => {
+                    let indicatorColor = '#AF8A6B';
+                    if (center.emergency_24h) indicatorColor = '#C8553D';
+                    if (center.has_mentta) indicatorColor = '#111';
+                    
+                    const distanceText = center.distance ? `${center.distance} km` : '';
+                    
+                    return `
+                        <div class="center-card group" data-center-id="${center.id}" onclick="focusOnCenter(${index})">
+                            <div class="flex items-center gap-5">
+                                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-[10px] font-black transition-all duration-500 group-hover:scale-110" 
+                                     style="background: ${indicatorColor}; color: white; box-shadow: 0 10px 20px -5px ${indicatorColor}44;">
+                                    ${String(index + 1).padStart(2, '0')}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-serif italic text-[15px] text-[#111] font-bold truncate">${escapeHtml(center.name)}</h4>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <span class="text-[9px] font-bold text-black/30 uppercase tracking-widest">${escapeHtml(center.district || center.city || '')}</span>
+                                        ${distanceText ? `<div class="w-1 h-1 rounded-full bg-black/10"></div><span class="text-[9px] font-black text-[#AF8A6B] uppercase tracking-widest">${distanceText}</span>` : ''}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            `;
-            }).join('');
-
-            // Functions
-            window.goBack = () => history.back() || (location.href = 'chat.php');
-            window.recenterMap = () => window.map.setView([-12.0464, -77.0428], 13);
-            window.toggleSearch = () => document.getElementById('search-bar').classList.toggle('hidden');
-            window.applyFilter = (filter) => console.log('Filter:', filter);
-            window.searchCenters = (q) => console.log('Search:', q);
-            window.searchCenters = (q) => console.log('Search:', q);
-            window.clearSearch = () => { document.getElementById('search-input').value = ''; };
-            window.toggleMobileSearch = () => {
-                const el = document.getElementById('mobile-search-overlay');
-                el.classList.toggle('hidden');
-                el.classList.toggle('flex');
-                if (!el.classList.contains('hidden')) {
-                    setTimeout(() => document.getElementById('mobile-search-input').focus(), 100);
+                    `;
+                }).join('');
+            }
+            
+            function focusOnCenter(index) {
+                if (centerMarkers[index]) {
+                    const marker = centerMarkers[index];
+                    window.map.setView(marker.getLatLng(), 16);
+                    marker.openPopup();
+                    highlightListItem(marker.centerData.id);
+                }
+            }
+            
+            function highlightListItem(centerId) {
+                document.querySelectorAll('.center-card.active').forEach(el => el.classList.remove('active'));
+                const item = document.querySelector(`[data-center-id="${centerId}"]`);
+                if (item) {
+                    item.classList.add('active');
+                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }
+            
+            // UI helpers
+            function updateLocationText(text) {
+                const el = document.getElementById('user-location-text');
+                if (el) el.textContent = text;
+            }
+            
+            function updateCityText(text) {
+                const el = document.getElementById('user-city-text');
+                if (el) el.textContent = text;
+            }
+            
+            function showNoCentersMessage(message) {
+                const container = document.getElementById('centers-list');
+                if (container) {
+                    container.innerHTML = `<div class="text-center py-8 text-gray-400"><div class="text-4xl mb-2">🏥</div><p class="text-sm">${escapeHtml(message)}</p></div>`;
+                }
+            }
+            
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            // Global functions
+            window.goBack = () => window.location.href = 'chat.php';
+            window.recenterMap = () => {
+                if (userLocation) {
+                    window.map.setView([userLocation.lat, userLocation.lng], 13);
+                    loadNearbyCenters(userLocation.lat, userLocation.lng);
                 }
             };
-
-            // Simple mobile panel interactions
+            window.toggleSearch = () => document.getElementById('search-bar')?.classList.toggle('hidden');
+            window.applyFilter = (filter) => {
+                console.log('Applying filter:', filter);
+                currentFilter = filter;
+                if (userLocation) loadNearbyCenters(userLocation.lat, userLocation.lng);
+            };
+            
+            let searchTimeout = null;
+            window.searchCenters = async (query) => {
+                clearTimeout(searchTimeout);
+                if (query.length < 2) {
+                    if (userLocation) loadNearbyCenters(userLocation.lat, userLocation.lng);
+                    return;
+                }
+                searchTimeout = setTimeout(async () => {
+                    try {
+                        const response = await fetch(`${BASE_URL}/api/map/search-centers.php?q=${encodeURIComponent(query)}`);
+                        const data = await response.json();
+                        if (data.success) {
+                            renderCentersOnMap(data.data.results || []);
+                            renderCentersList(data.data.results || []);
+                        }
+                    } catch (error) {
+                        console.error('Search error:', error);
+                    }
+                }, 400);
+            };
+            
+            window.clearSearch = () => {
+                const input = document.getElementById('search-input');
+                if (input) input.value = '';
+                if (userLocation) loadNearbyCenters(userLocation.lat, userLocation.lng);
+            };
+            
+            window.toggleMobileSearch = () => {
+                const el = document.getElementById('mobile-search-overlay');
+                if (el) {
+                    el.classList.toggle('hidden');
+                    el.classList.toggle('flex');
+                    if (!el.classList.contains('hidden')) {
+                        setTimeout(() => document.getElementById('mobile-search-input')?.focus(), 100);
+                    }
+                }
+            };
+            
             let isPanelExpanded = false;
             window.togglePanelHeight = () => {
                 const panel = document.getElementById('centers-panel');
-                if (isPanelExpanded) {
-                    panel.style.height = '55vh';
-                    panel.classList.remove('h-[85vh]');
-                } else {
-                    panel.style.height = '85vh';
-                    panel.classList.add('h-[85vh]');
+                if (panel) {
+                    isPanelExpanded = !isPanelExpanded;
+                    panel.style.height = isPanelExpanded ? '85vh' : '55vh';
                 }
-                isPanelExpanded = !isPanelExpanded;
             };
+            
+            // Initialize
+            initGeolocation();
         </script>
     <?php endif; ?>
 
