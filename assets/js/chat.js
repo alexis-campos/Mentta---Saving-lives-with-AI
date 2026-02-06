@@ -285,7 +285,11 @@ function autoResize(textarea) {
  * Scroll messages to bottom
  */
 function scrollToBottom(smooth = true) {
-    Utils.scrollToBottom(elements.messagesContainer, smooth);
+    // Use window scroll since the layout relies on body scroll
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: smooth ? 'smooth' : 'auto'
+    });
 }
 
 /**

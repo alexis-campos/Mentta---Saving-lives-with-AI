@@ -141,7 +141,7 @@ if ($hour >= 5 && $hour < 12) {
     <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
 
     <!-- Sidebar Menu -->
-    <aside id="sidebar-menu" class="sidebar-menu initial-reveal-container">
+    <aside id="sidebar-menu" class="sidebar-menu">
         <!-- Header -->
         <div class="sidebar-header"
             style="background-color: #F2F2F0; border-bottom: 1px solid rgba(0,0,0,0.05); padding: 2rem 1.5rem;">
