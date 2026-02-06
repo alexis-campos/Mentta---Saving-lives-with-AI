@@ -1,8 +1,8 @@
 # Railway PHP Configuration
-# This file tells Nixpacks how to build and run the application
+# JSON extension is built-in since PHP 8.0, no need to install separately
 
 [phases.setup]
-nixPkgs = ["php84", "php84Extensions.pdo", "php84Extensions.pdo_mysql", "php84Extensions.mbstring", "php84Extensions.curl", "php84Extensions.json"]
+nixPkgs = ["php84", "php84Extensions.pdo", "php84Extensions.pdo_mysql", "php84Extensions.mbstring", "php84Extensions.curl"]
 
 [phases.install]
 cmds = ["mkdir -p /var/log/apache2", "mkdir -p /var/run/apache2"]
