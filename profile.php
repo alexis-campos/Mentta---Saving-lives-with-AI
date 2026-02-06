@@ -103,16 +103,16 @@ try {
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f5f5f0;
+            background-color: var(--bg-primary);
         }
 
         .profile-section {
-            background-color: white;
-            border: 1px solid rgba(45, 58, 45, 0.08);
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
             border-radius: 1.5rem;
             padding: 2rem;
             margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(45, 58, 45, 0.03);
+            box-shadow: var(--shadow-card);
         }
 
         .profile-section-title {
@@ -136,15 +136,15 @@ try {
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: #8b9d8b;
+            color: var(--text-tertiary);
             margin-bottom: 0.5rem;
         }
 
         .form-input {
             width: 100%;
             padding: 0.875rem 1rem;
-            background-color: #fcfcfb;
-            border: 1px solid #e5e7eb;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
             border-radius: 1rem;
             color: var(--text-primary);
             font-size: 0.9375rem;
@@ -153,14 +153,14 @@ try {
 
         .form-input:focus {
             outline: none;
-            border-color: #cbaa8e;
-            background-color: white;
+            border-color: var(--accent-secondary);
+            background-color: var(--bg-secondary);
             box-shadow: 0 0 0 4px rgba(203, 170, 142, 0.1);
         }
 
         .form-input:disabled {
-            background-color: #f3f4f6;
-            color: #9ca3af;
+            background-color: var(--bg-tertiary);
+            color: var(--text-tertiary);
             cursor: not-allowed;
         }
 
@@ -170,8 +170,8 @@ try {
             justify-content: center;
             gap: 0.75rem;
             padding: 1rem 1.5rem;
-            background: #2d3a2d;
-            color: white;
+            background: var(--accent-primary);
+            color: var(--text-inverse);
             border: none;
             border-radius: 1rem;
             font-size: 0.75rem;
@@ -184,9 +184,9 @@ try {
         }
 
         .btn-primary:hover {
-            background-color: #000;
+            background-color: var(--accent-hover);
             transform: translateY(-1px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-lg);
         }
 
         .btn-primary:active {
@@ -199,9 +199,9 @@ try {
             justify-content: center;
             gap: 0.5rem;
             padding: 0.875rem 1.25rem;
-            background-color: #fbfbf9;
+            background-color: var(--bg-tertiary);
             color: var(--text-primary);
-            border: 1px solid #e5e7eb;
+            border: 1px solid var(--border-color);
             border-radius: 1rem;
             font-size: 0.875rem;
             font-weight: 600;
@@ -210,21 +210,21 @@ try {
         }
 
         .btn-secondary:hover {
-            background-color: white;
-            border-color: #cbaa8e;
-            color: #cbaa8e;
+            background-color: var(--bg-secondary);
+            border-color: var(--accent-secondary);
+            color: var(--accent-secondary);
         }
 
         .btn-danger {
-            background-color: #fef2f2;
-            color: #ef4444;
-            border: 1px solid #fee2e2;
+            background-color: var(--danger-light);
+            color: var(--danger);
+            border: 1px solid var(--danger-light);
         }
 
         .btn-danger:hover {
-            background-color: #ef4444;
-            color: white;
-            border-color: #ef4444;
+            background-color: var(--danger);
+            color: var(--text-inverse);
+            border-color: var(--danger);
         }
 
         .contact-card {
@@ -232,17 +232,17 @@ try {
             align-items: center;
             justify-content: space-between;
             padding: 1.25rem;
-            background-color: #fcfcfb;
-            border: 1px solid #eef0ee;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
             border-radius: 1.25rem;
             margin-bottom: 0.75rem;
             transition: all 0.3s ease;
         }
 
         .contact-card:hover {
-            border-color: rgba(45, 58, 45, 0.1);
-            background-color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            border-color: var(--border-focus);
+            background-color: var(--bg-secondary);
+            box-shadow: var(--shadow-sm);
         }
 
         .contact-info {
@@ -257,7 +257,7 @@ try {
 
         .contact-details {
             font-size: 0.8125rem;
-            color: #8b9d8b;
+            color: var(--text-tertiary);
             margin-top: 0.25rem;
         }
 
@@ -284,7 +284,7 @@ try {
 
         .preference-info p {
             font-size: 0.8125rem;
-            color: #8b9d8b;
+            color: var(--text-tertiary);
             margin: 0;
             line-height: 1.5;
         }
@@ -306,7 +306,7 @@ try {
 
         /* Header customization */
         header {
-            background-color: rgba(255, 255, 255, 0.8) !important;
+            background-color: var(--bg-secondary) !important;
             backdrop-filter: blur(12px);
         }
         
@@ -446,7 +446,11 @@ try {
     </style>
 </head>
 
-<body class="antialiased" style="background-color: var(--bg-primary);">
+<body class="antialiased loaded" style="background-color: var(--bg-primary);">
+    <script>
+        // Ensure body is visible immediately
+        document.body.classList.add('loaded');
+    </script>
 
     <!-- Header -->
     <header class="fixed top-0 left-0 right-0 z-50"
