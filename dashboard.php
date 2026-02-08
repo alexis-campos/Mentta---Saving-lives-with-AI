@@ -198,7 +198,7 @@ if ($user['role'] !== 'psychologist') {
                             <!-- Illustration/Image Container -->
                             <div
                                 class="relative w-72 h-72 rounded-[3.5rem] overflow-hidden shadow-2xl border-4 border-white rotate-2 hover:rotate-0 transition-transform duration-700">
-                                <img src="Images/Mentta post.jpg" alt="Mentta Care" class="w-full h-full object-cover">
+                                <img src="images/Mentta_post.jpg" alt="Mentta Care" class="w-full h-full object-cover">
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent">
                                 </div>

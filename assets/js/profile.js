@@ -269,6 +269,78 @@ const Profile = {
     },
 
     /**
+     * Scanner State
+     */
+    scanner: null,
+
+    /**
+     * Open QR Scanner
+     */
+    async openScanner() {
+        const modal = document.getElementById('qr-scanner-modal');
+        modal.classList.remove('hidden');
+        // Force reflow
+        void modal.offsetWidth;
+        modal.classList.remove('opacity-0');
+
+        if (!this.scanner) {
+            this.scanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+        }
+
+        try {
+            this.scanner.render((decodedText) => {
+                this.handleScanSuccess(decodedText);
+            }, (error) => {
+                // Ignore scan errors, too noisy
+            });
+        } catch (e) {
+            console.error("Error starting scanner", e);
+            Utils.toast("Error al iniciar cámara");
+        }
+    },
+
+    /**
+     * Handle successful scan
+     */
+    handleScanSuccess(decodedText) {
+        if (decodedText && decodedText.length === 6) {
+            // Stop scanning
+            this.closeScanner();
+
+            // Fill input
+            const input = document.querySelector('input[name="code"]');
+            if (input) {
+                input.value = decodedText;
+
+                // Auto submit after a small delay
+                Utils.toast("Código detectado: " + decodedText);
+                setTimeout(() => {
+                    const form = input.closest('form');
+                    if (form) form.requestSubmit();
+                }, 500);
+            }
+        }
+    },
+
+    /**
+     * Close Scanner
+     */
+    closeScanner() {
+        const modal = document.getElementById('qr-scanner-modal');
+        modal.classList.add('opacity-0');
+
+        if (this.scanner) {
+            this.scanner.clear().catch(error => {
+                console.error("Failed to clear scanner", error);
+            });
+        }
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    },
+
+    /**
      * Link with Psychologist
      */
     async linkPsychologist(event) {
