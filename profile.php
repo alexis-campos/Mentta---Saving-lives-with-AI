@@ -295,15 +295,15 @@ try {
         }
 
         .analysis-warning {
-            background-color: #fffbeb;
-            border: 1px solid #fef3c7;
+            background-color: var(--warning-light);
+            border: 1px solid var(--warning);
             padding: 0.75rem 1rem;
             border-radius: 1rem;
             margin-top: 0.75rem;
         }
 
         .analysis-warning p {
-            color: #b45309;
+            color: var(--warning);
             font-size: 0.75rem;
             font-weight: 600;
             margin: 0;

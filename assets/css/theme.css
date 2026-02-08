@@ -292,7 +292,7 @@ body.loaded {
     width: 320px;
     max-width: 85vw;
     height: 100vh;
-    background-color: rgba(255, 255, 255, 0.85);
+    background-color: var(--bg-secondary);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     box-shadow: 20px 0 80px rgba(0, 0, 0, 0.08);
@@ -302,7 +302,7 @@ body.loaded {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-right: 1px solid rgba(255, 255, 255, 0.5);
+    border-right: 1px solid var(--border-color);
 }
 
 .sidebar-menu.active {
@@ -928,7 +928,8 @@ body.loaded {
 /* Supportive Phrases */
 .supportive-phrase {
     padding: 1.5rem;
-    background: linear-gradient(135deg, var(--success-light) 0%, var(--accent-light) 100%);
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     text-align: center;
     margin-bottom: 1rem;

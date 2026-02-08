@@ -149,10 +149,11 @@ if ($hour >= 5 && $hour < 12) {
     <aside id="sidebar-menu" class="sidebar-menu">
         <!-- Header -->
         <div class="sidebar-header"
-            style="background-color: white; border-bottom: 1px solid rgba(0,0,0,0.03); padding: 2rem 1.5rem;">
+            style="background-color: var(--bg-primary); border-bottom: 1px solid var(--border-color); padding: 2rem 1.5rem;">
             <div class="text-center w-full">
                 <div
-                    class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border border-gray-100 p-0.5 bg-white shadow-lg">
+                    class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border p-0.5 shadow-lg"
+                    style="background-color: var(--bg-secondary); border-color: var(--border-color);">
                     <img src="images/Menta_icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
                 </div>
                 <a href="profile.php" class="block cursor-pointer hover:opacity-80 transition-opacity" title="Mi Configuración">
