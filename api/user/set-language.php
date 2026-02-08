@@ -42,7 +42,7 @@ try {
     
     // Also update session if it's stored there
     if (session_status() === PHP_SESSION_ACTIVE) {
-        $_SESSION['user_language'] = $language;
+        $_SESSION['language'] = $language;
     }
     
     jsonResponse(true, [
