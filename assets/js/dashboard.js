@@ -662,5 +662,56 @@ dashboardStylesFix.textContent = `
     .custom-scrollbar::-webkit-scrollbar { width: 4px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.05); border-radius: 10px; }
-`;
-document.head.appendChild(dashboardStylesFix);
+
+// ============================================
+// MODAL VINCULAR PACIENTE
+// ============================================
+
+async function openConnectModal() {
+    const modal = document.getElementById('connect-patient-modal');
+    // const modalBody = modal.querySelector('div');
+    const codeEl = document.getElementById('generated-code');
+    const qrEl = document.getElementById('generated-qr');
+    
+    // Reset state
+    codeEl.textContent = '...';
+    qrEl.style.opacity = '0.5';
+    
+    modal.classList.remove('hidden');
+    // Force reflow
+    void modal.offsetWidth;
+    modal.classList.remove('opacity-0');
+    // modalBody.classList.remove('scale-95');
+    
+    try {
+        const response = await fetch('api/psychologist/generate-code.php');
+        const data = await response.json();
+        
+        if (data.success) {
+            codeEl.textContent = data.code;
+            // Usar API pública para QR
+            qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${data.code}&color=2d3a2d&bgcolor=f8f9fa`;
+qrEl.onload = () => { qrEl.style.opacity = '1'; };
+        } else {
+    showToast('Error al generar código', 'error');
+    closeConnectModal();
+}
+    } catch (error) {
+    debugError('Error generating code:', error);
+    showToast('Error de conexión', 'error');
+    closeConnectModal();
+}
+}
+
+function closeConnectModal() {
+    const modal = document.getElementById('connect-patient-modal');
+    // const modalBody = modal.querySelector('div');
+
+    modal.classList.add('opacity-0');
+    // modalBody.classList.add('scale-95');
+
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+}
+

@@ -77,6 +77,14 @@ if ($user['role'] !== 'psychologist') {
 
                 <!-- Notifications & Logout -->
                 <div class="flex items-center gap-4">
+                    <!-- New Patient Button -->
+                    <button onclick="openConnectModal()" class="px-5 py-2.5 bg-[#2A2A2A] text-white rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-black transition-all shadow-lg flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        <span>Nuevo Paciente</span>
+                    </button>
+
                     <div class="relative">
                         <button id="alerts-button"
                             class="w-11 h-11 flex items-center justify-center rounded-full bg-white shadow-premium border border-black/5 text-[#888] hover:text-red-500 transition-all">
@@ -100,6 +108,46 @@ if ($user['role'] !== 'psychologist') {
             </div>
         </div>
     </header>
+
+    <!-- Connect Patient Modal -->
+    <div id="connect-patient-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-[2rem] p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-6 bg-blue-50 rounded-2xl flex items-center justify-center">
+                    <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                </div>
+                
+                <h3 class="text-2xl font-bold font-serif text-[#2A2A2A] mb-2">Vincular Nuevo Paciente</h3>
+                <p class="text-gray-500 text-sm mb-8">Comparte este código con tu paciente o pídele que escanee el QR.</p>
+                
+                <!-- Code Display -->
+                <div class="bg-gray-50 rounded-2xl p-6 mb-6 border border-gray-100">
+                    <div id="generated-code" class="text-4xl font-mono font-bold tracking-[0.2em] text-[#2A2A2A] mb-2 select-all">------</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-[#AAA]">Código de Vinculación</div>
+                </div>
+
+                <!-- QR Display -->
+                <div class="flex justify-center mb-6">
+                    <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100">
+                        <img id="generated-qr" src="" alt="QR Code" class="w-48 h-48 object-contain opacity-50">
+                    </div>
+                </div>
+
+                <p class="text-xs text-orange-400 font-medium mb-8 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Válido por 24 horas
+                </p>
+
+                <button onclick="closeConnectModal()" class="w-full py-4 rounded-xl bg-gray-100 text-gray-600 font-bold text-sm uppercase tracking-widest hover:bg-gray-200 transition-colors">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div class="flex h-[calc(100vh-100px)] px-6 pb-6 gap-6">
         <!-- Sidebar: Lista de pacientes -->

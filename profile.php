@@ -582,12 +582,21 @@ try {
                         </div>
                     </div>
                 <?php else: ?>
-                    <p style="color: var(--text-tertiary); font-size: 0.875rem; text-align: center; padding: 1rem;">
-                        No tienes un psicólogo vinculado
-                    </p>
-                    <button class="btn-secondary" style="width: 100%;" disabled>
-                        🔍 Buscar profesional (Próximamente)
-                    </button>
+                    <div class="mt-4">
+                        <form onsubmit="Profile.linkPsychologist(event)" class="flex flex-col gap-3">
+                            <label class="form-label text-center mb-0">Vincular con Código</label>
+                            <div class="flex gap-2">
+                                <input type="text" name="code" class="form-input text-center font-mono uppercase tracking-widest text-lg" 
+                                    placeholder="AB12CD" maxlength="6" required style="text-transform: uppercase;">
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                🔗 Vincular
+                            </button>
+                        </form>
+                        <p class="text-[10px] text-center text-gray-400 mt-2">
+                            Pide el código de 6 dígitos a tu psicólogo
+                        </p>
+                    </div>
                 <?php endif; ?>
             </section>
 

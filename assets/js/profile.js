@@ -269,6 +269,53 @@ const Profile = {
     },
 
     /**
+     * Link with Psychologist
+     */
+    async linkPsychologist(event) {
+        event.preventDefault();
+
+        const form = event.target;
+        const input = form.querySelector('input[name="code"]');
+        const code = input.value.toUpperCase();
+        const btn = form.querySelector('button');
+
+        if (code.length !== 6) {
+            Utils.toast('El código debe tener 6 caracteres');
+            return;
+        }
+
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Vinculando...';
+
+        try {
+            const response = await fetch('api/patient/link-psychologist.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code: code })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Utils.toast(`¡Vinculado con ${data.psychologist_name}!`);
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                Utils.toast(data.error || 'Error al vincular');
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        } catch (error) {
+            console.error('Error linking:', error);
+            Utils.toast('Error de conexión');
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    },
+
+    /**
      * Logout
      */
     logout() {
