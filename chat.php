@@ -229,7 +229,16 @@ if ($hour >= 5 && $hour < 12) {
                     <span class="font-medium text-red-900 dark:text-red-400 text-sm tracking-wide opacity-80" data-i18n="chat.immediateHelp">Ayuda Inmediata</span>
                 </button>
                 
-                <!-- Live Session (Hidden/Optional for now or simplified) -->
+                <button class="menu-btn group" onclick="openLiveCallModal()"
+                    class="w-full flex items-center gap-3 p-4 mt-2 bg-transparent hover:bg-indigo-50 dark:hover:bg-indigo-900/10 transition-all">
+                    <span class="menu-btn-icon text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                        </svg>
+                    </span>
+                    <span class="font-medium text-indigo-900 dark:text-indigo-300 text-sm tracking-wide" data-i18n="chat.liveSession">Mentta Live</span>
+                    <span class="ml-auto text-[0.6rem] font-bold uppercase tracking-wider bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 px-2 py-0.5 rounded-full">Beta</span>
+                </button>
             </div>
 
             <!-- Notifications (if any) -->
