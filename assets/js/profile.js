@@ -278,24 +278,42 @@ const Profile = {
      */
     async openScanner() {
         const modal = document.getElementById('qr-scanner-modal');
+        const statusEl = document.getElementById('scanner-status');
+
         modal.classList.remove('hidden');
         // Force reflow
         void modal.offsetWidth;
         modal.classList.remove('opacity-0');
 
         if (!this.scanner) {
-            this.scanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+            // Use Html5Qrcode (Pro API) for custom UI
+            this.scanner = new Html5Qrcode("qr-reader");
         }
 
+        statusEl.textContent = 'Iniciando cámara...';
+        statusEl.className = 'text-white/80 text-sm font-medium animate-pulse';
+
         try {
-            this.scanner.render((decodedText) => {
-                this.handleScanSuccess(decodedText);
-            }, (error) => {
-                // Ignore scan errors, too noisy
-            });
-        } catch (e) {
-            console.error("Error starting scanner", e);
-            Utils.toast("Error al iniciar cámara");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+            // Prefer back camera
+            await this.scanner.start(
+                { facingMode: "environment" },
+                config,
+                (decodedText) => this.handleScanSuccess(decodedText),
+                (errorMessage) => {
+                    // Ignore frame parse errors
+                }
+            );
+
+            statusEl.textContent = 'Cámara activa';
+            statusEl.className = 'text-green-400 text-sm font-bold';
+
+        } catch (err) {
+            console.error("Error starting scanner", err);
+            statusEl.textContent = 'Error: No se pudo acceder a la cámara';
+            statusEl.className = 'text-red-400 text-sm font-bold';
+            Utils.toast("Error al iniciar cámara: " + err);
         }
     },
 
@@ -304,7 +322,19 @@ const Profile = {
      */
     handleScanSuccess(decodedText) {
         if (decodedText && decodedText.length === 6) {
-            // Stop scanning
+            // Play success sound
+            const audio = new Audio('assets/sounds/success.mp3'); // Optional
+            // audio.play().catch(() => {});
+
+            // Vibration feedback
+            if (navigator.vibrate) navigator.vibrate(200);
+
+            // Stop scanning logic but keep camera for a moment or close immediately
+
+            // Update UI
+            document.getElementById('scanner-status').textContent = '¡Código detectado!';
+            document.getElementById('scanner-status').className = 'text-blue-400 text-lg font-bold bounce';
+
             this.closeScanner();
 
             // Fill input
@@ -312,7 +342,6 @@ const Profile = {
             if (input) {
                 input.value = decodedText;
 
-                // Auto submit after a small delay
                 Utils.toast("Código detectado: " + decodedText);
                 setTimeout(() => {
                     const form = input.closest('form');
@@ -325,16 +354,18 @@ const Profile = {
     /**
      * Close Scanner
      */
-    closeScanner() {
+    async closeScanner() {
         const modal = document.getElementById('qr-scanner-modal');
-        modal.classList.add('opacity-0');
 
-        if (this.scanner) {
-            this.scanner.clear().catch(error => {
-                console.error("Failed to clear scanner", error);
-            });
+        if (this.scanner && this.scanner.isScanning) {
+            try {
+                await this.scanner.stop();
+            } catch (e) {
+                console.error("Error stopping scanner", e);
+            }
         }
 
+        modal.classList.add('opacity-0');
         setTimeout(() => {
             modal.classList.add('hidden');
         }, 300);

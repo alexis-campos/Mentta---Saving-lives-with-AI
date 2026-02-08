@@ -836,23 +836,57 @@ try {
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <!-- Scanner Modal -->
-    <div id="qr-scanner-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-[2rem] p-6 max-w-sm w-full mx-4 shadow-2xl relative">
-            <button onclick="Profile.closeScanner()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    <div id="qr-scanner-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-300">
+        <div class="relative w-full max-w-md mx-4 overflow-hidden rounded-[2rem] shadow-2xl bg-black">
+            <!-- Close Button -->
+            <button onclick="Profile.closeScanner()" class="absolute top-6 right-6 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             
-            <h3 class="text-xl font-bold font-serif text-center mb-4">Escanear Código QR</h3>
-            
-            <div class="rounded-xl overflow-hidden bg-black aspect-square mb-4 relative">
-                <div id="qr-reader" class="w-full h-full"></div>
+            <!-- Header -->
+            <div class="absolute top-0 left-0 right-0 z-10 p-6 text-center bg-gradient-to-b from-black/80 to-transparent">
+                <h3 class="text-white font-bold text-lg tracking-wide">Escanear QR</h3>
+                <p class="text-white/60 text-xs mt-1">Coloca el código dentro del marco</p>
             </div>
-            
-            <p class="text-xs text-center text-gray-400">
-                Apunta la cámara al código QR de tu psicólogo
-            </p>
+
+            <!-- Scanner Area -->
+            <div class="relative aspect-[3/4] bg-black">
+                <div id="qr-reader" class="w-full h-full object-cover"></div>
+                
+                <!-- Overlay Guide -->
+                <div class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                    <div class="w-64 h-64 border-2 border-white/30 rounded-3xl relative">
+                        <!-- Corners -->
+                        <div class="absolute top-[-2px] left-[-2px] w-8 h-8 border-t-4 border-l-4 border-blue-500 rounded-tl-3xl"></div>
+                        <div class="absolute top-[-2px] right-[-2px] w-8 h-8 border-t-4 border-r-4 border-blue-500 rounded-tr-3xl"></div>
+                        <div class="absolute bottom-[-2px] left-[-2px] w-8 h-8 border-b-4 border-l-4 border-blue-500 rounded-bl-3xl"></div>
+                        <div class="absolute bottom-[-2px] right-[-2px] w-8 h-8 border-b-4 border-r-4 border-blue-500 rounded-br-3xl"></div>
+                        
+                        <!-- Scanning Animation -->
+                        <div class="absolute inset-0 bg-blue-500/10 animate-pulse rounded-3xl"></div>
+                        <div class="absolute top-1/2 left-4 right-4 h-0.5 bg-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.8)] animate-scan"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="absolute bottom-0 left-0 right-0 z-10 p-6 text-center bg-gradient-to-t from-black/80 to-transparent">
+                 <p id="scanner-status" class="text-white/80 text-sm font-medium animate-pulse">Buscando cámara...</p>
+            </div>
         </div>
     </div>
+
+    <style>
+        @keyframes scan {
+            0% { transform: translateY(-120px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(120px); opacity: 0; }
+        }
+        .animate-scan {
+            animation: scan 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+    </style>
+
 
     <!-- JavaScript -->
     <script src="assets/js/utils.js"></script>
