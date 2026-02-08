@@ -71,22 +71,26 @@ try {
             theme: {
                 extend: {
                     colors: {
-                        'mentta-primary': '#2d3a2d',
-                        'mentta-secondary': '#cbaa8e',
-                        'mentta-accent': '#8b9d8b',
-                        'mentta-light': '#f5f5f0',
+                        'mentta-primary': '#111111',
+                        'mentta-secondary': '#666666',
+                        'mentta-accent': '#333333',
+                        'mentta-light': '#f5f5f5',
                         mentta: {
-                            50: '#f0f2f0',
-                            100: '#e8f0e8',
-                            200: '#d1dbd1',
-                            300: '#b4c2b4',
-                            400: '#8b9d8b',
-                            500: '#2d3a2d',
-                            600: '#1e261e',
-                            700: '#151a15',
-                            800: '#0c0f0c',
-                            900: '#000000'
+                            50: '#f9f9f9',
+                            100: '#f5f5f5',
+                            200: '#e5e5e5',
+                            300: '#d4d4d4',
+                            400: '#a3a3a3',
+                            500: '#737373',
+                            600: '#525252',
+                            700: '#404040',
+                            800: '#262626',
+                            900: '#171717'
                         }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
                     }
                 }
             }
@@ -635,9 +639,9 @@ try {
                 </div>
 
                 <div class="preference-item"
-                    style="border: 1px solid var(--danger); border-radius: 0.5rem; padding: 0.75rem; margin-top: 0.5rem;">
+                    style="border-top: 1px solid var(--border-color); padding-top: 1.25rem; margin-top: 0.5rem;">
                     <div class="preference-info">
-                        <h4 style="color: var(--danger);">🚨 Ayuda automática de emergencia</h4>
+                        <h4 style="color: var(--text-primary);">🚨 Ayuda automática de emergencia</h4>
                         <p>Mostrar botón de llamada al 113/106 cuando se detecte peligro inminente</p>
                         <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">
                             Requiere tu consentimiento explícito
@@ -844,7 +848,7 @@ try {
             </button>
             
             <!-- Header -->
-            <div class="absolute top-0 left-0 right-0 z-10 p-6 text-center bg-gradient-to-b from-black/80 to-transparent">
+            <div class="absolute top-0 left-0 right-0 z-10 p-6 text-center">
                 <h3 class="text-white font-bold text-lg tracking-wide">Escanear QR</h3>
                 <p class="text-white/60 text-xs mt-1">Coloca el código dentro del marco</p>
             </div>

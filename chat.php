@@ -89,22 +89,26 @@ if ($hour >= 5 && $hour < 12) {
             theme: {
                 extend: {
                     colors: {
-                        'mentta-primary': '#2d3a2d',
-                        'mentta-secondary': '#cbaa8e',
-                        'mentta-accent': '#8b9d8b',
-                        'mentta-light': '#f5f5f0',
+                        'mentta-primary': '#111111',
+                        'mentta-secondary': '#666666',
+                        'mentta-accent': '#333333',
+                        'mentta-light': '#f5f5f5',
                         mentta: {
-                            50: '#f0f2f0',
-                            100: '#e8f0e8',
-                            200: '#d1dbd1',
-                            300: '#b4c2b4',
-                            400: '#8b9d8b',
-                            500: '#2d3a2d',
-                            600: '#1e261e',
-                            700: '#151a15',
-                            800: '#0c0f0c',
-                            900: '#000000'
+                            50: '#f9f9f9',
+                            100: '#f5f5f5',
+                            200: '#e5e5e5',
+                            300: '#d4d4d4',
+                            400: '#a3a3a3',
+                            500: '#737373',
+                            600: '#525252',
+                            700: '#404040',
+                            800: '#262626',
+                            900: '#171717'
                         }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
                     }
                 }
             }
@@ -145,10 +149,10 @@ if ($hour >= 5 && $hour < 12) {
     <aside id="sidebar-menu" class="sidebar-menu">
         <!-- Header -->
         <div class="sidebar-header"
-            style="background-color: #F2F2F0; border-bottom: 1px solid rgba(0,0,0,0.05); padding: 2rem 1.5rem;">
+            style="background-color: white; border-bottom: 1px solid rgba(0,0,0,0.03); padding: 2rem 1.5rem;">
             <div class="text-center w-full">
                 <div
-                    class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border border-white p-0.5 bg-white shadow-xl">
+                    class="w-16 h-16 mx-auto mb-6 rounded-full overflow-hidden border border-gray-100 p-0.5 bg-white shadow-lg">
                     <img src="images/Menta_icono.jpg" alt="Mentta Logo" class="w-full h-full object-cover rounded-full">
                 </div>
                 <a href="profile.php" class="block cursor-pointer hover:opacity-80 transition-opacity" title="Mi Configuración">
@@ -159,8 +163,8 @@ if ($hour >= 5 && $hour < 12) {
                     <p style="color: #888; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.02em;">
                         <?= htmlspecialchars($user['email']) ?>
                     </p>
-                    <span style="font-size: 0.65rem; color: #cbaa8e; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 0.5rem;">
-                        ⚙️ <span data-i18n="profile.mySettings">Mi Configuración</span>
+                    <span style="font-size: 0.65rem; color: #666; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                        ⚙️ <span data-i18n="profile.mySettings">Configuración</span>
                     </span>
                 </a>
                 <div class="mood-badge"
@@ -179,57 +183,52 @@ if ($hour >= 5 && $hour < 12) {
         <!-- Content -->
         <div class="sidebar-content">
             <!-- Main Actions -->
-            <div class="sidebar-section">
+            <div class="sidebar-section pt-4">
                 <button class="menu-btn group" onclick="newChat()"
-                    style="background: white; border: 1px solid rgba(0,0,0,0.03); box-shadow: var(--shadow-sm); margin-bottom: 0.75rem; border-radius: 1.5rem; padding: 1.25rem;">
-                    <span class="menu-btn-icon text-black group-hover:scale-110 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    style="background: transparent; border: none; padding: 1rem; border-bottom: 1px solid rgba(0,0,0,0.03);">
+                    <span class="menu-btn-icon text-black group-hover:scale-105 transition-transform opacity-70">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                         </svg>
                     </span>
-                    <span class="font-bold text-black text-sm tracking-tight" data-i18n="chat.newChat">Nuevo Chat</span>
+                    <span class="font-medium text-black text-sm tracking-wide" data-i18n="chat.newChat">Nuevo Chat</span>
                 </button>
+                
                 <button class="menu-btn group" onclick="window.location.href='map.php'"
-                    style="background: white; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 0.75rem;">
-                    <span class="menu-btn-icon text-mentta-primary group-hover:scale-110 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                    style="background: transparent; border: none; padding: 1rem; border-bottom: 1px solid rgba(0,0,0,0.03);">
+                    <span class="menu-btn-icon text-black group-hover:scale-105 transition-transform opacity-70">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </span>
-                    <span class="font-bold text-mentta-primary text-sm" data-i18n="chat.centersMap">Mapa de Centros</span>
+                    <span class="font-medium text-black text-sm tracking-wide" data-i18n="chat.centersMap">Mapa de Centros</span>
                 </button>
-                <button class="menu-btn menu-btn-crisis group" onclick="openCrisisModal()"
-                    style="background-color: #fef2f2; border: 2px solid #fee2e2; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1); margin-bottom: 0.75rem;">
-                    <span class="menu-btn-icon text-red-600 group-hover:scale-110 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                
+                <button class="menu-btn group" onclick="openResourcesModal()"
+                    style="background: transparent; border: none; padding: 1rem; border-bottom: 1px solid rgba(0,0,0,0.03);">
+                    <span class="menu-btn-icon text-black group-hover:scale-105 transition-transform opacity-70">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                    </span>
+                    <span class="font-medium text-black text-sm tracking-wide" data-i18n="chat.wellnessResources">Recursos de Bienestar</span>
+                </button>
+                
+                <button class="menu-btn group" onclick="openCrisisModal()"
+                    style="background: transparent; border: none; padding: 1rem; margin-top: 1rem;">
+                    <span class="menu-btn-icon text-red-800 group-hover:scale-105 transition-transform opacity-60">
+                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     </span>
-                    <span class="font-black text-red-700 uppercase tracking-tighter text-xs" data-i18n="chat.immediateHelp">Ayuda Inmediata</span>
+                    <span class="font-medium text-red-900 text-sm tracking-wide opacity-80" data-i18n="chat.immediateHelp">Ayuda Inmediata</span>
                 </button>
-                <button class="menu-btn group" onclick="openResourcesModal()"
-                    style="background: white; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 1.5rem;">
-                    <span class="menu-btn-icon text-mentta-primary group-hover:scale-110 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                    </span>
-                    <span class="font-bold text-mentta-primary text-sm" data-i18n="chat.wellnessResources">Recursos de Bienestar</span>
-                </button>
-                <button class="menu-btn menu-btn-live hover:brightness-110" onclick="openLiveCallModal()"
-                    style="background: #cbaa8e; color: white; border-radius: 1.25rem; box-shadow: 0 15px 30px -5px rgba(203, 170, 142, 0.5); border: 2px solid rgba(255,255,255,0.2); padding: 1.25rem; justify-content: center;">
-                    <span class="menu-btn-icon">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                    </span>
-                    <span class="font-bold tracking-[0.25em] text-[10px] uppercase" data-i18n="chat.liveSession">Mentta Live Session</span>
-                </button>
+                
+                <!-- Live Session (Hidden/Optional for now or simplified) -->
             </div>
 
             <!-- Notifications (if any) -->

@@ -8,34 +8,34 @@
    ============================================ */
 :root {
     /* Backgrounds */
-    --bg-primary: #f5f5f0;
-    --bg-secondary: #ffffff;
-    --bg-tertiary: #ebebe0;
+    --bg-primary: #ffffff;
+    --bg-secondary: #fafafa;
+    --bg-tertiary: #f5f5f5;
     --bg-input: #ffffff;
 
     /* Text */
-    --text-primary: #2d3a2d;
-    --text-secondary: #4a5a4a;
-    --text-tertiary: #8b9d8b;
+    --text-primary: #111111;
+    --text-secondary: #666666;
+    --text-tertiary: #888888;
     --text-inverse: #ffffff;
 
     /* Borders */
-    --border-color: #e1e1d1;
-    --border-focus: #2d3a2d;
+    --border-color: rgba(0, 0, 0, 0.06);
+    --border-focus: #111111;
 
-    /* Accent Colors (Green/Sand Palette) */
-    --accent-primary: #2d3a2d;
-    --accent-secondary: #cbaa8e;
-    --accent-hover: #1e261e;
-    --accent-light: #f0f2f0;
+    /* Accent Colors (Monochrome Luxury Palette) */
+    --accent-primary: #111111;
+    --accent-secondary: #666666;
+    --accent-hover: #333333;
+    --accent-light: #f5f5f5;
 
-    /* Status Colors */
-    --success: #6b8e6b;
-    --success-light: #e8f0e8;
-    --warning: #cbaa8e;
-    --warning-light: #f7f1ec;
-    --danger: #9e4a4a;
-    --danger-light: #fceaea;
+    /* Status Colors (Muted) */
+    --success: #4a6b4a;
+    --success-light: #f0f5f0;
+    --warning: #b39b7d;
+    --warning-light: #fdfbf7;
+    --danger: #cf4a4a;
+    --danger-light: #fcf5f5;
 
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgba(45, 58, 45, 0.05);
