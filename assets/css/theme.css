@@ -74,10 +74,10 @@
     --space-3xl: 4rem;
 
     /* Premium Shadows */
-    --shadow-card: 0 4px 20px rgba(45, 58, 45, 0.03);
-    --shadow-hover: 0 10px 40px rgba(45, 58, 45, 0.08);
-    --shadow-elevated: 0 20px 60px rgba(45, 58, 45, 0.12);
-    --shadow-glow: 0 0 30px rgba(203, 170, 142, 0.15);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.03);
+    --shadow-hover: 0 10px 40px rgba(0, 0, 0, 0.08);
+    --shadow-elevated: 0 20px 60px rgba(0, 0, 0, 0.12);
+    --shadow-glow: 0 0 30px rgba(255, 255, 255, 0.15);
 
     /* ============================================
        MOBILE-FIRST RESPONSIVE SYSTEM
@@ -126,34 +126,34 @@
    ============================================ */
 [data-theme="dark"] {
     /* Backgrounds */
-    --bg-primary: #1a211a;
-    --bg-secondary: #242d24;
-    --bg-tertiary: #2d3a2d;
-    --bg-input: #2d3a2d;
+    --bg-primary: #050505;
+    --bg-secondary: #111111;
+    --bg-tertiary: #1a1a1a;
+    --bg-input: #1a1a1a;
 
     /* Text */
-    --text-primary: #f5f5f0;
-    --text-secondary: #cbaa8e;
-    --text-tertiary: #8b9d8b;
-    --text-inverse: #1a211a;
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --text-tertiary: #666666;
+    --text-inverse: #000000;
 
     /* Borders */
-    --border-color: #3d4d3d;
-    --border-focus: #cbaa8e;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-focus: #ffffff;
 
     /* Accent Colors */
-    --accent-primary: #cbaa8e;
-    --accent-secondary: #8b9d8b;
-    --accent-hover: #dec7b4;
-    --accent-light: rgba(203, 170, 142, 0.1);
+    --accent-primary: #ffffff;
+    --accent-secondary: #e5e5e5;
+    --accent-hover: #cccccc;
+    --accent-light: rgba(255, 255, 255, 0.1);
 
     /* Status Colors */
     --success: #8b9d8b;
-    --success-light: rgba(139, 157, 139, 0.1);
-    --warning: #cbaa8e;
-    --warning-light: rgba(203, 170, 142, 0.1);
-    --danger: #cf6666;
-    --danger-light: rgba(207, 102, 102, 0.1);
+    --success-light: rgba(139, 157, 139, 0.2);
+    --warning: #ccb096;
+    --warning-light: rgba(204, 176, 150, 0.2);
+    --danger: #ef4444;
+    --danger-light: rgba(239, 68, 68, 0.2);
 
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
@@ -161,7 +161,7 @@
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.7);
 
     /* Backdrop */
-    --backdrop-color: rgba(0, 0, 0, 0.8);
+    --backdrop-color: rgba(0, 0, 0, 0.9);
 }
 
 /* ============================================

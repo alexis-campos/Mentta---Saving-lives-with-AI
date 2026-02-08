@@ -160,7 +160,7 @@ try {
             outline: none;
             border-color: var(--accent-secondary);
             background-color: var(--bg-secondary);
-            box-shadow: 0 0 0 4px rgba(203, 170, 142, 0.1);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
         }
 
         .form-input:disabled {

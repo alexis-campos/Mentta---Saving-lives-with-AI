@@ -131,7 +131,7 @@ if ($hour >= 5 && $hour < 12) {
     <link rel="icon" type="image/jpeg" href="images/Menta_icono.jpg">
 </head>
 
-<body class="antialiased" style="background-color: #FAFAFA;">
+<body class="antialiased" style="background-color: var(--bg-primary);">
     <script>
         // Pre-load script to handle initial reveal
         window.addEventListener('DOMContentLoaded', () => {
