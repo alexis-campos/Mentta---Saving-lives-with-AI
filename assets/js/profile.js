@@ -25,13 +25,13 @@ const Profile = {
             const data = await response.json();
 
             if (data.success) {
-                Utils.toast('Perfil actualizado');
+                Utils.toast(i18n.t('profile.updated'));
             } else {
-                Utils.toast(data.error || 'Error al actualizar perfil');
+                Utils.toast(data.error || i18n.t('profile.updateError'));
             }
         } catch (error) {
             console.error('Error updating profile:', error);
-            Utils.toast('Error de conexión');
+            Utils.toast(i18n.t('profile.connectionError'));
         }
     },
 
@@ -46,7 +46,7 @@ const Profile = {
         const confirmPassword = form.querySelector('#confirm_password').value;
 
         if (newPassword !== confirmPassword) {
-            Utils.toast('Las contraseñas no coinciden');
+            Utils.toast(i18n.t('profile.passwordsNoMatch'));
             return;
         }
 
@@ -64,14 +64,14 @@ const Profile = {
             const data = await response.json();
 
             if (data.success) {
-                Utils.toast('Contraseña actualizada');
+                Utils.toast(i18n.t('profile.passwordUpdated'));
                 form.reset();
             } else {
-                Utils.toast(data.error || 'Error al cambiar contraseña');
+                Utils.toast(data.error || i18n.t('profile.passwordError'));
             }
         } catch (error) {
             console.error('Error changing password:', error);
-            Utils.toast('Error de conexión');
+            Utils.toast(i18n.t('profile.connectionError'));
         }
     },
 
@@ -111,12 +111,12 @@ const Profile = {
             const data = await response.json();
 
             if (data.success) {
-                Utils.toast('Contacto agregado');
+                Utils.toast(i18n.t('profile.contactAdded'));
                 this.closeAddContactModal();
                 // Reload page to show new contact
                 window.location.reload();
             } else {
-                Utils.toast(data.error || 'Error al agregar contacto');
+                Utils.toast(data.error || i18n.t('profile.contactAddError'));
             }
         } catch (error) {
             console.error('Error adding contact:', error);
@@ -128,7 +128,7 @@ const Profile = {
      * Delete emergency contact
      */
     async deleteContact(contactId) {
-        if (!confirm('¿Eliminar este contacto de emergencia?')) {
+        if (!confirm(i18n.t('profile.confirmDeleteContact'))) {
             return;
         }
 
@@ -147,7 +147,7 @@ const Profile = {
             const data = await response.json();
 
             if (data.success) {
-                Utils.toast('Contacto eliminado');
+                Utils.toast(i18n.t('profile.contactDeleted'));
                 // Remove from DOM
                 const card = document.querySelector(`[data-contact-id="${contactId}"]`);
                 if (card) card.remove();
@@ -157,12 +157,12 @@ const Profile = {
                 if (list && list.children.length === 0) {
                     list.innerHTML = `
                         <p style="color: var(--text-tertiary); font-size: 0.875rem; text-align: center; padding: 1rem;">
-                            No tienes contactos de emergencia configurados
+                            ${i18n.t('profile.noContacts')}
                         </p>
                     `;
                 }
             } else {
-                Utils.toast(data.error || 'Error al eliminar contacto');
+                Utils.toast(data.error || i18n.t('profile.contactDeleteError'));
             }
         } catch (error) {
             console.error('Error deleting contact:', error);
@@ -178,11 +178,7 @@ const Profile = {
         const pause = toggle.checked;
 
         if (pause) {
-            const confirmed = confirm(
-                '¿Seguro que deseas pausar el análisis emocional?\n\n' +
-                'Las alertas de seguridad se desactivarán por 24 horas. ' +
-                'Esto significa que no recibirás ayuda automática si compartes algo preocupante.'
-            );
+            const confirmed = confirm(i18n.t('profile.analysisToggleConfirm'));
 
             if (!confirmed) {
                 toggle.checked = false;
@@ -211,12 +207,12 @@ const Profile = {
                     window.location.reload();
                 }
             } else {
-                Utils.toast(data.error || 'Error al cambiar configuración');
+                Utils.toast(data.error || i18n.t('profile.configError'));
                 toggle.checked = !pause;
             }
         } catch (error) {
             console.error('Error toggling analysis:', error);
-            Utils.toast('Error de conexión');
+            Utils.toast(i18n.t('profile.connectionError'));
             toggle.checked = !pause;
         }
     },
@@ -383,13 +379,13 @@ const Profile = {
         const btn = form.querySelector('button');
 
         if (code.length !== 6) {
-            Utils.toast('El código debe tener 6 caracteres');
+            Utils.toast(i18n.t('profile.codeLengthError'));
             return;
         }
 
         const originalText = btn.textContent;
         btn.disabled = true;
-        btn.textContent = 'Vinculando...';
+        btn.textContent = i18n.t('profile.linking');
 
         try {
             const response = await fetch('api/patient/link-psychologist.php', {
@@ -403,16 +399,16 @@ const Profile = {
             const data = await response.json();
 
             if (data.success) {
-                Utils.toast(`¡Vinculado con ${data.psychologist_name}!`);
+                Utils.toast(i18n.t('profile.linkSuccess').replace('{name}', data.psychologist_name));
                 setTimeout(() => window.location.reload(), 1500);
             } else {
-                Utils.toast(data.error || 'Error al vincular');
+                Utils.toast(data.error || i18n.t('profile.linkError'));
                 btn.disabled = false;
                 btn.textContent = originalText;
             }
         } catch (error) {
             console.error('Error linking:', error);
-            Utils.toast('Error de conexión');
+            Utils.toast(i18n.t('profile.connectionError'));
             btn.disabled = false;
             btn.textContent = originalText;
         }
@@ -422,7 +418,9 @@ const Profile = {
      * Logout
      */
     logout() {
-        window.location.href = 'logout.php';
+        if (confirm(i18n.t('profile.logoutConfirm'))) {
+            window.location.href = 'logout.php';
+        }
     }
 };
 

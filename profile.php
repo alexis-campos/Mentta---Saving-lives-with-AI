@@ -491,6 +491,7 @@ try {
                         <label class="form-label" for="email" data-i18n="profile.email">Email</label>
                         <input type="email" id="email" class="form-input"
                             value="<?= htmlspecialchars($user['email']) ?>" disabled>
+                        <p class="text-[10px] text-gray-400 mt-1" data-i18n="profile.emailCannotChange">
                             El correo no puede ser modificado</p>
                     </div>
 
@@ -512,24 +513,24 @@ try {
 
                 <form id="password-form" onsubmit="Profile.changePassword(event)">
                     <div class="form-group">
-                        <label class="form-label" for="current_password">Contraseña actual</label>
+                        <label class="form-label" for="current_password" data-i18n="profile.currentPassword">Contraseña actual</label>
                         <input type="password" id="current_password" name="current_password" class="form-input"
                             required>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="new_password">Nueva contraseña</label>
+                        <label class="form-label" for="new_password" data-i18n="profile.newPassword">Nueva contraseña</label>
                         <input type="password" id="new_password" name="new_password" class="form-input" minlength="8"
                             required>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="confirm_password">Confirmar contraseña</label>
+                        <label class="form-label" for="confirm_password" data-i18n="profile.confirmPassword">Confirmar contraseña</label>
                         <input type="password" id="confirm_password" name="confirm_password" class="form-input"
                             required>
                     </div>
 
-                    <button type="submit" class="btn-primary">
+                    <button type="submit" class="btn-primary" data-i18n="profile.changePassword">
                         Cambiar contraseña
                     </button>
                 </form>
@@ -537,14 +538,14 @@ try {
 
             <!-- Emergency Contacts Section -->
             <section class="profile-section">
-                <h2 class="profile-section-title">👪 Contactos de Emergencia</h2>
-                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                <h2 class="profile-section-title">👪 <span data-i18n="profile.emergencyContactsSection">Contactos de Emergencia</span></h2>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;" data-i18n="profile.emergencyContactsDesc">
                     Estos contactos serán notificados en caso de una situación de crisis.
                 </p>
 
                 <div id="contacts-list">
                     <?php if (empty($emergencyContacts)): ?>
-                        <p style="color: var(--text-tertiary); font-size: 0.875rem; text-align: center; padding: 1rem;">
+                        <p style="color: var(--text-tertiary); font-size: 0.875rem; text-align: center; padding: 1rem;" data-i18n="profile.noContacts">
                             No tienes contactos de emergencia configurados
                         </p>
                     <?php else: ?>
@@ -558,7 +559,7 @@ try {
                                     </div>
                                 </div>
                                 <button class="btn-secondary" style="padding: 0.5rem; font-size: 0.75rem; color: var(--danger);"
-                                    onclick="Profile.deleteContact(<?= $contact['id'] ?>)">
+                                    onclick="Profile.deleteContact(<?= $contact['id'] ?>)" data-i18n="profile.delete">
                                     Eliminar
                                 </button>
                             </div>
@@ -567,41 +568,41 @@ try {
                 </div>
 
                 <button class="btn-secondary" style="width: 100%; margin-top: 0.75rem;"
-                    onclick="Profile.showAddContactModal()">
+                    onclick="Profile.showAddContactModal()" data-i18n="profile.addContactButton">
                     ➕ Agregar Contacto
                 </button>
             </section>
 
             <!-- Linked Psychologist Section -->
             <section class="profile-section">
-                <h2 class="profile-section-title">👨‍⚕️ Psicólogo Vinculado</h2>
+                <h2 class="profile-section-title">👨‍⚕️ <span data-i18n="profile.linkedPsychologist">Psicólogo Vinculado</span></h2>
 
                 <?php if ($linkedPsychologist): ?>
                     <div class="contact-card">
                         <div class="contact-info">
                             <div class="contact-name"><?= htmlspecialchars($linkedPsychologist['name']) ?></div>
                             <div class="contact-details">
-                                Vinculado desde <?= date('d/m/Y', strtotime($linkedPsychologist['linked_at'])) ?>
+                                <span data-i18n="profile.linkedSince">Vinculado desde</span> <?= date('d/m/Y', strtotime($linkedPsychologist['linked_at'])) ?>
                             </div>
                         </div>
                     </div>
                 <?php else: ?>
                     <div class="mt-4">
                         <form onsubmit="Profile.linkPsychologist(event)" class="flex flex-col gap-3">
-                            <label class="form-label text-center mb-0">Vincular con Código</label>
+                            <label class="form-label text-center mb-0" data-i18n="profile.linkWithCode">Vincular con Código</label>
                             <div class="flex gap-2">
                                 <input type="text" name="code" class="form-input text-center font-mono uppercase tracking-widest text-lg" 
                                     placeholder="AB12CD" maxlength="6" required style="text-transform: uppercase;">
                             </div>
                             <button type="button" onclick="Profile.openScanner()" class="btn-secondary flex items-center justify-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-                                Escanear QR
+                                <span data-i18n="profile.scanQR">Escanear QR</span>
                             </button>
                             <button type="submit" class="btn-primary">
-                                🔗 Vincular
+                                🔗 <span data-i18n="profile.linkButton">Vincular</span>
                             </button>
                         </form>
-                        <p class="text-[10px] text-center text-gray-400 mt-2">
+                        <p class="text-[10px] text-center text-gray-400 mt-2" data-i18n="profile.askCode">
                             Pide el código de 6 dígitos a tu psicólogo
                         </p>
                     </div>
@@ -610,15 +611,15 @@ try {
 
             <!-- Crisis Preferences Section (NEW - PAP System) -->
             <section class="profile-section">
-                <h2 class="profile-section-title">🆘 Protocolo de Emergencia Automática</h2>
-                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                <h2 class="profile-section-title">🆘 <span data-i18n="profile.emergencyProtocol">Protocolo de Emergencia Automática</span></h2>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;" data-i18n="profile.emergencyProtocolDesc">
                     Configura cómo Mentta debe actuar cuando detecte una crisis emocional grave.
                 </p>
 
                 <div class="preference-item">
                     <div class="preference-info">
-                        <h4>👨‍⚕️ Notificar a mi psicólogo</h4>
-                        <p>Enviar alerta a mi psicólogo vinculado en caso de crisis</p>
+                        <h4>👨‍⚕️ <span data-i18n="profile.notifyPsychologist">Notificar a mi psicólogo</span></h4>
+                        <p data-i18n="profile.notifyPsychologistDesc">Enviar alerta a mi psicólogo vinculado en caso de crisis</p>
                     </div>
                     <label class="toggle-switch">
                         <input type="checkbox" id="notify-psychologist" checked
@@ -629,8 +630,8 @@ try {
 
                 <div class="preference-item">
                     <div class="preference-info">
-                        <h4>👪 Contactar a mis contactos de emergencia</h4>
-                        <p>Notificar a mis contactos si estoy en peligro</p>
+                        <h4>👪 <span data-i18n="profile.notifyContacts">Contactar a mis contactos de emergencia</span></h4>
+                        <p data-i18n="profile.notifyContactsDesc">Notificar a mis contactos si estoy en peligro</p>
                     </div>
                     <label class="toggle-switch">
                         <input type="checkbox" id="notify-contacts" checked onchange="Profile.saveCrisisPreferences()">
@@ -641,9 +642,9 @@ try {
                 <div class="preference-item"
                     style="border-top: 1px solid var(--border-color); padding-top: 1.25rem; margin-top: 0.5rem;">
                     <div class="preference-info">
-                        <h4 style="color: var(--text-primary);">🚨 Ayuda automática de emergencia</h4>
-                        <p>Mostrar botón de llamada al 113/106 cuando se detecte peligro inminente</p>
-                        <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">
+                        <h4 style="color: var(--text-primary);">🚨 <span data-i18n="profile.autoHelp">Ayuda automática de emergencia</span></h4>
+                        <p data-i18n="profile.autoHelpDesc">Mostrar botón de llamada al 113/106 cuando se detecte peligro inminente</p>
+                        <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;" data-i18n="profile.explicitConsent">
                             Requiere tu consentimiento explícito
                         </p>
                     </div>
@@ -734,18 +735,18 @@ try {
     <div id="add-contact-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">➕ Agregar Contacto</h3>
+                <h3 class="modal-title">➕ <span data-i18n="profile.addContactTitle">Agregar Contacto</span></h3>
                 <button class="modal-close" onclick="Profile.closeAddContactModal()">&times;</button>
             </div>
             <form id="add-contact-form" onsubmit="Profile.addContact(event)">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="form-label" for="contact_name">Nombre</label>
+                        <label class="form-label" for="contact_name" data-i18n="profile.contactName">Nombre</label>
                         <input type="text" id="contact_name" name="name" class="form-input" required>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="contact_relationship">Relación</label>
+                        <label class="form-label" for="contact_relationship" data-i18n="profile.contactRel">Relación</label>
                         <select id="contact_relationship" name="relationship" class="form-input" required>
                             <option value="">Seleccionar...</option>
                             <option value="Padre">Padre</option>
@@ -758,12 +759,12 @@ try {
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="contact_phone">Teléfono</label>
+                        <label class="form-label" for="contact_phone" data-i18n="profile.contactPhone">Teléfono</label>
                         <input type="tel" id="contact_phone" name="phone" class="form-input" required>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="contact_priority">Prioridad</label>
+                        <label class="form-label" for="contact_priority" data-i18n="profile.contactPriority">Prioridad</label>
                         <select id="contact_priority" name="priority" class="form-input">
                             <option value="1">1 - Principal</option>
                             <option value="2">2 - Secundario</option>
@@ -773,8 +774,8 @@ try {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary"
-                        onclick="Profile.closeAddContactModal()">Cancelar</button>
-                    <button type="submit" class="btn-primary">Agregar</button>
+                        onclick="Profile.closeAddContactModal()" data-i18n="profile.cancel">Cancelar</button>
+                    <button type="submit" class="btn-primary" data-i18n="profile.add">Agregar</button>
                 </div>
             </form>
         </div>
@@ -785,18 +786,18 @@ try {
         <div class="modal-content" style="max-width: 24rem;">
             <div class="modal-body text-center py-6">
                 <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-                <h3 style="color: var(--text-primary); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">
+                <h3 style="color: var(--text-primary); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;" data-i18n="profile.deleteHistoryConfirm">
                     ¿Eliminar todo el historial?
                 </h3>
-                <p style="color: var(--text-secondary); font-size: 0.9375rem; margin-bottom: 1.5rem;">
+                <p style="color: var(--text-secondary); font-size: 0.9375rem; margin-bottom: 1.5rem;" data-i18n="profile.deleteHistoryWarning">
                     Se eliminarán todas tus conversaciones y la IA perderá el contexto que ha aprendido sobre ti.
                     Esta acción no se puede deshacer.
                 </p>
                 <div class="flex gap-3">
-                    <button class="btn-secondary" style="flex: 1;" onclick="Profile.closeConfirmDeleteModal()">
+                    <button class="btn-secondary" style="flex: 1;" onclick="Profile.closeConfirmDeleteModal()" data-i18n="profile.cancel">
                         Cancelar
                     </button>
-                    <button class="btn-primary btn-danger" style="flex: 1;" onclick="Profile.deleteHistory()">
+                    <button class="btn-primary btn-danger" style="flex: 1;" onclick="Profile.deleteHistory()" data-i18n="profile.delete">
                         Eliminar
                     </button>
                 </div>
@@ -810,18 +811,18 @@ try {
             <div class="modal-body py-6">
                 <div style="font-size: 3rem; margin-bottom: 1rem; text-align: center;">🚨</div>
                 <h3
-                    style="color: var(--text-primary); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; text-align: center;">
+                    style="color: var(--text-primary); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; text-align: center;" data-i18n="profile.consentTitle">
                     Consentimiento para Ayuda de Emergencia
                 </h3>
-                <p style="color: var(--text-secondary); font-size: 0.9375rem; margin-bottom: 1rem;">
+                <p style="color: var(--text-secondary); font-size: 0.9375rem; margin-bottom: 1rem;" data-i18n="profile.consentDesc">
                     Al activar esta opción, autorizas a Mentta a:
                 </p>
                 <ul
                     style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem; padding-left: 1.5rem;">
-                    <li>Mostrar un botón de llamada rápida al 113 o 106 cuando detecte que estás en peligro</li>
-                    <li>Registrar esta preferencia para futuras sesiones</li>
+                    <li data-i18n="profile.consentPoint1">Mostrar un botón de llamada rápida al 113 o 106 cuando detecte que estás en peligro</li>
+                    <li data-i18n="profile.consentPoint2">Registrar esta preferencia para futuras sesiones</li>
                 </ul>
-                <p style="color: var(--text-tertiary); font-size: 0.75rem; margin-bottom: 1.5rem;">
+                <p style="color: var(--text-tertiary); font-size: 0.75rem; margin-bottom: 1.5rem;" data-i18n="profile.consentFooter">
                     Puedes desactivar esta opción en cualquier momento. Tu privacidad es importante para nosotros.
                 </p>
                 <div class="flex gap-3">
