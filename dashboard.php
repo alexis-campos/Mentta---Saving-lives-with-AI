@@ -54,8 +54,8 @@ if ($user['role'] !== 'psychologist') {
                     </div>
                     <div>
                         <h1 class="text-xl font-bold font-serif"
-                            style="color: var(--mentta-charcoal); letter-spacing: -0.01em;">Mentta Profesional</h1>
-                        <p class="text-[8px] uppercase tracking-[0.3em] font-bold opacity-30">Mental Health Suite</p>
+                            style="color: var(--mentta-charcoal); letter-spacing: -0.01em;" data-i18n="dashboard.title">Mentta Profesional</h1>
+                        <p class="text-[8px] uppercase tracking-[0.3em] font-bold opacity-30" data-i18n="dashboard.subtitle">Mental Health Suite</p>
                     </div>
                 </div>
             </div>
@@ -69,7 +69,7 @@ if ($user['role'] !== 'psychologist') {
                     </div>
                     <div class="flex flex-col">
                         <span
-                            class="text-[9px] font-bold uppercase tracking-[0.2em] text-[#AAA] font-sans">Especialista</span>
+                            class="text-[9px] font-bold uppercase tracking-[0.2em] text-[#AAA] font-sans" data-i18n="dashboard.specialist">Especialista</span>
                         <span class="text-sm font-bold text-[#2A2A2A] leading-none font-sans">Dra.
                             <?= htmlspecialchars(explode(' ', $user['name'])[0]) ?></span>
                     </div>
@@ -77,12 +77,21 @@ if ($user['role'] !== 'psychologist') {
 
                 <!-- Notifications & Logout -->
                 <div class="flex items-center gap-4">
+                    <!-- Language Selector -->
+                    <div>
+                        <select id="language-select" onchange="window.changeDashboardLanguage(this.value)" 
+                            class="bg-transparent text-[10px] font-bold uppercase tracking-widest text-[#AAA] hover:text-[#2A2A2A] transition-colors cursor-pointer outline-none text-right appearance-none font-sans">
+                            <option value="es">ES</option>
+                            <option value="en">EN</option>
+                        </select>
+                    </div>
+
                     <!-- New Patient Button -->
                     <button onclick="openConnectModal()" class="px-5 py-2.5 bg-[#2A2A2A] text-white rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-black transition-all shadow-lg flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
-                        <span>Nuevo Paciente</span>
+                        <span data-i18n="dashboard.newPatient">Nuevo Paciente</span>
                     </button>
 
                     <div class="relative">
@@ -102,7 +111,7 @@ if ($user['role'] !== 'psychologist') {
                         <svg class="w-4 h-4 stroke-icon-fine" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7" />
                         </svg>
-                        <span>Cerrar Sesión</span>
+                        <span data-i18n="dashboard.logout">Cerrar Sesión</span>
                     </a>
                 </div>
             </div>
@@ -119,13 +128,13 @@ if ($user['role'] !== 'psychologist') {
                     </svg>
                 </div>
                 
-                <h3 class="text-2xl font-bold font-serif text-[#2A2A2A] mb-2">Vincular Nuevo Paciente</h3>
-                <p class="text-gray-500 text-sm mb-8">Comparte este código con tu paciente o pídele que escanee el QR.</p>
+                <h3 class="text-2xl font-bold font-serif text-[#2A2A2A] mb-2" data-i18n="dashboard.linkPatient">Vincular Nuevo Paciente</h3>
+                <p class="text-gray-500 text-sm mb-8" data-i18n="dashboard.shareCodeInstruction">Comparte este código con tu paciente o pídele que escanee el QR.</p>
                 
                 <!-- Code Display -->
                 <div class="bg-gray-50 rounded-2xl p-6 mb-6 border border-gray-100">
                     <div id="generated-code" class="text-4xl font-mono font-bold tracking-[0.2em] text-[#2A2A2A] mb-2 select-all">------</div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-[#AAA]">Código de Vinculación</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-[#AAA]" data-i18n="dashboard.linkCode">Código de Vinculación</div>
                 </div>
 
                 <!-- QR Display -->
@@ -139,11 +148,11 @@ if ($user['role'] !== 'psychologist') {
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    Válido por 24 horas
+                    <span data-i18n="dashboard.validFor24h">Válido por 24 horas</span>
                 </p>
 
                 <button onclick="closeConnectModal()" class="w-full py-4 rounded-xl bg-gray-100 text-gray-600 font-bold text-sm uppercase tracking-widest hover:bg-gray-200 transition-colors">
-                    Cerrar
+                    <span data-i18n="dashboard.close">Cerrar</span>
                 </button>
             </div>
         </div>
@@ -154,7 +163,7 @@ if ($user['role'] !== 'psychologist') {
         <aside id="sidebar" class="w-96 flex flex-col h-full bg-transparent overflow-hidden">
             <div class="flex flex-col h-full rounded-[2rem] p-6" style="background-color: var(--mentta-bg);">
                 <div class="flex items-center justify-between mb-8 px-2">
-                    <h2 class="text-2xl font-bold font-serif text-[#2A2A2A]">Mis Pacientes</h2>
+                    <h2 class="text-2xl font-bold font-serif text-[#2A2A2A]" data-i18n="dashboard.myPatients">Mis Pacientes</h2>
                     <button id="refresh-patients" class="text-black/20 hover:text-black transition-all"
                         title="Actualizar">
                         <svg class="w-5 h-5 stroke-icon" viewBox="0 0 24 24">
@@ -172,7 +181,7 @@ if ($user['role'] !== 'psychologist') {
                             <circle cx="11" cy="11" r="8" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M21 21l-4.35-4.35" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                        <input type="text" id="search-patients" placeholder="Buscar por nombre..."
+                        <input type="text" id="search-patients" placeholder="Buscar por nombre..." data-i18n-placeholder="dashboard.searchPlaceholder"
                             class="bg-transparent border-none outline-none text-sm w-full font-sans font-medium text-gray-800 placeholder-black/20">
                     </div>
                 </div>
@@ -205,8 +214,9 @@ if ($user['role'] !== 'psychologist') {
                                 <div class="absolute bottom-6 left-6 text-left">
                                     <p
                                         class="text-white text-[10px] font-bold uppercase tracking-widest leading-none mb-1">
+                                        data-i18n="common.eliteCare">
                                         Elite Suite</p>
-                                    <p class="text-white text-lg font-serif font-bold">Cuidado Humano</p>
+                                    <p class="text-white text-lg font-serif font-bold" data-i18n="dashboard.carePortal">Cuidado Humano</p>
                                 </div>
                             </div>
 
@@ -217,9 +227,9 @@ if ($user['role'] !== 'psychologist') {
                             </div>
                         </div>
 
-                        <h2 class="text-3xl font-bold font-serif mb-4" style="color: var(--mentta-charcoal);">Portal de
+                        <h2 class="text-3xl font-bold font-serif mb-4" style="color: var(--mentta-charcoal);" data-i18n="dashboard.carePortal">Portal de
                             Cuidado</h2>
-                        <p class="text-sm font-sans font-medium text-[#999] leading-relaxed mb-8">
+                        <p class="text-sm font-sans font-medium text-[#999] leading-relaxed mb-8" data-i18n="dashboard.welcomeMessage">
                             Gestiona tus consultas con la precisión del análisis de IA y la calidez de la atención
                             humana. Selecciona un paciente para iniciar.
                         </p>
@@ -229,7 +239,7 @@ if ($user['role'] !== 'psychologist') {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                             </svg>
-                            Selecciona una tarjeta
+                            <span data-i18n="dashboard.selectCard">Selecciona una tarjeta</span>
                         </div>
                     </div>
                 </div>
@@ -244,7 +254,7 @@ if ($user['role'] !== 'psychologist') {
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                             </path>
                         </svg>
-                        <p class="text-gray-600">Cargando información...</p>
+                        <p class="text-gray-600" data-i18n="dashboard.loadingPatients">Cargando información...</p>
                     </div>
                 </div>
 
@@ -277,7 +287,7 @@ if ($user['role'] !== 'psychologist') {
                                         <span id="patient-age-detail">0 años</span>
                                         <span class="opacity-30">•</span>
                                         <span id="patient-since-detail"
-                                            class="text-[10px] uppercase tracking-widest text-[#AAA]">Desde...</span>
+                                            class="text-[10px] uppercase tracking-widest text-[#AAA]" data-i18n="dashboard.since">Desde...</span>
                                     </div>
                                 </div>
                             </div>
@@ -298,7 +308,7 @@ if ($user['role'] !== 'psychologist') {
                                     </svg>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#AAA] mb-1.5">
+                                    <div class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#AAA] mb-1.5" data-i18n="dashboard.sessions">
                                         Sesiones</div>
                                     <div class="text-4xl font-bold text-[#2A2A2A] font-serif" id="metric-conversations">
                                         0</div>
@@ -315,7 +325,7 @@ if ($user['role'] !== 'psychologist') {
                                     </svg>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#AAA] mb-1.5">
+                                    <div class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#AAA] mb-1.5" data-i18n="dashboard.msgPerDay">
                                         Msj / Día</div>
                                     <div class="text-4xl font-bold text-[#2A2A2A] font-serif" id="metric-avg-messages">0
                                     </div>
@@ -332,7 +342,7 @@ if ($user['role'] !== 'psychologist') {
                                     </svg>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#AAA] mb-1.5">
+                                    <div class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#AAA] mb-1.5" data-i18n="dashboard.lastActive">
                                         Última Vez</div>
                                     <div class="text-sm font-bold text-[#4A4A4A] mt-2 leading-tight"
                                         id="metric-last-active">-</div>
@@ -350,10 +360,10 @@ if ($user['role'] !== 'psychologist') {
                                     </svg>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#AAA] mb-1.5">
+                                    <div class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#AAA] mb-1.5" data-i18n="dashboard.streak">
                                         Racha</div>
                                     <div class="text-4xl font-bold text-[#2A2A2A] font-serif" id="metric-streak">0 <span
-                                            class="text-xs font-sans font-medium opacity-30 tracking-normal capitalize">Días</span>
+                                            class="text-xs font-sans font-medium opacity-30 tracking-normal capitalize" data-i18n="dashboard.days">Días</span>
                                     </div>
                                 </div>
                             </div>
@@ -364,15 +374,15 @@ if ($user['role'] !== 'psychologist') {
                     <div class="content-panel mb-10">
                         <h3
                             class="section-title mb-10 pb-6 border-b border-black/[0.03] flex justify-between items-center">
-                            <span>Evolución del Bienestar</span>
-                            <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-[#CCC]">Análisis 30
+                            <span data-i18n="dashboard.wellnessEvolution">Evolución del Bienestar</span>
+                            <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-[#CCC]" data-i18n="dashboard.analysis30Days">Análisis 30
                                 Días</span>
                         </h3>
                         <div class="h-80">
                             <canvas id="emotion-chart"></canvas>
                         </div>
                         <div id="no-chart-data" class="hidden text-center py-16 text-[#DDD]">
-                            <p class="font-bold text-[10px] uppercase tracking-widest">Información en proceso de
+                            <p class="font-bold text-[10px] uppercase tracking-widest" data-i18n="dashboard.processingInfo">Información en proceso de
                                 análisis</p>
                         </div>
                     </div>
@@ -381,7 +391,7 @@ if ($user['role'] !== 'psychologist') {
                         <!-- Timeline de alertas -->
                         <div class="content-panel flex flex-col min-h-[450px]">
                             <h3 class="section-title mb-8 flex items-center justify-between">
-                                <span>Línea Crítica</span>
+                                <span data-i18n="dashboard.criticalLine">Línea Crítica</span>
                                 <span class="w-2 h-2 rounded-full bg-red-400 status-pulse"></span>
                             </h3>
                             <div id="alerts-timeline" class="flex-1 space-y-5 overflow-y-auto custom-scrollbar pr-3">
@@ -391,11 +401,11 @@ if ($user['role'] !== 'psychologist') {
 
                         <!-- Temas principales -->
                         <div class="content-panel flex flex-col min-h-[450px]">
-                            <h3 class="section-title mb-8">Conceptos Recurrentes</h3>
+                            <h3 class="section-title mb-8" data-i18n="dashboard.recurringConcepts">Conceptos Recurrentes</h3>
                             <div id="top-topics" class="flex flex-wrap gap-4 content-start">
                                 <!-- Tags de temas -->
                             </div>
-                            <div class="mt-auto pt-8 opacity-20 text-[9px] font-bold uppercase tracking-[0.3em]">
+                            <div class="mt-auto pt-8 opacity-20 text-[9px] font-bold uppercase tracking-[0.3em]" data-i18n="dashboard.generatedBy">
                                 Generado por Mentta AI Analytics
                             </div>
                         </div>
@@ -416,8 +426,46 @@ if ($user['role'] !== 'psychologist') {
 
     <!-- Scripts -->
     <script src="assets/js/utils.js"></script>
+    <script src="assets/js/translations.js"></script> <!-- DEV-007: i18n support -->
     <script src="assets/js/alerts.js"></script>
     <script src="assets/js/dashboard.js"></script>
+    
+    <script>
+        // DEV-007: Initialize Translation Manager
+        document.addEventListener('DOMContentLoaded', () => {
+            window.i18n = new TranslationManager();
+            
+            // Set initial value for selector
+            const langSelect = document.getElementById('language-select');
+            if (langSelect) {
+                langSelect.value = i18n.currentLang;
+            }
+            
+            // Expose change function globally for the selector
+            window.changeDashboardLanguage = (lang) => {
+                i18n.setLanguage(lang);
+                // Trigger dashboard update if needed
+                if (typeof loadPatients === 'function') loadPatients();
+                updateChartLanguage(); // Will be implemented in dashboard.js
+            };
+
+            // Listen for language changes to update UI
+            i18n.listeners.push((lang) => {
+                // Update selector if changed from elsewhere
+                if (langSelect && langSelect.value !== lang) {
+                    langSelect.value = lang;
+                }
+                
+                // Re-render chart if it exists
+                if (typeof updateChartLanguage === 'function') {
+                    updateChartLanguage();
+                }
+            });
+            
+            // Apply initial translations
+            i18n.applyTranslations();
+        });
+    </script>
 </body>
 
 </html>

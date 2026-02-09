@@ -51,7 +51,7 @@ async function loadPatients() {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <p>Cargando pacientes...</p>
+            <p>${i18n.t('dashboard.loadingPatients')}</p>
         </div>
     `;
 
@@ -63,11 +63,11 @@ async function loadPatients() {
             allPatients = data.data;
             renderPatientsList(allPatients);
         } else {
-            container.innerHTML = `<p class="text-red-500 text-center py-4">${data.error || 'Error al cargar'}</p>`;
+            container.innerHTML = `<p class="text-red-500 text-center py-4">${data.error || i18n.t('dashboard.errorLoading')}</p>`;
         }
     } catch (error) {
         debugError('Error cargando pacientes:', error);
-        container.innerHTML = `<p class="text-red-500 text-center py-4">Error de conexión</p>`;
+        container.innerHTML = `<p class="text-red-500 text-center py-4">${i18n.t('dashboard.connectionError')}</p>`;
     }
 }
 
@@ -89,13 +89,11 @@ function renderPatientsList(patients) {
         container.innerHTML = `
             <div class="text-center py-10">
                 <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                    <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                 </div>
-                <h3 class="text-lg font-semibold text-gray-700 mb-2">¡Bienvenido al Panel!</h3>
-                <p class="text-gray-500 text-sm mb-4">Aún no tienes pacientes vinculados.</p>
-                <p class="text-gray-400 text-xs">Los pacientes pueden vincularse desde su perfil.</p>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">${i18n.t('dashboard.welcomeTitle')}</h3>
+                <p class="text-gray-500 text-sm mb-4">${i18n.t('dashboard.noPatientsYet')}</p>
+                <p class="text-gray-400 text-xs">${i18n.t('dashboard.linkFromProfile')}</p>
             </div>
         `;
         return;
@@ -108,9 +106,9 @@ function renderPatientsList(patients) {
         card.onclick = () => selectPatient(patient.id, card);
 
         const statusConfig = {
-            'stable': { color: '#B5C9B5', label: 'Estable' }, // Soft Sage
-            'monitor': { color: '#E8C07D', label: 'Monitorear' }, // Soft Amber
-            'risk': { color: '#C8553D', label: 'En Riesgo' }   // Terracotta
+            'stable': { color: '#B5C9B5', label: i18n.t('dashboard.stable') },
+            'monitor': { color: '#E8C07D', label: i18n.t('dashboard.monitor') },
+            'risk': { color: '#C8553D', label: i18n.t('dashboard.risk') }
         };
 
         const status = statusConfig[patient.status] || statusConfig['stable'];
@@ -130,7 +128,7 @@ function renderPatientsList(patients) {
                         <div class="w-2.5 h-2.5 rounded-full status-pulse flex-shrink-0" style="background-color: ${status.color};"></div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="patient-meta font-bold uppercase tracking-[0.15em] text-[9px]">${patient.age} Años</span>
+                        <span class="patient-meta font-bold uppercase tracking-[0.15em] text-[9px]">${patient.age} ${i18n.t('dashboard.years')}</span>
                         <span class="text-[8px] opacity-10 text-black">•</span>
                         <span class="patient-meta font-medium text-[9px] uppercase tracking-[0.1em] opacity-60">${patient.last_activity_formatted}</span>
                     </div>
@@ -200,7 +198,7 @@ async function loadPatientDetail(patientId) {
         debugError('Error cargando detalle:', error);
         document.getElementById('patient-loading').classList.add('hidden');
         document.getElementById('no-patient-selected').classList.remove('hidden');
-        showToast('Error de conexión', 'error');
+        showToast(i18n.t('dashboard.connectionError'), 'error');
     }
 }
 
@@ -221,14 +219,14 @@ function renderPatientDetail(detail) {
 
     // Header info
     document.getElementById('patient-name-detail').textContent = patient.name;
-    document.getElementById('patient-age-detail').textContent = `${patient.age} años`;
-    document.getElementById('patient-since-detail').textContent = `Desde ${formatDate(patient.linked_since)}`;
+    document.getElementById('patient-age-detail').textContent = `${patient.age} ${i18n.t('dashboard.years')}`;
+    document.getElementById('patient-since-detail').textContent = `${i18n.t('dashboard.since')} ${formatDate(patient.linked_since)}`;
 
     // Status
     const statusConfig = {
-        'stable': { emoji: '🟢', text: 'Estable', color: '#B5C9B5' },
-        'monitor': { emoji: '🟡', text: 'Monitorear', color: '#E8C07D' },
-        'risk': { emoji: '🔴', text: 'En Riesgo', color: '#C8553D' }
+        'stable': { emoji: '🟢', text: i18n.t('dashboard.stable'), color: '#B5C9B5' },
+        'monitor': { emoji: '🟡', text: i18n.t('dashboard.monitor'), color: '#E8C07D' },
+        'risk': { emoji: '🔴', text: i18n.t('dashboard.risk'), color: '#C8553D' }
     };
     const status = statusConfig[patient.status] || statusConfig['stable'];
 
@@ -242,7 +240,7 @@ function renderPatientDetail(detail) {
     document.getElementById('metric-conversations').textContent = metrics.total_conversations;
     document.getElementById('metric-avg-messages').textContent = metrics.avg_messages_per_day;
     document.getElementById('metric-last-active').textContent = metrics.last_active_formatted;
-    document.getElementById('metric-streak').innerHTML = `${metrics.streak_days} <span class="text-sm font-normal">días</span>`;
+    document.getElementById('metric-streak').innerHTML = `${metrics.streak_days} <span class="text-sm font-normal">${i18n.t('dashboard.days_lowercase')}</span>`;
 
     // Gráfico
     renderEmotionChart(detail.emotion_history);
@@ -289,7 +287,7 @@ function renderEmotionChart(emotionHistory) {
             labels: labels,
             datasets: [
                 {
-                    label: 'Positividad',
+                    label: i18n.t('chat.joy') || 'Positividad',
                     data: emotionHistory.map(item => safeValue(item.positive)),
                     borderColor: '#10B981',
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
@@ -298,7 +296,7 @@ function renderEmotionChart(emotionHistory) {
                     fill: true
                 },
                 {
-                    label: 'Ansiedad',
+                    label: i18n.t('chat.fear') || 'Ansiedad',
                     data: emotionHistory.map(item => safeValue(item.anxiety)),
                     borderColor: '#F59E0B',
                     backgroundColor: 'rgba(245, 158, 11, 0.1)',
@@ -307,7 +305,7 @@ function renderEmotionChart(emotionHistory) {
                     fill: false
                 },
                 {
-                    label: 'Tristeza',
+                    label: i18n.t('chat.sadness') || 'Tristeza',
                     data: emotionHistory.map(item => safeValue(item.sadness)),
                     borderColor: '#3B82F6',
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -316,7 +314,7 @@ function renderEmotionChart(emotionHistory) {
                     fill: false
                 },
                 {
-                    label: 'Negatividad',
+                    label: i18n.t('chat.anger') || 'Negatividad',
                     data: emotionHistory.map(item => safeValue(item.negative)),
                     borderColor: '#EF4444',
                     backgroundColor: 'rgba(239, 68, 68, 0.1)',
@@ -374,6 +372,24 @@ function renderEmotionChart(emotionHistory) {
     });
 }
 
+// Nueva función para actualizar textos del gráfico
+window.updateChartLanguage = function () {
+    if (emotionChart) {
+        emotionChart.data.datasets[0].label = i18n.t('chat.joy') || 'Positividad';
+        emotionChart.data.datasets[1].label = i18n.t('chat.fear') || 'Ansiedad';
+        emotionChart.data.datasets[2].label = i18n.t('chat.sadness') || 'Tristeza';
+        emotionChart.data.datasets[3].label = i18n.t('chat.anger') || 'Negatividad';
+        emotionChart.update();
+    }
+
+    // Recargar lista si está vacía para actualizar mensaje de vacío
+    const container = document.getElementById('patients-list');
+    if (container.querySelector('div.text-center')) {
+        // Si hay un contenedor de "vacío", recargamos
+        if (allPatients.length === 0) loadPatients();
+    }
+};
+
 // ============================================
 // ALERTAS
 // ============================================
@@ -388,7 +404,7 @@ function renderAlertsTimeline(alerts) {
                 <svg class="w-10 h-10 mx-auto mb-2 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <p>No hay alertas recientes</p>
+                <p>${i18n.t('dashboard.noAlerts')}</p>
             </div>
         `;
         return;
@@ -405,7 +421,7 @@ function renderAlertsTimeline(alerts) {
                 : alert.message_snapshot)
             : 'Sin mensaje';
 
-        const severityLabel = alert.severity === 'red' ? 'Crítica' : 'Prioritaria';
+        const severityLabel = alert.severity === 'red' ? i18n.t('dashboard.critical') : i18n.t('dashboard.priority');
         const severityClass = alert.severity === 'red' ? 'text-red-500 bg-red-50' : 'text-orange-500 bg-orange-50';
 
         item.innerHTML = `
@@ -423,12 +439,12 @@ function renderAlertsTimeline(alerts) {
                     <p class="text-sm font-medium text-[#4A4A4A] leading-relaxed mb-3">"${messagePreview}"</p>
                     <div class="flex items-center gap-3">
                         <span class="text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${alert.status === 'pending' ? 'bg-red-50 text-red-500' : 'bg-gray-50 text-gray-400'}">
-                            ${alert.status === 'pending' ? '● Pendiente' : '✓ Atendida'}
+                            ${alert.status === 'pending' ? '● ' + i18n.t('dashboard.pending') : '✓ ' + i18n.t('dashboard.attended')}
                         </span>
                         ${alert.status === 'pending' ? `
                             <button onclick="acknowledgeAlert(${alert.id})" 
                                 class="text-[9px] font-bold uppercase tracking-widest text-indigo-500 hover:text-indigo-700 transition-colors">
-                                Marcar atendida
+                                ${i18n.t('dashboard.markAttended')}
                             </button>
                         ` : ''}
                     </div>
@@ -450,7 +466,7 @@ function renderTopTopics(topics) {
 
     if (!topics || topics.length === 0) {
         container.innerHTML = `
-            <p class="text-gray-400 text-xs font-medium uppercase tracking-widest py-8">Análisis insuficiente</p>
+            <p class="text-gray-400 text-xs font-medium uppercase tracking-widest py-8">${i18n.t('dashboard.processingInfo')}</p>
         `;
         return;
     }
@@ -590,7 +606,7 @@ async function acknowledgeAlert(alertId) {
         const data = await response.json();
 
         if (data.success) {
-            showToast('Alerta marcada como atendida', 'success');
+            showToast(i18n.t('dashboard.success'), 'success');
             const alertItem = document.querySelector(`[data-alert-id="${alertId}"]`);
             if (alertItem) {
                 alertItem.classList.add('opacity-50');
