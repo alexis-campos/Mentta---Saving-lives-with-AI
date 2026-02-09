@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LiveSession from './components/LiveSession';
 import { Heart, Shield, Zap, Video, ArrowLeft } from 'lucide-react';
 import { MentalHealthState, RiskLevel } from './types';
+import { t, getUserLanguage, Language } from './i18n';
 
 // SECURITY: Allowed origins for postMessage communication
 // PRODUCTION-READY: window.location.origin adapts to whatever domain the app is deployed on
@@ -18,6 +19,7 @@ const App: React.FC = () => {
   const [inSession, setInSession] = useState(false);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [lang] = useState<Language>(() => getUserLanguage());
 
   // Listen for session token from parent window (cross-origin communication)
   useEffect(() => {
@@ -162,7 +164,7 @@ const App: React.FC = () => {
             className="flex items-center gap-3 px-6 py-3 rounded-full bg-white/50 hover:bg-white transition-all border border-black/5 shadow-sm group"
           >
             <ArrowLeft size={16} className="text-black/40 group-hover:text-black transition-colors" />
-            <span className="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-black/40 group-hover:text-black transition-colors">Regresar</span>
+            <span className="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-black/40 group-hover:text-black transition-colors">{t('goBack', lang)}</span>
           </button>
         </div>
 
@@ -183,10 +185,10 @@ const App: React.FC = () => {
           {/* Title Section */}
           <div className="text-center mb-10">
             <h1 className="text-4xl font-bold mb-4 font-serif" style={{ color: '#111', letterSpacing: '-0.02em' }}>
-              Habla con Mentta
+              {t('talkWithMentta', lang)}
             </h1>
             <p className="text-base font-sans font-light" style={{ color: '#666', letterSpacing: '0.02em' }}>
-              Apoyo emocional inmediato. Privado, empático y disponible siempre.
+              {t('immediateSupport', lang)}
             </p>
           </div>
 
@@ -199,10 +201,10 @@ const App: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-sans font-semibold text-sm mb-1" style={{ color: '#2A2A2A', letterSpacing: '0.01em' }}>
-                    IA Empática
+                    {t('empatheticAI', lang)}
                   </h3>
                   <p className="text-[10px] font-sans" style={{ color: '#888', letterSpacing: '0.03em' }}>
-                    Escucha activa
+                    {t('activeListening', lang)}
                   </p>
                 </div>
               </div>
@@ -215,10 +217,10 @@ const App: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-sans font-semibold text-sm mb-1" style={{ color: '#2A2A2A', letterSpacing: '0.01em' }}>
-                    Privacidad
+                    {t('privacy', lang)}
                   </h3>
                   <p className="text-[10px] font-sans" style={{ color: '#888', letterSpacing: '0.03em' }}>
-                    100% Seguro
+                    {t('fullySafe', lang)}
                   </p>
                 </div>
               </div>
@@ -231,10 +233,10 @@ const App: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-sans font-semibold text-sm mb-1" style={{ color: '#2A2A2A', letterSpacing: '0.01em' }}>
-                    Análisis
+                    {t('analysis', lang)}
                   </h3>
                   <p className="text-[10px] font-sans" style={{ color: '#888', letterSpacing: '0.03em' }}>
-                    Tiempo real
+                    {t('realTime', lang)}
                   </p>
                 </div>
               </div>
@@ -252,19 +254,19 @@ const App: React.FC = () => {
           >
             <div className="flex items-center justify-center gap-3 relative z-10">
               <Video size={20} strokeWidth={2.5} />
-              <span>Iniciar Llamada</span>
+              <span>{t('startCall', lang)}</span>
             </div>
           </button>
 
           {/* Footer disclaimer */}
           <div className="mt-8 text-center">
             <div className="flex justify-center gap-3 mb-3">
-              <span className="text-[9px] font-sans font-bold uppercase tracking-[0.3em]" style={{ color: 'rgba(0,0,0,0.2)' }}>Secure</span>
+              <span className="text-[9px] font-sans font-bold uppercase tracking-[0.3em]" style={{ color: 'rgba(0,0,0,0.2)' }}>{t('secure', lang)}</span>
               <span className="text-[9px] font-sans font-bold uppercase tracking-[0.3em]" style={{ color: 'rgba(0,0,0,0.2)' }}>•</span>
-              <span className="text-[9px] font-sans font-bold uppercase tracking-[0.3em]" style={{ color: 'rgba(0,0,0,0.2)' }}>Private</span>
+              <span className="text-[9px] font-sans font-bold uppercase tracking-[0.3em]" style={{ color: 'rgba(0,0,0,0.2)' }}>{t('privateSpace', lang)}</span>
             </div>
             <p className="text-[10px] font-sans font-light" style={{ color: '#999' }}>
-              En caso de emergencia, contacta la línea <strong style={{ color: '#C8553D' }}>113</strong>
+              {t('inCaseOfEmergency', lang)} <strong style={{ color: '#C8553D' }}>113</strong>
             </p>
           </div>
         </div>

@@ -130,6 +130,9 @@ const TRANSLATIONS = {
             emergency24h: 'Urgency 24h',
             yourLocation: 'Your current location',
             defaultLocation: 'Lima (default location)',
+            usingApproxLocation: 'Using approximate location',
+            noCentersNearby: 'No centers registered near your location.',
+            errorLoadingCenters: 'Error loading centers',
         },
 
         // Landing Page
@@ -347,6 +350,15 @@ const TRANSLATIONS = {
             realTime: 'Real time',
             inCaseOfEmergency: 'In case of emergency, contact the line',
             goBack: 'Go Back',
+            // Session UI (React)
+            encryptedSession: 'Encrypted Session',
+            you: 'You',
+            cameraOff: 'CAMERA OFF',
+            micOff: 'Microphone Off',
+            aiAnalysis: 'AI Analysis',
+            endCall: 'END',
+            privateSpace: 'Private Space',
+            secure: 'Secure',
         },
 
         // Index/Landing
@@ -521,6 +533,9 @@ const TRANSLATIONS = {
             emergency24h: 'Urgencias 24h',
             yourLocation: 'Tu ubicación actual',
             defaultLocation: 'Lima (ubicación predeterminada)',
+            usingApproxLocation: 'Usando ubicación aproximada',
+            noCentersNearby: 'No hay centros registrados cerca de tu ubicación.',
+            errorLoadingCenters: 'Error al cargar centros',
         },
 
         // Landing Page
@@ -739,6 +754,15 @@ const TRANSLATIONS = {
             realTime: 'Tiempo real',
             inCaseOfEmergency: 'En caso de emergencia, contacta la línea',
             goBack: 'Regresar',
+            // Session UI (React)
+            encryptedSession: 'Sesión Encriptada',
+            you: 'Tú',
+            cameraOff: 'CÁMARA APAGADA',
+            micOff: 'Micrófono Apagado',
+            aiAnalysis: 'Análisis IA',
+            endCall: 'TERMINAR',
+            privateSpace: 'Espacio Privado',
+            secure: 'Seguro',
         },
 
         // Index/Landing

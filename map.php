@@ -736,7 +736,7 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                             console.log('📍 User location detected:', userLocation);
                             window.map.setView([userLocation.lat, userLocation.lng], 13);
                             addUserMarker(userLocation);
-                            updateLocationText('Tu ubicación actual');
+                            updateLocationText(i18n.t('map.yourLocation'));
                             loadNearbyCenters(userLocation.lat, userLocation.lng);
                             document.getElementById('loading-overlay').style.display = 'none';
                         },
@@ -755,8 +755,8 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                 userLocation = { lat: -12.0464, lng: -77.0428 };
                 window.map.setView([userLocation.lat, userLocation.lng], 13);
                 addUserMarker(userLocation);
-                updateLocationText('Lima, Perú');
-                updateCityText('Usando ubicación aproximada');
+                updateLocationText(i18n.t('map.defaultLocation'));
+                updateCityText(i18n.t('map.usingApproxLocation'));
                 loadNearbyCenters(userLocation.lat, userLocation.lng);
                 document.getElementById('loading-overlay').style.display = 'none';
             }
@@ -775,11 +775,11 @@ $mapsApiKey = env('GOOGLE_MAPS_API_KEY', '');
                         renderCentersList(data.data.centers);
                         console.log(`✅ Loaded ${data.data.count} centers`);
                     } else {
-                        showNoCentersMessage('No hay centros registrados cerca de tu ubicación.');
+                        showNoCentersMessage(i18n.t('map.noCentersNearby'));
                     }
                 } catch (error) {
                     console.error('Error loading centers:', error);
-                    showNoCentersMessage('Error al cargar centros');
+                    showNoCentersMessage(i18n.t('map.errorLoadingCenters'));
                 }
             }
             

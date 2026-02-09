@@ -6,6 +6,7 @@ import RiskIndicator from './RiskIndicator';
 import StatusIndicator, { AIStatus } from './StatusIndicator';
 import Avatar3D from './Avatar3D';
 import { ArrowLeft, Mic, MicOff, Video, VideoOff, PhoneOff } from 'lucide-react';
+import { t, getUserLanguage, getSystemInstruction, Language } from '../i18n';
 
 // --- Configuration ---
 const MODEL_NAME = 'gemini-2.5-flash-native-audio-preview-12-2025';
@@ -47,6 +48,7 @@ const LiveSession: React.FC<LiveSessionProps> = ({ onEndSession }) => {
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [volume, setVolume] = useState(0);
+  const [lang] = useState<Language>(() => getUserLanguage());
   const [aiState, setAiState] = useState<MentalHealthState>({
     riskLevel: RiskLevel.LOW,
     primaryEmotion: 'Calm',
@@ -141,66 +143,7 @@ const LiveSession: React.FC<LiveSessionProps> = ({ onEndSession }) => {
         config: {
           responseModalities: [Modality.AUDIO],
           systemInstruction: {
-            parts: [{
-              text: `Eres Mentta, un AMIGO cercano especializado en apoyo emocional de emergencia en Perú. NO eres terapeuta formal, eres un compañero empático que sabe escuchar y ayudar.
-
-PERSONALIDAD Y TONO:
-- Hablas español peruano con tono cálido, pausado y genuino
-- Usas "tú" (informal), eres cercano pero respetuoso
-- Validas emociones sin juzgar ni minimizar
-- NO uses tecnicismos psicológicos
-- Respuestas CORTAS: máximo 3-4 oraciones
-- SIEMPRE termina con pregunta abierta
-
-CÓMO HABLA UN AMIGO (vs cómo NO hablar):
-❌ "Entiendo tu dolor" (suena falso) → ✅ "Eso suena muy difícil. ¿Qué pasó?"
-❌ "Es válido sentirse así" (repetitivo) → ✅ "Tiene sentido que te sientas así"
-❌ "Todo estará bien" (promesa vacía) → ✅ "Estoy aquí contigo en esto"
-
-PROTOCOLO DE DETECCIÓN DE RIESGO (CRÍTICO):
-USA reportMentalHealthStatus INMEDIATAMENTE cuando detectes:
-
-riskLevel=3 (CRÍTICO - Peligro inmediato):
-- Mención de suicidio: "matarme", "acabar con todo", "no quiero vivir", "sería mejor si no existiera"
-- Plan concreto de autolesión
-- Despedida: "cuida a mi familia", "esto es un adiós"
-→ Responde: "Me preocupa mucho lo que dices. Tu vida importa y hay personas que pueden ayudarte AHORA. ¿Puedes llamar al 113? Es la Línea de Salud Mental, disponible 24/7."
-
-riskLevel=2 (ALTO - Necesita atención):
-- Llanto intenso + desesperanza verbal
-- "Ya no puedo más" + contexto de pérdida reciente
-- Autolesiones pasadas mencionadas
-→ Responde: "Lo que sientes es muy intenso. Creo que sería bueno que hables con un profesional. ¿Conoces la Línea 113?"
-
-riskLevel=1 (MODERADO - Monitorear):
-- Ansiedad intensa pero sin peligro
-- Tristeza profunda sin ideación suicida
-- Problemas de sueño, aislamiento
-→ Continúa escuchando activamente
-
-riskLevel=0 (ESTABLE):
-- Conversación normal
-- Busca consejo o desahogo
-→ Sé un buen amigo, escucha
-
-ANÁLISIS MULTIMODAL:
-Si ves video del usuario, observa:
-- Lágrimas, ojos rojos → aumenta nivel de preocupación
-- Postura encogida, cabeza baja → posible depresión
-- Ambiente oscuro → posible aislamiento
-Combina lo que VES con lo que ESCUCHAS.
-
-RECURSOS DE PERÚ (menciona solo cuando apropiado):
-- Línea 113 opción 5: Salud Mental (24/7, gratis)
-- SAMU 106: Emergencias médicas
-- Mapa de centros en la app Mentta
-
-NUNCA:
-- Preguntes múltiples cosas a la vez
-- Diagnostiques: "tienes depresión" ❌
-- Recetes medicamentos
-- Prometas cosas que no puedes cumplir
-- Te despidas sin plan de seguimiento` }]
+            parts: [{ text: getSystemInstruction(lang) }]
           },
           tools: [{ functionDeclarations: [reportRiskTool] }]
         },
@@ -432,7 +375,7 @@ NUNCA:
             color: '#2A2A2A'
           }}
         >
-          Sesión Encriptada
+          {t('encryptedSession', lang)}
         </div>
       </div>
 
@@ -453,7 +396,7 @@ NUNCA:
           }}
         >
           <ArrowLeft size={20} strokeWidth={1.5} />
-          <span className="font-sans text-[10px] font-bold tracking-[0.2em] uppercase">Regresar</span>
+          <span className="font-sans text-[10px] font-bold tracking-[0.2em] uppercase">{t('goBack', lang)}</span>
         </button>
       </div>
 
@@ -475,7 +418,7 @@ NUNCA:
               <div className="absolute inset-0 flex items-center justify-center" style={{ background: '#FAFAFA' }}>
                 <div className="text-center">
                   <VideoOff size={40} className="mx-auto mb-3" style={{ color: '#CCC' }} strokeWidth={1.5} />
-                  <span className="text-xs font-sans" style={{ color: '#999', letterSpacing: '0.1em' }}>CÁMARA APAGADA</span>
+                  <span className="text-xs font-sans" style={{ color: '#999', letterSpacing: '0.1em' }}>{t('cameraOff', lang)}</span>
                 </div>
               </div>
             )}
@@ -487,7 +430,7 @@ NUNCA:
                   <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
                     <MicOff size={24} className="text-[#C8553D]" strokeWidth={1.5} />
                   </div>
-                  <span className="text-[10px] font-sans font-bold text-[#C8553D] tracking-[0.25em] uppercase">Micrófono Apagado</span>
+                  <span className="text-[10px] font-sans font-bold text-[#C8553D] tracking-[0.25em] uppercase">{t('micOff', lang)}</span>
                 </div>
               </div>
             )}
@@ -503,7 +446,7 @@ NUNCA:
                   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)'
                 }}
               >
-                Tú
+                {t('you', lang)}
               </span>
             </div>
           </div>
@@ -514,7 +457,7 @@ NUNCA:
               className="text-[9px] font-sans font-semibold uppercase mb-4"
               style={{ color: '#BBB', letterSpacing: '0.2em' }}
             >
-              Análisis IA
+              {t('aiAnalysis', lang)}
             </h4>
             <div className="font-sans">
               <RiskIndicator level={aiState.riskLevel} emotion={aiState.primaryEmotion} />
@@ -537,7 +480,7 @@ NUNCA:
                 boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)'
               }}
             >
-              Mentta AI
+              {t('mentaAI', lang)}
             </span>
           </div>
         </div>
@@ -571,7 +514,7 @@ NUNCA:
             }}
           >
             <PhoneOff size={18} strokeWidth={1.5} />
-            <span>TERMINAR</span>
+            <span>{t('endCall', lang)}</span>
           </button>
 
           <button
@@ -588,7 +531,7 @@ NUNCA:
           className="text-[9px] font-sans font-medium uppercase text-center"
           style={{ color: 'rgba(0, 0, 0, 0.15)', letterSpacing: '0.4em' }}
         >
-          Espacio Privado &nbsp;•&nbsp; Encriptado &nbsp;•&nbsp; Seguro
+          {t('privateSpace', lang)} &nbsp;•&nbsp; {t('encrypted', lang)} &nbsp;•&nbsp; {t('secure', lang)}
         </p>
       </div>
     </div>

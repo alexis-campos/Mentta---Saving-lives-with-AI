@@ -452,13 +452,13 @@ if ($hour >= 5 && $hour < 12) {
     <div id="crisis-modal" class="modal-overlay">
         <div class="modal-content max-w-md w-full mx-4 bg-[#FCFCFA] dark:bg-[#1a1a1a] border border-black/5 dark:border-white/5 shadow-2xl rounded-[2rem]">
             <div class="modal-header px-8 py-6 border-none flex justify-between items-center bg-transparent">
-                <h3 class="font-serif text-2xl text-[#2A2A2A] dark:text-white font-bold">Soporte de Crisis</h3>
+                <h3 class="font-serif text-2xl text-[#2A2A2A] dark:text-white font-bold" data-i18n="crisis.title">Crisis Support</h3>
                 <button onclick="closeCrisisModal()"
-                    class="text-[10px] font-bold uppercase tracking-widest text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors">Cerrar</button>
+                    class="text-[10px] font-bold uppercase tracking-widest text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors" data-i18n="common.close">Close</button>
             </div>
             <div class="modal-body px-8 pb-10 pt-2">
-                <p class="text-[#555] dark:text-gray-400 text-sm leading-relaxed mb-8">
-                    Este es un espacio seguro. Elige la opción que mejor se adapte a lo que necesitas en este momento:
+                <p class="text-[#555] dark:text-gray-400 text-sm leading-relaxed mb-8" data-i18n="crisis.subtitle">
+                    This is a safe space. Choose the option that best suits what you need right now:
                 </p>
 
                 <div class="space-y-4">
@@ -474,8 +474,8 @@ if ($hour >= 5 && $hour < 12) {
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <h4 class="text-[#2A2A2A] dark:text-white font-bold text-sm">Contactar a mi Psicólogo</h4>
-                            <p class="text-[10px] text-[#888] dark:text-gray-400 uppercase tracking-wider mt-0.5">Notificación prioritaria
+                            <h4 class="text-[#2A2A2A] dark:text-white font-bold text-sm" data-i18n="crisis.contactPsychologist">Contact my Psychologist</h4>
+                            <p class="text-[10px] text-[#888] dark:text-gray-400 uppercase tracking-wider mt-0.5" data-i18n="crisis.priorityNotification">Priority notification
                             </p>
                         </div>
                     </div>
@@ -494,8 +494,8 @@ if ($hour >= 5 && $hour < 12) {
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <h4 class="text-[#2A2A2A] dark:text-white font-bold text-sm">Ejercicios de Calma</h4>
-                            <p class="text-[10px] text-[#888] dark:text-gray-400 uppercase tracking-wider mt-0.5">Respiración y Grounding
+                            <h4 class="text-[#2A2A2A] dark:text-white font-bold text-sm" data-i18n="crisis.calmingExercises">Calming Exercises</h4>
+                            <p class="text-[10px] text-[#888] dark:text-gray-400 uppercase tracking-wider mt-0.5" data-i18n="crisis.breathingGrounding">Breathing and Grounding
                             </p>
                         </div>
                     </div>
@@ -512,8 +512,8 @@ if ($hour >= 5 && $hour < 12) {
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <h4 class="text-[#2A2A2A] dark:text-white font-bold text-sm">Contacto de Confianza</h4>
-                            <p class="text-[10px] text-[#888] dark:text-gray-400 uppercase tracking-wider mt-0.5">Aviso a red de seguridad
+                            <h4 class="text-[#2A2A2A] dark:text-white font-bold text-sm" data-i18n="crisis.emergencyContact">Emergency Contact</h4>
+                            <p class="text-[10px] text-[#888] dark:text-gray-400 uppercase tracking-wider mt-0.5" data-i18n="crisis.safetyNetwork">Safety network alert
                             </p>
                         </div>
                     </div>
@@ -529,8 +529,8 @@ if ($hour >= 5 && $hour < 12) {
                             </svg>
                         </div>
                         <div class="flex-1">
-                            <h4 class="text-white font-bold text-lg">Llamar Línea 113</h4>
-                            <p class="text-[10px] text-white/70 uppercase tracking-[0.2em] font-bold">Urgencia Inmediata
+                            <h4 class="text-white font-bold text-lg" data-i18n="crisis.callLine">Call Line 113</h4>
+                            <p class="text-[10px] text-white/70 uppercase tracking-[0.2em] font-bold" data-i18n="crisis.immediateUrgency">Immediate Urgency
                             </p>
                         </div>
                         <div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
@@ -549,13 +549,13 @@ if ($hour >= 5 && $hour < 12) {
     <div id="resources-modal" class="modal-overlay">
         <div class="modal-content max-w-lg w-full max-h-[90vh] mx-4 bg-[#FCFCFA] dark:bg-[#1a1a1a] border border-black/5 dark:border-white/5 shadow-2xl rounded-[2rem]">
             <div class="modal-header px-8 py-6 border-none flex justify-between items-center bg-transparent">
-                <h3 class="font-serif text-2xl text-[#2A2A2A] dark:text-white font-bold">Recursos de Bienestar</h3>
+                <h3 class="font-serif text-2xl text-[#2A2A2A] dark:text-white font-bold" data-i18n="resources.title">Wellness Resources</h3>
                 <button onclick="closeResourcesModal()"
-                    class="text-[10px] font-bold uppercase tracking-widest text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors">Cerrar</button>
+                    class="text-[10px] font-bold uppercase tracking-widest text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors" data-i18n="common.close">Close</button>
             </div>
             <div class="modal-body px-8 pb-10 pt-2 overflow-y-auto">
-                <p class="text-[#555] dark:text-gray-400 text-sm leading-relaxed mb-8">
-                    Herramientas diseñadas para devolverte al centro. Tómate el tiempo que necesites.
+                <p class="text-[#555] dark:text-gray-400 text-sm leading-relaxed mb-8" data-i18n="resources.subtitle">
+                    Tools designed to bring you back to center. Take the time you need.
                 </p>
 
                 <div class="space-y-6">
@@ -573,7 +573,7 @@ if ($hour >= 5 && $hour < 12) {
                                             d="M12 3v17.25m0 0a9 9 0 100-18 9 9 0 000 18z" />
                                     </svg>
                                 </div>
-                                <h4 class="font-bold text-sm text-[#2A2A2A]">Respiración Consciente</h4>
+                                <h4 class="font-bold text-sm text-[#2A2A2A]" data-i18n="resources.consciousBreathing">Conscious Breathing</h4>
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-black/20" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor">
@@ -598,17 +598,15 @@ if ($hour >= 5 && $hour < 12) {
                                         <span id="breathing-text"
                                             class="text-white font-bold text-lg uppercase tracking-widest text-[10px]">...</span>
                                         <span id="breathing-subtext"
-                                            class="text-white/40 text-[8px] uppercase tracking-widest mt-1">Calma</span>
+                                            class="text-white/40 text-[8px] uppercase tracking-widest mt-1" data-i18n="resources.calm">Calm</span>
                                     </div>
                                 </div>
                                 <div id="breathing-instruction"
-                                    class="text-xs text-[#888] mb-6 uppercase tracking-widest font-bold">Encuentra una
-                                    postura cómoda</div>
+                                    class="text-xs text-[#888] mb-6 uppercase tracking-widest font-bold" data-i18n="resources.findComfortablePosition">Find a comfortable position</div>
                                 <button id="breathing-start-btn" onclick="startBreathingExercise()"
-                                    class="bg-black text-white px-10 py-4 rounded-full font-bold text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-xl">Iniciar
-                                    Práctica</button>
+                                    class="bg-black text-white px-10 py-4 rounded-full font-bold text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-xl" data-i18n="resources.startPractice">Start Practice</button>
                                 <button id="breathing-stop-btn" onclick="stopBreathingExercise()"
-                                    class="hidden mt-4 text-[9px] uppercase tracking-widest text-red-500/60 hover:text-red-500 transition-colors font-bold">Finalizar</button>
+                                    class="hidden mt-4 text-[9px] uppercase tracking-widest text-red-500/60 hover:text-red-500 transition-colors font-bold" data-i18n="resources.finish">Finish</button>
                             </div>
                         </div>
                     </div>
@@ -629,7 +627,7 @@ if ($hour >= 5 && $hour < 12) {
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                 </div>
-                                <h4 class="font-bold text-sm text-[#2A2A2A]">Técnica de Grounding</h4>
+                                <h4 class="font-bold text-sm text-[#2A2A2A]" data-i18n="resources.groundingTechnique">Grounding Technique</h4>
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-black/20" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor">
@@ -638,51 +636,49 @@ if ($hour >= 5 && $hour < 12) {
                             </svg>
                         </div>
                         <div class="resource-card-content px-8 pb-10 pt-2">
-                            <p class="text-xs text-[#888] mb-6">Conecta con tus sentidos para reducir la ansiedad.
-                                <strong>Toca cada paso al completarlo:</strong>
+                            <p class="text-xs text-[#888] mb-6" data-i18n="resources.groundingInstruction">Connect with your senses to reduce anxiety. <strong>Tap each step when completed:</strong>
                             </p>
                             <div class="space-y-3">
                                 <div class="grounding-item p-4 rounded-2xl border border-black/5 bg-[#F9F9F7] text-xs font-medium text-[#2A2A2A] flex justify-between items-center group cursor-pointer"
                                     onclick="toggleGroundingItem(this, 5)">
-                                    <span>5 cosas que puedes <strong>ver</strong></span>
+                                    <span data-i18n="resources.see5">5 things you can <strong>see</strong></span>
                                     <div
                                         class="grounding-check w-6 h-6 rounded-full border border-black/10 flex items-center justify-center bg-white transition-all text-[10px]">
                                         5</div>
                                 </div>
                                 <div class="grounding-item p-4 rounded-2xl border border-black/5 bg-[#F9F9F7] text-xs font-medium text-[#2A2A2A] flex justify-between items-center group cursor-pointer"
                                     onclick="toggleGroundingItem(this, 4)">
-                                    <span>4 cosas que puedes <strong>tocar</strong></span>
+                                    <span data-i18n="resources.touch4">4 things you can <strong>touch</strong></span>
                                     <div
                                         class="grounding-check w-6 h-6 rounded-full border border-black/10 flex items-center justify-center bg-white transition-all text-[10px]">
                                         4</div>
                                 </div>
                                 <div class="grounding-item p-4 rounded-2xl border border-black/5 bg-[#F9F9F7] text-xs font-medium text-[#2A2A2A] flex justify-between items-center group cursor-pointer"
                                     onclick="toggleGroundingItem(this, 3)">
-                                    <span>3 cosas que puedes <strong>oír</strong></span>
+                                    <span data-i18n="resources.hear3">3 things you can <strong>hear</strong></span>
                                     <div
                                         class="grounding-check w-6 h-6 rounded-full border border-black/10 flex items-center justify-center bg-white transition-all text-[10px]">
                                         3</div>
                                 </div>
                                 <div class="grounding-item p-4 rounded-2xl border border-black/5 bg-[#F9F9F7] text-xs font-medium text-[#2A2A2A] flex justify-between items-center group cursor-pointer"
                                     onclick="toggleGroundingItem(this, 2)">
-                                    <span>2 cosas que puedes <strong>oler</strong></span>
+                                    <span data-i18n="resources.smell2">2 things you can <strong>smell</strong></span>
                                     <div
                                         class="grounding-check w-6 h-6 rounded-full border border-black/10 flex items-center justify-center bg-white transition-all text-[10px]">
                                         2</div>
                                 </div>
                                 <div class="grounding-item p-4 rounded-2xl border border-black/5 bg-[#F9F9F7] text-xs font-medium text-[#2A2A2A] flex justify-between items-center group cursor-pointer"
                                     onclick="toggleGroundingItem(this, 1)">
-                                    <span>1 cosa que puedes <strong>saborear</strong></span>
+                                    <span data-i18n="resources.taste1">1 thing you can <strong>taste</strong></span>
                                     <div
                                         class="grounding-check w-6 h-6 rounded-full border border-black/10 flex items-center justify-center bg-white transition-all text-[10px]">
                                         1</div>
                                 </div>
                             </div>
                             <div id="grounding-complete" class="hidden mt-8 text-center animate-fade">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8B9D8B]">Bien hecho.
-                                    Estás aquí.</p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8B9D8B]" data-i18n="resources.wellDone">Well done. You are here.</p>
                                 <button onclick="resetGroundingChecklist()"
-                                    class="mt-4 text-[9px] uppercase tracking-widest text-black/30 hover:text-black transition-colors">Reiniciar</button>
+                                    class="mt-4 text-[9px] uppercase tracking-widest text-black/30 hover:text-black transition-colors" data-i18n="resources.reset">Reset</button>
                             </div>
                         </div>
                     </div>
@@ -701,7 +697,7 @@ if ($hour >= 5 && $hour < 12) {
                                             d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
                                     </svg>
                                 </div>
-                                <h4 class="font-bold text-sm text-[#2A2A2A]">Afirmaciones</h4>
+                                <h4 class="font-bold text-sm text-[#2A2A2A]" data-i18n="resources.affirmations">Affirmations</h4>
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-black/20" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor">
@@ -711,12 +707,10 @@ if ($hour >= 5 && $hour < 12) {
                         </div>
                         <div class="resource-card-content px-8 pb-10 pt-4 text-center">
                             <div id="supportive-phrase" class="mb-6">
-                                <p class="italic text-[#4A4A4A] text-lg font-serif leading-relaxed">"Esto que sientes es
-                                    temporal. Has superado días difíciles antes y lo harás de nuevo."</p>
+                                <p class="italic text-[#4A4A4A] text-lg font-serif leading-relaxed" data-i18n="resources.affirmation1">"This feeling is temporary. You have overcome difficult days before and you will do it again."</p>
                             </div>
                             <button onclick="showNewPhrase()"
-                                class="text-[10px] font-bold uppercase tracking-widest text-[#8B9D8B] hover:text-[#111] transition-colors">Siguiente
-                                afirmación</button>
+                                class="text-[10px] font-bold uppercase tracking-widest text-[#8B9D8B] hover:text-[#111] transition-colors" data-i18n="resources.nextAffirmation">Next affirmation</button>
                         </div>
                     </div>
                 </div>
@@ -743,15 +737,14 @@ if ($hour >= 5 && $hour < 12) {
                     </svg>
                 </div>
                 <h2 class="text-lg font-bold mb-2"
-                    style="color: var(--text-primary); font-family: 'Playfair Display', serif;">Sesión en Tiempo Real
+                    style="color: var(--text-primary); font-family: 'Playfair Display', serif;" data-i18n="live.realTimeSession">Real-Time Session
                 </h2>
-                <p style="color: var(--text-secondary);" class="mb-4 text-xs leading-relaxed">
-                    Conéctate con nuestra IA de apoyo emocional a través de voz y video para una experiencia más humana
-                    y profunda.
+                <p style="color: var(--text-secondary);" class="mb-4 text-xs leading-relaxed" data-i18n="live.description">
+                    Connect with our AI emotional support through voice and video for a more human and profound experience.
                 </p>
 
                 <div class="bg-mentta-50 border border-mentta-100 rounded-2xl p-5 mb-8 text-left">
-                    <h4 class="font-bold text-mentta-primary mb-3 text-xs uppercase tracking-widest">Preparación:</h4>
+                    <h4 class="font-bold text-mentta-primary mb-3 text-xs uppercase tracking-widest" data-i18n="live.preparation">Preparation:</h4>
                     <ul class="text-sm space-y-2" style="color: var(--text-secondary);">
                         <li class="flex items-center gap-2">
                             <svg class="w-4 h-4 text-mentta-400" fill="currentColor" viewBox="0 0 20 20">
@@ -759,7 +752,7 @@ if ($hour >= 5 && $hour < 12) {
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd" />
                             </svg>
-                            Busca un lugar tranquilo y privado
+                            <span data-i18n="live.findQuietPlace">Find a quiet, private place</span>
                         </li>
                         <li class="flex items-center gap-2">
                             <svg class="w-4 h-4 text-mentta-400" fill="currentColor" viewBox="0 0 20 20">
@@ -767,7 +760,7 @@ if ($hour >= 5 && $hour < 12) {
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                     clip-rule="evenodd" />
                             </svg>
-                            Verifica tu micrófono y cámara
+                            <span data-i18n="live.checkMicCamera">Verify your microphone and camera</span>
                         </li>
                     </ul>
                 </div>
@@ -775,13 +768,13 @@ if ($hour >= 5 && $hour < 12) {
                 <div class="flex gap-4">
                     <button onclick="closeLiveCallModal()"
                         class="flex-1 py-4 px-4 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all"
-                        style="border: 2px solid #e5e7eb; color: #4b5563; background-color: white;">
-                        Ahora no
+                        style="border: 2px solid #e5e7eb; color: #4b5563; background-color: white;" data-i18n="live.notNow">
+                        Not now
                     </button>
                     <button onclick="startLiveCall()"
                         class="flex-1 py-4 px-4 rounded-2xl text-white font-bold text-xs uppercase tracking-widest hover:shadow-xl transition-all flex items-center justify-center gap-2"
-                        style="background-color: #cbaa8e;">
-                        Comenzar
+                        style="background-color: #cbaa8e;" data-i18n="live.start">
+                        Start
                     </button>
                 </div>
             </div>
