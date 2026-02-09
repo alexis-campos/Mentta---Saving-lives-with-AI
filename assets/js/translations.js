@@ -990,26 +990,41 @@ class TranslationManager {
      */
     t(keyPath, fallback = '') {
         const keys = keyPath.split('.');
+
+        // Try current language
         let result = TRANSLATIONS[this.currentLang];
+        let found = true;
 
         for (const key of keys) {
             if (result && typeof result === 'object' && key in result) {
                 result = result[key];
             } else {
-                // Try English fallback
-                result = TRANSLATIONS['en'];
-                for (const k of keys) {
-                    if (result && typeof result === 'object' && k in result) {
-                        result = result[k];
-                    } else {
-                        return fallback || keyPath;
-                    }
-                }
+                found = false;
                 break;
             }
         }
 
-        return typeof result === 'string' ? result : fallback || keyPath;
+        if (found && typeof result === 'string') {
+            return result;
+        }
+
+        // Try English fallback
+        result = TRANSLATIONS['en'];
+        found = true;
+        for (const key of keys) {
+            if (result && typeof result === 'object' && key in result) {
+                result = result[key];
+            } else {
+                found = false;
+                break;
+            }
+        }
+
+        if (found && typeof result === 'string') {
+            return result;
+        }
+
+        return fallback || keyPath;
     }
 
     /**
