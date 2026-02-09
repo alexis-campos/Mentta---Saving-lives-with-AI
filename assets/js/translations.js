@@ -313,6 +313,10 @@ const TRANSLATIONS = {
             linking: 'Linking...',
             linkSuccess: 'Linked with {name}!',
             linkError: 'Error linking',
+            panicTitle: 'Crisis Alert',
+            panicMessage: 'If you need immediate help, please call the crisis line.',
+            call: 'Call',
+            panicFooter: 'Line 113 (Mental Health) • SAMU 106 (Emergency)',
         },
 
         // Greetings (time-based)
@@ -768,6 +772,10 @@ const TRANSLATIONS = {
             linking: 'Vinculando...',
             linkSuccess: '¡Vinculado con {name}!',
             linkError: 'Error al vincular',
+            panicTitle: 'Ayuda Inmediata',
+            panicMessage: 'Si necesitas ayuda inmediata, puedes llamar a la línea de crisis.',
+            call: 'Llamar',
+            panicFooter: 'Línea 113 (Salud Mental) • SAMU 106 (Emergencias)',
         },
 
         // Greetings (time-based)
@@ -1091,6 +1099,7 @@ class TranslationManager {
 
 // Create global instance
 const i18n = new TranslationManager();
+window.i18n = i18n;
 
 // Helper function for templates
 function t(key, fallback) {

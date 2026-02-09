@@ -336,7 +336,7 @@ function logout() {
 function showPanicButton(config = {}) {
     const primaryLine = config.primary_line || '113';
     const secondaryLine = config.secondary_line || '106';
-    const message = config.message || '🆘 Si necesitas ayuda inmediata, puedes llamar a la línea de crisis.';
+    const message = config.message || `🆘 ${i18n.t('chat.panicMessage')}`;
 
     // Remove existing panic button if any
     closePanicButton();
@@ -348,14 +348,14 @@ function showPanicButton(config = {}) {
     panicButton.innerHTML = `
         <div class="flex flex-col gap-3">
             <div class="flex items-center justify-between">
-                <span class="text-lg font-bold">🆘 Ayuda Inmediata</span>
+                <span class="text-lg font-bold">🆘 ${i18n.t('chat.panicTitle')}</span>
                 <button onclick="closePanicButton()" class="text-white/80 hover:text-white text-xl leading-none">&times;</button>
             </div>
             <p class="text-sm text-white/90">${message}</p>
             <div class="flex gap-2">
                 <a href="tel:${primaryLine}" 
                    class="flex-1 bg-white text-red-700 font-bold py-3 px-4 rounded-lg text-center hover:bg-red-50 transition-colors">
-                    📞 Llamar ${primaryLine}
+                    📞 ${i18n.t('chat.call')} ${primaryLine}
                 </a>
                 <a href="tel:${secondaryLine}" 
                    class="flex-1 bg-white/20 text-white font-bold py-3 px-4 rounded-lg text-center hover:bg-white/30 transition-colors">
@@ -363,7 +363,7 @@ function showPanicButton(config = {}) {
                 </a>
             </div>
             <p class="text-xs text-white/70 text-center">
-                Línea 113 (Salud Mental) • SAMU 106 (Emergencias)
+                ${i18n.t('chat.panicFooter')}
             </p>
         </div>
     `;
