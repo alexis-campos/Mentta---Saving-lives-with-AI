@@ -263,6 +263,15 @@ const TRANSLATIONS = {
             cannotUndo: 'This action cannot be undone',
             logout: 'Log Out',
 
+            // Missing Description Keys
+            emergencyProtocolDesc: 'Configure how Mentta should act when it detects a severe emotional crisis.',
+            notifyPsychologistDesc: 'Send alert to my linked psychologist in case of crisis',
+            notifyContacts: 'Contact my emergency contacts',
+            notifyContactsDesc: 'Notify my contacts if I am in danger',
+            autoHelp: 'Automatic emergency help',
+            autoHelpDesc: 'Show call button to 113/106 when imminent danger is detected',
+            explicitConsent: 'Requires your explicit consent',
+
             // Missing keys for modals & detailed sections
             emergencyContactsSection: 'Emergency Contacts',
             emergencyContactsDesc: 'These contacts will be notified in case of a crisis situation.',
@@ -721,6 +730,15 @@ const TRANSLATIONS = {
             deleteHistory: 'Eliminar historial de conversaciones',
             cannotUndo: 'Esta acción no se puede deshacer',
             logout: 'Cerrar Sesión',
+
+            // Missing Description Keys
+            emergencyProtocolDesc: 'Configura cómo Mentta debe actuar cuando detecte una crisis emocional grave.',
+            notifyPsychologistDesc: 'Enviar alerta a mi psicólogo vinculado en caso de crisis',
+            notifyContacts: 'Contactar a mis contactos de emergencia',
+            notifyContactsDesc: 'Notificar a mis contactos si estoy en peligro',
+            autoHelp: 'Ayuda automática de emergencia',
+            autoHelpDesc: 'Mostrar botón de llamada al 113/106 cuando se detecte peligro inminente',
+            explicitConsent: 'Requiere tu consentimiento explícito',
 
             // Missing keys for modals & detailed sections
             emergencyContactsSection: 'Contactos de Emergencia',

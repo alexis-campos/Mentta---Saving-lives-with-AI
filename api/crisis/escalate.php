@@ -70,8 +70,8 @@ function escalateCrisis($patient_id, $risk_level, $message_snapshot)
         $panic_button_data = [
             'show_panic_button' => true,
             'primary_line' => '113',
-            'secondary_line' => '106',
-            'message' => '🆘 Detectamos que necesitas ayuda inmediata. Por favor, considera llamar a la línea de crisis.'
+            'secondary_line' => '106'
+            // 'message' removido para permitir i18n en frontend
         ];
 
         // 7. Log del escalamiento completo
@@ -111,8 +111,8 @@ function escalateCrisis($patient_id, $risk_level, $message_snapshot)
             'panic_button' => [
                 'show_panic_button' => true,
                 'primary_line' => '113',
-                'secondary_line' => '106',
-                'message' => '🆘 Si necesitas ayuda inmediata, llama al 113 o 106.'
+                'secondary_line' => '106'
+                // 'message' removido
             ]
         ];
     }
